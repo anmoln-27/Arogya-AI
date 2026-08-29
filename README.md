@@ -48,7 +48,7 @@
 | 💓 **SpO₂ & Heart Rate** | MAX30102 Pulse Oximeter | Signal Processing + PPG |
 | 🫁 **Respiratory Assessment** | MQ135 Gas Sensor | Breath Pattern Analysis |
 | 😰 **Stress Estimation** | GSR Sensor | Galvanic Skin Response ML |
-| 🔬 **Anemia Screening** | Spectral Sensor (AS7341) | Hemoglobin Absorption Model |
+| 🔬 **Anemia Screening** | Spectral Sensor (AS7343) | Hemoglobin Absorption Model |
 | 📊 **Real-time Triage** | All sensors combined | Multi-modal Fusion Pipeline |
 
 ---
