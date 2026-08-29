@@ -62,7 +62,7 @@ graph TB
         S2["MAX30102<br/>Pulse Oximeter"]
         S3["MQ135<br/>Gas Sensor"]
         S4["GSR<br/>Stress Sensor"]
-        S5["AS7341<br/>Spectral Sensor"]
+        S5["AS7343<br/>Spectral Sensor"]
         S6["MPU6050<br/>Motion/IMU"]
     end
 
@@ -137,7 +137,7 @@ graph TB
 | 🏃 IMU | **MPU6050** | 6-axis accelerometer + gyroscope |
 | 😰 GSR | **Grove GSR** | Galvanic skin response (stress) |
 | 💨 Gas | **MQ135** | Air quality / breath analysis |
-| 🔬 Spectral | **AS7341** | 11-channel spectral sensor (anemia) |
+| 🔬 Spectral | **AS7343** | 11-channel spectral sensor (anemia) |
 | 🖥️ Display | **SSD1306 OLED** | 128×64 status display |
 | 💡 LEDs | **RGB LEDs** | Triage indicators (Green/Yellow/Red) |
 | 🔋 Power | **Li-Po 3.7V** | Rechargeable battery system |
