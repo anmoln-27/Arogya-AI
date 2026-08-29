@@ -22,6 +22,12 @@
   <em>AI-powered, offline-capable health screening for India's 1M+ ASHA workers — no internet required.</em>
 </p>
 
+<p align="center">
+  <img src="images/smart_box_box.jpeg" alt="Smart-ASHA Prototype" width="550" style="border-radius: 10px;"/>
+  <br/>
+  <em>Smart-ASHA Portable Edge-AI Device Prototype</em>
+</p>
+
 ---
 
 ## 🌍 The Problem
