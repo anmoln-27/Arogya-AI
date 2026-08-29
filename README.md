@@ -277,7 +277,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 |:-----|:-----|:-------|
 | **Anmol** | Project Lead & Systems Architect | [@anmoln-27](https://github.com/anmoln-27) |
 | **Vansh** | AI/ML Engineer & Edge Deployment | [@vansh7nvc](https://github.com/vansh7nvc) |
-| **Gauri** | Research Lead & Data Science | — | [@guptagauri04](https://github.com/guptagauri04)|
+| **Gauri** | Research Lead & Data Science |  [@guptagauri04](https://github.com/guptagauri04)|
 
 ---
 
