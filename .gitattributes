@@ -1,0 +1,22 @@
+# ===========================
+# Arogya AI Git Attributes
+# ===========================
+# Normalize line endings
+* text=auto
+
+# Mark binary files
+*.pth binary
+*.onnx binary
+*.onnx.data binary
+*.tflite binary
+*.npy binary
+*.npz binary
+*.zip binary
+*.pdf binary
+*.pptx binary
+*.docx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary

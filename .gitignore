@@ -1,0 +1,79 @@
+# ===========================
+# Arogya AI .gitignore
+# ===========================
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+*.whl
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# ---------- C / C++ ----------
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.lib
+*.dll
+*.dylib
+
+# ---------- Arduino / PlatformIO ----------
+.pio/
+.pioenvs/
+.piolibdeps/
+.vscode/
+*.elf
+*.hex
+*.bin
+*.map
+
+# ---------- IDE / Editors ----------
+.idea/
+*.swp
+*.swo
+*~
+.project
+.cproject
+.settings/
+*.code-workspace
+.vs/
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# ---------- Edge Impulse Unzipped SDK (Installable ZIPs are in libs/) ----------
+edge-impulse/*/src/edge-impulse-sdk/
+libs/libraries/
+
+# ---------- Logs & Temp ----------
+*.log
+*.tmp
+*.bak
+*.cache
+
+# ---------- Large Data (use Git LFS instead) ----------
+# Uncomment below if NOT using Git LFS:
+# *.pth
+# *.onnx
+# *.npy
+# *.zip
