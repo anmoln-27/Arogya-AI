@@ -43,6 +43,7 @@ env/
 *.hex
 *.bin
 *.map
+Arduino/libraries/
 
 # ---------- IDE / Editors ----------
 .idea/
