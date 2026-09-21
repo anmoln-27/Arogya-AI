@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart-ASHA Pro | Web-Bluetooth Telemetry & Zero-App Export</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(18, 26, 43, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(30, 42, 69, 0.85);
+      --primary: #00e5ff;
+      --primary-glow: rgba(0, 229, 255, 0.35);
+      --accent: #6366f1;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --font-en: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-hi: 'Noto Sans Devanagari', 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg) 70%);
+      color: var(--text-main);
+      font-family: var(--font-en);
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    /* Top Bar */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .brand-title h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-title p {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+
+    .btn-connect {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: white;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-connect:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-connect.connected {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--success);
+      color: var(--success);
+      box-shadow: none;
+    }
+
+    .btn-export {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--card-border);
+      color: var(--text-main);
+    }
+
+    .btn-export:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Banner */
+    .banner {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #64748b;
+      display: inline-block;
+      margin-right: 6px;
+      transition: background 0.3s ease;
+    }
+
+    .status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+    }
+
+    /* Main Triage Hero Card */
+    .hero-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 28px;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    @media (max-width: 768px) {
+      .hero-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    .gauge-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .score-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(var(--success) 0deg, rgba(255,255,255,0.05) 0deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+      transition: all 0.6s ease;
+    }
+
+    .score-inner {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .score-value {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .score-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .triage-info h2 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-normal {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+    }
+
+    .badge-critical {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .triage-hindi {
+      font-family: var(--font-hi);
+      font-size: 18px;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    .triage-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    /* Grid of 4 Star Performers */
+    .grid-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .performers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--card-accent, var(--primary)), transparent);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-metric {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .card-metric .unit {
+      font-size: 14px;
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    .card-submetrics {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-sub);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 10px;
+      margin-top: 6px;
+    }
+
+    .submetric-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .submetric-val {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* History & Dump Table */
+    .history-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      max-height: 240px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    th {
+      color: var(--text-sub);
+      padding: 10px;
+      border-bottom: 1px solid var(--card-border);
+      font-weight: 600;
+    }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-sub);
+      padding: 16px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">🩺</div>
+      <div class="brand-title">
+        <h1>Smart-ASHA Pro Workstation</h1>
+        <p>Zero-App Telemetry & Wireless Patient Sync (Web-Bluetooth 5.0)</p>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="btnConnect" class="btn btn-connect" onclick="toggleBluetooth()">
+        <span>📡 Connect Bluetooth</span>
+      </button>
+      <button id="btnSerial" class="btn btn-connect" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);" onclick="toggleSerial()">
+        <span>🔌 Connect USB (Serial)</span>
+      </button>
+      <button class="btn btn-export" onclick="requestDumpFromDevice()">
+        <span>📥 Dump Vault</span>
+      </button>
+      <button class="btn btn-export" onclick="exportCurrentJSON()">
+        <span>💾 Save JSON</span>
+      </button>
+      <button class="btn btn-export" onclick="downloadCSV()">
+        <span>📊 Export CSV</span>
+      </button>
+      <button class="btn btn-export" onclick="window.print()">
+        <span>🖨️ Print Report</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Localhost Security Warning Banner (for file:// protocol) -->
+  <div id="fileProtocolAlert" style="display:none; background: rgba(245, 158, 11, 0.15); border: 1px solid var(--warning); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: #fde68a;">
+    ⚠️ <strong>Local file:// detected:</strong> Google Chrome and Edge disable Web-Bluetooth on <code>file:///</code> URLs for browser security.
+    <br/>• <strong>Option A (Bluetooth):</strong> Double-click <code>start_dashboard.bat</code> in the <code>Arduino/final_eval_v2/</code> folder to run on <code>http://localhost:8000</code>.
+    <br/>• <strong>Option B (Zero-Config USB):</strong> Click the green <strong>🔌 Connect USB (Serial)</strong> button above to connect directly over USB cable!
+  </div>
+
+  <!-- Banner -->
+  <div class="banner">
+    <div>
+      <span id="statusDot" class="status-dot"></span>
+      <span id="statusText">Status: Standby (Click 'Connect Bluetooth' or 'Connect USB' to pair)</span>
+    </div>
+    <div id="deviceMeta">Device: Not Connected | Bus: Ready</div>
+  </div>
+
+  <!-- Main Triage Hero -->
+  <div class="hero-card">
+    <div class="gauge-wrapper">
+      <div id="scoreCircle" class="score-circle">
+        <div class="score-inner">
+          <div id="scoreVal" class="score-value">--</div>
+          <div class="score-label">Severity / 100</div>
+        </div>
+      </div>
+    </div>
+    <div class="triage-info">
+      <h2 id="triageVerdictEn">
+        WAITING FOR SCAN
+        <span id="triageBadge" class="badge badge-normal">STANDBY</span>
+      </h2>
+      <div id="triageVerdictHi" class="triage-hindi">जांच की प्रतीक्षा है (उंगली लगाएं)</div>
+      <p id="triageDesc" class="triage-desc">
+        Insert finger into MAX30105 sensor on the workstation breadboard. The 60-second multimodal diagnostic scan will evaluate hemodynamics, thermal vision, multi-spectral blood optical density, and ECG rhythm.
+      </p>
+    </div>
+  </div>
+
+  <!-- The 4 Star Performers Grid -->
+  <div class="grid-title">🌟 The 4 Star Performers Clinical Metrics</div>
+
+  <div class="performers-grid">
+
+    <!-- Card 1: MAX30105 -->
+    <div class="card" style="--card-accent: #00e5ff;">
+      <div class="card-header">
+        <span class="card-title">❤️ MAX30105 Hemodynamics</span>
+        <span id="cardSpO2Status" class="badge badge-normal">NORMAL</span>
+      </div>
+      <div class="card-metric">
+        <span id="valSpO2">--</span> <span class="unit">% SpO₂</span>
+      </div>
+      <div class="card-submetrics">
+        <div class="submetric-row">
+          <span>Pulse Rate:</span>
+          <span id="valBPM" class="submetric-val">-- BPM</span>
+        </div>
+        <div class="submetric-row">
+          <span>Perfusion Index (PI %):</span>
+          <span id="valPI" class="submetric-val">-- %</span>
+        </div>
+        <div class="submetric-row">
+          <span>Sensor Die Temp:</span>
+          <span id="valDieTemp" class="submetric-val">-- °C</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: MLX90640 -->
+    <div class="card" style="--card-accent: #f59e0b;">
+      <div class="card-header">
+        <span class="card-title">🌡️ MLX90640 Thermal Vision</span>
+        <span id="cardTempStatus" class="badge badge-normal">NORMAL</span>
+      </div>
+      <div class="card-metric">
+        <span id="valTemp">--</span> <span class="unit">°C Core</span>
+      </div>
+      <div class="card-submetrics">
+        <div class="submetric-row">
+          <span>AI Fever Probability:</span>
+          <span id="valFeverP" class="submetric-val">-- %</span>
+        </div>
+        <div class="submetric-row">
+          <span>Temporal Asymmetry (dT):</span>
+          <span id="valAsym" class="submetric-val">-- °C</span>
+        </div>
+        <div class="submetric-row">
+          <span>Thermal Gradient:</span>
+          <span id="valGradient" class="submetric-val">Central Core</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: AD8232 -->
+    <div class="card" style="--card-accent: #10b981;">
+      <div class="card-header">
+        <span class="card-title">⚡ AD8232 Cardiac HRV</span>
+        <span id="cardEcgStatus" class="badge badge-normal">STABLE</span>
+      </div>
+      <div class="card-metric">
+        <span id="valSDNN">--</span> <span class="unit">ms SDNN</span>
+      </div>
+      <div class="card-submetrics">
+        <div class="submetric-row">
+          <span>RMSSD (Vagal Tone):</span>
+          <span id="valRMSSD" class="submetric-val">-- ms</span>
+        </div>
+        <div class="submetric-row">
+          <span>pNN50 (Autonomic):</span>
+          <span id="valPNN50" class="submetric-val">-- %</span>
+        </div>
+        <div class="submetric-row">
+          <span>Rhythm Source:</span>
+          <span id="valRhythmSource" class="submetric-val">PPG Fallback / ECG</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: AS7343 -->
+    <div class="card" style="--card-accent: #a855f7;">
+      <div class="card-header">
+        <span class="card-title">🌈 AS7343 Multi-Spectral</span>
+        <span id="cardSpecStatus" class="badge badge-normal">NORMAL</span>
+      </div>
+      <div class="card-metric">
+        <span id="valHb">--</span> <span class="unit">Hb (F5/F8)</span>
+      </div>
+      <div class="card-submetrics">
+        <div class="submetric-row">
+          <span>Jaundice Index (F1/FZ):</span>
+          <span id="valJaund" class="submetric-val">--</span>
+        </div>
+        <div class="submetric-row">
+          <span>Dehydration (NIR/FXL):</span>
+          <span id="valDehy" class="submetric-val">--</span>
+        </div>
+        <div class="submetric-row">
+          <span>Active Channels:</span>
+          <span class="submetric-val">14-Band Spectral</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Session Screening History Table -->
+  <div class="history-card">
+    <div class="card-title" style="margin-bottom: 12px;">📋 Wireless Screening History (Current Session)</div>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Severity</th>
+            <th>Triage Verdict (EN)</th>
+            <th>Triage (Hindi)</th>
+            <th>SpO₂</th>
+            <th>BPM</th>
+            <th>PI %</th>
+            <th>Temp (°C)</th>
+            <th>SDNN (ms)</th>
+            <th>Hb Ratio</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          <tr>
+            <td colspan="10" style="text-align:center; color: var(--text-sub); padding: 18px;">
+              No screenings logged yet. Connect device and complete a 60s scan.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Smart-ASHA v12.0 Clinical Workstation • ESP32-S3 Dual-Core FreeRTOS • Zero-App Web-Bluetooth Architecture
+  </footer>
+
+</div>
+
+<script>
+  // Smart-ASHA Pro BLE UUIDs (Matching final_eval_v2.ino)
+  const SERVICE_UUID        = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+  const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+
+  let bleDevice = null;
+  let bleServer = null;
+  let bleChar   = null;
+
+  // Web-Serial USB Instances
+  let serialPort   = null;
+  let serialReader = null;
+
+  let screeningHistory = [];
+  let lastReport = null;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.location.protocol === 'file:') {
+      const alertBox = document.getElementById('fileProtocolAlert');
+      if (alertBox) alertBox.style.display = 'block';
+    }
+  });
+
+  // ========================================================
+  // 1. WEB-BLUETOOTH (BLE 5.0) IMPLEMENTATION
+  // ========================================================
+  async function toggleBluetooth() {
+    if (bleDevice && bleDevice.gatt.connected) {
+      disconnectBluetooth();
+      return;
+    }
+    connectBluetooth();
+  }
+
+  async function connectBluetooth() {
+    if (window.location.protocol === 'file:') {
+      alert("⚠️ NOTICE: You opened this file via file:/// URL.\n\nChromium (Chrome/Edge) restricts Web-Bluetooth on local file paths.\n\n• For Bluetooth: Run 'start_dashboard.bat' in Arduino/final_eval_v2/ (opens http://localhost:8000)\n• For Immediate Connection: Click '🔌 Connect USB (Serial)' instead!");
+    }
+
+    try {
+      if (!navigator.bluetooth) {
+        alert("Web-Bluetooth is not enabled in this browser.\n\nMake sure you are using Google Chrome or Microsoft Edge on Windows/Mac/Android, and that Bluetooth is turned ON in Windows Settings.");
+        return;
+      }
+
+      updateStatus("Scanning for 'Smart-ASHA-Pro' (or nearby BLE devices)...", false);
+
+      try {
+        // Primary Attempt: Match name or service UUID
+        bleDevice = await navigator.bluetooth.requestDevice({
+          filters: [
+            { name: "Smart-ASHA-Pro" },
+            { namePrefix: "Smart" }
+          ],
+          optionalServices: [SERVICE_UUID]
+        });
+      } catch (filterErr) {
+        console.warn("Filtered search cancelled or failed, attempting unfiltered scan...", filterErr);
+        // Fallback Attempt: Show all devices in pairing dialog so user can select their board
+        bleDevice = await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true,
+          optionalServices: [SERVICE_UUID]
+        });
+      }
+
+      bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
+
+      updateStatus("Connecting to GATT Server...", false);
+      bleServer = await bleDevice.gatt.connect();
+
+      updateStatus("Accessing Medical Telemetry Service...", false);
+      const service = await bleServer.getPrimaryService(SERVICE_UUID);
+
+      updateStatus("Subscribing to Clinical Notifications...", false);
+      bleChar = await service.getCharacteristic(CHARACTERISTIC_UUID);
+      await bleChar.startNotifications();
+      bleChar.addEventListener('characteristicvaluechanged', handleTelemetryNotification);
+
+      updateStatus("Connected & Streaming Telemetry!", true);
+      document.getElementById("btnConnect").innerHTML = "<span>🔴 Disconnect BLE</span>";
+      document.getElementById("btnConnect").classList.add("connected");
+      document.getElementById("deviceMeta").innerText = `Device: ${bleDevice.name || 'Smart-ASHA'} | Bus: BLE 5.0 GATT`;
+
+      // Read initial value
+      try {
+        const val = await bleChar.readValue();
+        const decoder = new TextDecoder('utf-8');
+        const text = decoder.decode(val);
+        if (text.startsWith("{")) parseTelemetry(JSON.parse(text));
+      } catch(e) {}
+
+    } catch (err) {
+      console.error(err);
+      updateStatus("Bluetooth connection cancelled: " + err.message, false);
+    }
+  }
+
+  function disconnectBluetooth() {
+    if (bleDevice && bleDevice.gatt.connected) {
+      bleDevice.gatt.disconnect();
+    }
+    onDisconnected();
+  }
+
+  function onDisconnected() {
+    updateStatus("Disconnected. Ready to re-connect.", false);
+    document.getElementById("btnConnect").innerHTML = "<span>📡 Connect Bluetooth</span>";
+    document.getElementById("btnConnect").classList.remove("connected");
+    document.getElementById("deviceMeta").innerText = "Device: Not Connected | Bus: Ready";
+  }
+
+  // ========================================================
+  // 2. WEB-SERIAL (USB CABLE) ZERO-FAIL IMPLEMENTATION
+  // ========================================================
+  async function toggleSerial() {
+    if (serialPort && serialPort.readable) {
+      await disconnectSerial();
+      return;
+    }
+    connectSerial();
+  }
+
+  async function connectSerial() {
+    if (!navigator.serial) {
+      alert("Web-Serial is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
+      return;
+    }
+    try {
+      updateStatus("Select ESP32-S3 COM Port in the popup...", false);
+      serialPort = await navigator.serial.requestPort();
+      await serialPort.open({ baudRate: 115200 });
+
+      updateStatus("USB Serial Connected! Streaming Telemetry...", true);
+      document.getElementById("btnSerial").innerHTML = "<span>🔴 Disconnect USB</span>";
+      document.getElementById("btnSerial").classList.add("connected");
+      document.getElementById("deviceMeta").innerText = "Device: ESP32-S3 | Bus: USB Serial (115200)";
+
+      readSerialStream();
+    } catch (err) {
+      console.error(err);
+      updateStatus("USB connection cancelled: " + err.message, false);
+    }
+  }
+
+  async function disconnectSerial() {
+    try {
+      if (serialReader) {
+        await serialReader.cancel();
+        serialReader = null;
+      }
+      if (serialPort) {
+        await serialPort.close();
+        serialPort = null;
+      }
+    } catch (e) {
+      console.warn("Serial close warning:", e);
+    }
+    document.getElementById("btnSerial").innerHTML = "<span>🔌 Connect USB (Serial)</span>";
+    document.getElementById("btnSerial").classList.remove("connected");
+    updateStatus("USB Serial Disconnected.", false);
+    document.getElementById("deviceMeta").innerText = "Device: Not Connected | Bus: Ready";
+  }
+
+  async function readSerialStream() {
+    const textDecoder = new TextDecoderStream();
+    serialPort.readable.pipeTo(textDecoder.writable);
+    const reader = textDecoder.readable.getReader();
+    serialReader = reader;
+    let lineBuf = "";
+
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        if (value) {
+          lineBuf += value;
+          let lines = lineBuf.split("\n");
+          lineBuf = lines.pop(); // keep partial line in buffer
+          for (let line of lines) {
+            processSerialLine(line.trim());
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("Serial stream ended:", err);
+    }
+  }
+
+  function processSerialLine(line) {
+    if (!line) return;
+    console.log("[SERIAL]", line);
+
+    // If device outputs JSON
+    if (line.startsWith("{") && line.endsWith("}")) {
+      try {
+        const data = JSON.parse(line);
+        parseTelemetry(data);
+        return;
+      } catch(e) {}
+    }
+
+    // If CSV row from EXPORT command (e.g. "0,15,NORMAL (HEALTHY),36.6,98,...")
+    if (/^\d+,\d+,/.test(line)) {
+      const parts = line.split(",");
+      if (parts.length >= 8) {
+        const rec = {
+          timestamp: "Slot #" + parts[0],
+          score: parseInt(parts[1]) || 0,
+          triage: parts[2] || "NORMAL",
+          triage_hi: "",
+          temp: parseFloat(parts[3]) || 36.6,
+          spo2: parseFloat(parts[4]) || 98,
+          pi: parseFloat(parts[5]) || 1.2,
+          bpm: 72,
+          sdnn: parseFloat(parts[6]) || 45.0,
+          hb: parseFloat(parts[7]) || 1.0,
+          jaund: 1.0,
+          dehy: parseFloat(parts[8]) || 1.0
+        };
+        screeningHistory.push(rec);
+        renderHistoryTable();
+      }
+    }
+  }
+
+  async function requestDumpFromDevice() {
+    if (!serialPort || !serialPort.writable) {
+      alert("Please connect via USB Cable first using '🔌 Connect USB (Serial)' to dump internal flash records.");
+      return;
+    }
+    const writer = serialPort.writable.getWriter();
+    const encoder = new TextEncoder();
+    await writer.write(encoder.encode("EXPORT\n"));
+    writer.releaseLock();
+    updateStatus("Sent 'EXPORT' command to workstation flash vault...", true);
+  }
+
+  function updateStatus(msg, active) {
+    document.getElementById("statusText").innerText = "Status: " + msg;
+    const dot = document.getElementById("statusDot");
+    if (active) dot.classList.add("active");
+    else dot.classList.remove("active");
+  }
+
+  let bleBuffer = "";
+
+  function handleTelemetryNotification(event) {
+    const value = event.target.value;
+    const decoder = new TextDecoder('utf-8');
+    const chunk = decoder.decode(value);
+
+    // If chunk is a complete self-contained JSON
+    if (chunk.startsWith("{") && chunk.endsWith("}")) {
+      try {
+        const data = JSON.parse(chunk);
+        parseTelemetry(data);
+        bleBuffer = "";
+        return;
+      } catch(e) {}
+    }
+
+    // Otherwise append to buffer for multi-packet reassembly
+    bleBuffer += chunk;
+    if (bleBuffer.startsWith("{") && bleBuffer.endsWith("}")) {
+      try {
+        const data = JSON.parse(bleBuffer);
+        parseTelemetry(data);
+        bleBuffer = "";
+      } catch(e) {}
+    } else if (bleBuffer.length > 1200) {
+      bleBuffer = ""; // reset on overflow
+    }
+  }
+
+  function parseTelemetry(data) {
+    if (!data) return;
+
+    // State 1: IDLE STANDBY (Heartbeat)
+    if (data.state === "IDLE" || data.status === "IDLE") {
+      updateStatus("🟢 Connected to Smart-ASHA | Standby (Insert Finger to Scan)", true);
+      document.getElementById("triageVerdictEn").innerHTML = 
+        `INSERT FINGER <span class="badge badge-normal">STANDBY</span>`;
+      document.getElementById("triageVerdictHi").innerText = "उंगली लगाएं (जांच शुरू करने के लिए)";
+      document.getElementById("triageDesc").innerText = 
+        "Workstation is connected over Bluetooth. Insert finger into MAX30105 sensor on breadboard to begin the 60-second diagnostic scan.";
+
+      if (data.temp !== undefined) document.getElementById("valTemp").innerText = data.temp.toFixed(1);
+      if (data.spo2 !== undefined) document.getElementById("valSpO2").innerText = data.spo2;
+      if (data.bpm !== undefined)  document.getElementById("valBPM").innerText  = Math.round(data.bpm) + " BPM";
+      if (data.pi !== undefined)   document.getElementById("valPI").innerText   = data.pi.toFixed(2) + " %";
+      return;
+    }
+
+    // State 2: SCANNING IN PROGRESS
+    if (data.state === "SCAN") {
+      updateStatus(`🟡 DIAGNOSTIC SCAN IN PROGRESS (${data.rem}s remaining)`, true);
+      document.getElementById("triageVerdictEn").innerHTML = 
+        `SCANNING... (${data.rem}s) <span class="badge badge-warning">IN PROGRESS</span>`;
+      document.getElementById("triageVerdictHi").innerText = `जांच जारी है (${data.rem} सेकंड शेष)`;
+      document.getElementById("triageDesc").innerText = 
+        "Hold still! Workstation is acquiring continuous multi-wavelength photoplethysmography, radiometric thermal vision, and multi-spectral absorption.";
+
+      if (data.spo2 !== undefined) document.getElementById("valSpO2").innerText = data.spo2;
+      if (data.bpm !== undefined)  document.getElementById("valBPM").innerText  = Math.round(data.bpm) + " BPM";
+      if (data.pi !== undefined)   document.getElementById("valPI").innerText   = data.pi.toFixed(2) + " %";
+      if (data.temp !== undefined) document.getElementById("valTemp").innerText = data.temp.toFixed(1);
+
+      // Animate progress on gauge
+      const prog = Math.min(100, Math.max(0, Math.round(((60 - data.rem) / 60) * 100)));
+      document.getElementById("scoreVal").innerText = prog + "%";
+      const lbl = document.querySelector(".score-label");
+      if (lbl) lbl.innerText = "SCAN PROGRESS";
+      const angle = (prog / 100) * 360;
+      document.getElementById("scoreCircle").style.background = 
+        `conic-gradient(var(--warning) ${angle}deg, rgba(255,255,255,0.06) ${angle}deg)`;
+      return;
+    }
+
+    // State 3: RESULTS (Full Clinical Report)
+    const lbl = document.querySelector(".score-label");
+    if (lbl) lbl.innerText = "Severity / 100";
+    lastReport = data;
+    lastReport.timestamp = new Date().toLocaleTimeString();
+
+    // 1. Severity Score & Gauge
+    const score = data.score !== undefined ? data.score : 0;
+    document.getElementById("scoreVal").innerText = score;
+    
+    let scoreColor = "var(--success)";
+    let badgeClass = "badge-normal";
+    let badgeText  = "HEALTHY";
+    
+    if (score >= 50) {
+      scoreColor = "var(--danger)";
+      badgeClass = "badge-critical";
+      badgeText  = "CRITICAL";
+    } else if (score >= 25) {
+      scoreColor = "var(--warning)";
+      badgeClass = "badge-warning";
+      badgeText  = "MONITOR";
+    }
+
+    const angle = (score / 100) * 360;
+    document.getElementById("scoreCircle").style.background = 
+      `conic-gradient(${scoreColor} ${angle}deg, rgba(255,255,255,0.06) ${angle}deg)`;
+
+    // 2. Triage Verdict
+    document.getElementById("triageVerdictEn").innerHTML = 
+      `${data.triage || 'NORMAL'} <span class="badge ${badgeClass}">${badgeText}</span>`;
+    document.getElementById("triageVerdictHi").innerText = data.triage_hi || data.triage_rom || "सामान्य (स्वस्थ)";
+    document.getElementById("triageDesc").innerText = 
+      (score >= 50) ? "CRITICAL RISK: Severe biomarker anomaly detected. Immediate Primary Health Centre (PHC) referral indicated." :
+      (score >= 25) ? "WARNING: Minor physiological deviation. Monitor vitals and re-evaluate." :
+                      "NORMAL: All multi-system vital parameters are within healthy physiological limits.";
+
+    // 3. Vitals & Cards
+    if (data.spo2 !== undefined) document.getElementById("valSpO2").innerText = data.spo2;
+    if (data.bpm !== undefined)  document.getElementById("valBPM").innerText  = Math.round(data.bpm) + " BPM";
+    if (data.pi !== undefined)   document.getElementById("valPI").innerText   = data.pi.toFixed(2) + " %";
+    
+    if (data.temp !== undefined)    document.getElementById("valTemp").innerText   = data.temp.toFixed(1);
+    if (data.fever_p !== undefined) document.getElementById("valFeverP").innerText = data.fever_p.toFixed(1) + " %";
+    if (data.asym !== undefined)    document.getElementById("valAsym").innerText   = data.asym.toFixed(2) + " °C";
+
+    if (data.sdnn !== undefined)  document.getElementById("valSDNN").innerText  = data.sdnn.toFixed(1);
+    if (data.rmssd !== undefined) document.getElementById("valRMSSD").innerText = data.rmssd.toFixed(1) + " ms";
+    if (data.pnn50 !== undefined) document.getElementById("valPNN50").innerText = data.pnn50.toFixed(1) + " %";
+
+    if (data.hb !== undefined)    document.getElementById("valHb").innerText    = data.hb.toFixed(2);
+    if (data.jaund !== undefined) document.getElementById("valJaund").innerText = data.jaund.toFixed(2);
+    if (data.dehy !== undefined)  document.getElementById("valDehy").innerText  = data.dehy.toFixed(2);
+
+    // Card Badges
+    document.getElementById("cardSpO2Status").innerText = (data.spo2 < 94) ? "HYPOXIA" : "NORMAL";
+    document.getElementById("cardSpO2Status").className = "badge " + (data.spo2 < 94 ? "badge-critical" : "badge-normal");
+
+    document.getElementById("cardTempStatus").innerText = (data.temp >= 38.0 || data.fever_p > 50) ? "FEVER" : "NORMAL";
+    document.getElementById("cardTempStatus").className = "badge " + (data.temp >= 38.0 || data.fever_p > 50 ? "badge-critical" : "badge-normal");
+
+    document.getElementById("cardEcgStatus").innerText = (data.sdnn > 115) ? "ARRHYTHMIA" : "STABLE";
+    document.getElementById("cardEcgStatus").className = "badge " + (data.sdnn > 115 ? "badge-warning" : "badge-normal");
+
+    document.getElementById("cardSpecStatus").innerText = (data.hb > 1.35) ? "ANEMIA RISK" : "NORMAL";
+    document.getElementById("cardSpecStatus").className = "badge " + (data.hb > 1.35 ? "badge-warning" : "badge-normal");
+
+    // Add to history table
+    screeningHistory.unshift(lastReport);
+    renderHistoryTable();
+    updateStatus("✅ Clinical Diagnostic Report Synchronized!", true);
+  }
+
+  function renderHistoryTable() {
+    const tbody = document.getElementById("historyTableBody");
+    tbody.innerHTML = "";
+
+    screeningHistory.forEach(rec => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${rec.timestamp}</td>
+        <td><strong>${rec.score}/100</strong></td>
+        <td>${rec.triage}</td>
+        <td style="font-family: var(--font-hi);">${rec.triage_hi || rec.triage_rom || '-'}</td>
+        <td>${rec.spo2}%</td>
+        <td>${Math.round(rec.bpm)}</td>
+        <td>${rec.pi.toFixed(2)}%</td>
+        <td>${rec.temp.toFixed(1)}°C</td>
+        <td>${rec.sdnn.toFixed(1)}</td>
+        <td>${rec.hb.toFixed(2)}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function exportCurrentJSON() {
+    if (!lastReport) {
+      alert("No screening data captured yet. Please complete a scan first.");
+      return;
+    }
+    const blob = new Blob([JSON.stringify(lastReport, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Smart_ASHA_Report_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadCSV() {
+    if (screeningHistory.length === 0) {
+      alert("No screening history available to export.");
+      return;
+    }
+    let csv = "Timestamp,Score,Triage_EN,Triage_HI,SpO2,BPM,PI_Pct,Temp_C,Fever_P,SDNN_ms,RMSSD_ms,pNN50_Pct,Hb_Ratio,Jaundice_Ratio,Dehydration_Ratio\n";
+    screeningHistory.forEach(r => {
+      csv += `"${r.timestamp}",${r.score},"${r.triage}","${r.triage_hi || ''}",${r.spo2},${r.bpm},${r.pi},${r.temp},${r.fever_p},${r.sdnn},${r.rmssd},${r.pnn50},${r.hb},${r.jaund},${r.dehy}\n`;
+    });
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Smart_ASHA_Screenings_${Date.now()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>

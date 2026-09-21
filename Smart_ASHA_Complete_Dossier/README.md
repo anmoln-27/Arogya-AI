@@ -14,7 +14,8 @@ Smart_ASHA_Complete_Dossier/
 ├── 📄 03_hardware_setup_and_pinout_guide.md     ← Pinout matrix, 7Semi 4G board wiring, and IDE config
 ├── 📄 04_hardware_limitations_and_drift.md      ← Power sag & 4G RF inrush, Delhi drift, and PCB checklist
 ├── 📄 05_sensor_maximum_potential_guide.md      ← Sensor & 4G/GPS untapped capabilities & Arduino C++ code
-└── 📄 06_competitive_analysis_healthcube.md     ← Healthcube market teardown & differentiation strategy
+├── 📄 06_competitive_analysis_healthcube.md     ← Healthcube market teardown & differentiation strategy
+└── 📄 07_hardware_rebuild_and_reassembly_manual.md ← Step-by-step rebuild, wiring, smoke testing & reassembly manual
 ```
 
 ---
@@ -85,4 +86,15 @@ Smart_ASHA_Complete_Dossier/
   * **Hardware Connectivity Moat:** Smart-ASHA's 7Semi board features **built-in 4G LTE Cat-1 + GNSS positioning**, enabling standalone emergency SMS and geotagging without requiring a separate smartphone (Healthcube requires an external smartphone/tablet).
   * **Form Factor & Usability:** Pocket-sized single-hand operation vs. Healthcube's 1.7 kg box requiring tabletop setup, finger pricks, and blood handling.
   * **Strategic Differentiation Playbook:** Six concrete moats (Consumables, Price, Edge-AI, Standalone Cellular, Real-time UX, Infection Control) and a phased market entry strategy for NHM/CSR deployment.
+
+---
+
+### 7. [07_hardware_rebuild_and_reassembly_manual.md](file:///c:/Users/Acer/OneDrive/Desktop/DESKTOP%20VANSH/Smart%20Asha/Smart_ASHA_Complete_Dossier/07_hardware_rebuild_and_reassembly_manual.md)
+* **What it covers:**
+  * Complete, foolproof step-by-step disassembly, rebuild, and reassembly procedure from bare components.
+  * Verified 100% against [`final_eval_v2.ino`](file:///c:/Users/Acer/OneDrive/Desktop/DESKTOP%20VANSH/Smart%20Asha/Arduino/final_eval_v2/final_eval_v2.ino).
+  * Star-Ground topology and 3.3V / 5.0V power rail separation to prevent ECG noise and sensor damage.
+  * Primary I²C (`Wire` on GPIO 8/18 @ 50 kHz with TCA9548A) and Secondary I²C (`Wire1` on GPIO 16/17 @ 400 kHz for MAX30105).
+  * Calibrated analog front-ends: AD8232 on GPIO 4 (`ADC1_CH3`) and MQ-135 on GPIO 6 (`ADC1_CH5`).
+  * Pre-power multimeter smoke-test checklist, boot log sequence verification, and diagnostic troubleshooting matrix.
 

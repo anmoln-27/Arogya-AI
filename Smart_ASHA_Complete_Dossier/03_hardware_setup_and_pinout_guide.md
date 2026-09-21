@@ -30,13 +30,13 @@
   |  (Address: 0x70)  |         |       |           |   Pulse / SpO2    |
   +---------+---------+         |       |           +-------------------+
     | | | | |                   |       |
-    | | | | +-- Port 7: OLED    |       +-- ADC1 Pin 34: AD8232 (ECG)
+    | | | | +-- Port 7: OLED    |       +-- GPIO 4 (ADC1_CH3): AD8232 (ECG)
     | | | |                     |
-    | | | +---- Port 4: AS7343  +----------- ADC1 Pin 35: GSR
+    | | | +---- Port 4: AS7343  +----------- GPIO 6 (ADC1_CH5): MQ-135 (Gas)
     | | |                       |
-    | | +------ Port 3: MLX90640+----------- ADC1 Pin 32: MQ-135 (Gas)
+    | | +------ Port 3: MLX90640+----------- [GSR Omitted in final_eval_v2]
     | |
-    | +-------- Port 2: MPU6050 IMU
+    | +-------- Port 2: MPU6050 IMU (Fallback: Port 1)
     |
     +---------- Port 0: Reserved (Piezo ADC)
 ```
@@ -51,22 +51,20 @@
 | | GND | GND | Common Ground | Common system ground |
 | | SDA | GPIO 8 | `Wire` (Primary I²C) | Clock speed set to 50 kHz |
 | | SCL | GPIO 18 | `Wire` (Primary I²C) | Clock speed set to 50 kHz |
-| | RST | 3.3V | Logic High | Pulled high to prevent reset |
+| | RST | 3.3V | Logic High | Pulled high to 3.3V to prevent reset |
 | **MAX30105 Pulse/SpO₂** | VCC | 3.3V | Power Rail | Completely isolated from TCA9548A |
 | | GND | GND | Common Ground | Common system ground |
-| | SDA | GPIO 16 | `Wire1` (Secondary) | Independent bus to prevent contention |
-| | SCL | GPIO 17 | `Wire1` (Secondary) | Independent bus to prevent contention |
+| | SDA | GPIO 16 | `Wire1` (Secondary) | Independent bus (400 kHz) to prevent contention |
+| | SCL | GPIO 17 | `Wire1` (Secondary) | Independent bus (400 kHz) to prevent contention |
 | **AD8232 ECG Sensor** | 3.3V | 3.3V | Clean Power Rail | Keep away from switching noise |
 | | GND | GND | Common Ground | Common system ground |
-| | OUTPUT | GPIO 34 | Analog (`ADC1_CH6`) | Safe ADC1 channel (no Wi-Fi/BT conflict) |
-| | LO+ | Optional | Digital In | Lead-off detection positive |
-| | LO- | Optional | Digital In | Lead-off detection negative |
-| **GSR Skin Conductance** | VCC | 3.3V | Power Rail | Voltage divider configuration |
-| | GND | GND | Common Ground | Common system ground |
-| | SIG / OUT | GPIO 35 | Analog (`ADC1_CH7`) | Safe ADC1 channel |
+| | OUTPUT | GPIO 4 | Analog (`ADC1_CH3`) | Factory eFuse calibrated via `analogReadMilliVolts()` |
+| | LO+ | N/C | Not Connected | Leads-off handled via software baseline check |
+| | LO- | N/C | Not Connected | Leads-off handled via software baseline check |
 | **MQ Gas Sensor (MQ-135)** | VCC | 5.0V / VBUS | 5V Rail | Internal heater coil requires 5V |
 | | GND | GND | Common Ground | Common system ground |
-| | AOUT | GPIO 32 | Analog (`ADC1_CH4`) | Resistive divider to match 3.3V scale |
+| | AOUT | GPIO 6 | Analog (`ADC1_CH5`) | Calibrated via `analogReadMilliVolts(6)` |
+| **GSR Skin Conductance** | — | — | *Omitted* | *Legacy prototype only; not used in `final_eval_v2`* |
 | **Quectel EC200U-CN** | TX | GPIO (UART TX) | Internal UART | On-board connection to ESP32-S3 (7Semi board) |
 | (On-board 4G LTE Modem) | RX | GPIO (UART RX) | Internal UART | On-board connection to ESP32-S3 (7Semi board) |
 | | SIM | Micro SIM Slot | On-board | Insert Jio/Airtel/BSNL SIM for 4G data + SMS |
@@ -81,13 +79,13 @@ All devices connected to the multiplexer communicate over the primary I²C bus t
 | MUX Port | Device Connected | I²C Address | Operational Role | Refresh Strategy |
 |:---:|:---|:---:|:---|:---|
 | **Port 0** | *Unused* | — | Reserved for acoustic piezo I²C ADC | — |
-| **Port 1** | *Unused* | — | Reserved | — |
-| **Port 2** | **MPU6050** | `0x68` | 6-Axis Motion, Chest-Wall Tracking | Polled every 1.2 s |
+| **Port 1** | *Fallback* | `0x68` | MPU6050 fallback detection port | Probed if Port 2 fails |
+| **Port 2** | **MPU6050** | `0x68` | 6-Axis Motion, Chest-Wall Tracking | Polled every 1.2 s (Primary) |
 | **Port 3** | **MLX90640** | `0x33` | $24 \times 32$ Far-Infrared Thermal Sensor | Read at 2 Hz frame rate |
 | **Port 4** | **AS7343** | `0x39` | 14-Channel Multi-Spectral Optical Sensor | Configured: Gain 128X, 100 ms integration |
 | **Port 5** | *Unused* | — | Reserved | — |
 | **Port 6** | *Unused* | — | Reserved | — |
-| **Port 7** | **SH1106 OLED** | `0x3C` | $128 \times 64$ Monochrome System Display | Updated every 1.2 s – 1.5 s |
+| **Port 7** | **SH1106 OLED** | `0x3C` | $128 \times 64$ Monochrome System Display | Updated every 800 ms – 1.2 s |
 
 ---
 
