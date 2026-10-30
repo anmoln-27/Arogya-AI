@@ -70,6 +70,7 @@ Every pin, port, voltage rail, and bus assignment in this guide is **100% matche
 | **8** | ECG Front-End | AD8232 Single-Lead | 3.3V (3.3V) | GPIO 4 (ADC1_CH3) | Filtered ECG wave, SDNN, RMSSD, HRV |
 | **9** | Respiratory Gas | MQ-135 Breath VOC | 5.0V (VCC) | GPIO 6 (ADC1_CH5) | Respiratory VOCs, metabolic tracking |
 | **10**| LTE/GNSS Antennas | u.FL LTE + GPS Antenna | Passive/Active | u.FL connectors | Cellular telemetry & GPS tagging |
+| **11**| Green Status LED | 5mm / 3mm Green LED + 220Ω-330Ω | 3.3V Logic | GPIO 40 -> Anode (+), GND -> Cathode (-) | Illuminates post-60s scan ONLY when SAFE / NO RISK (Score < 25) |
 
 ### Recommended Wire Color-Coding Convention
 

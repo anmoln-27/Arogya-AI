@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 32px;
+        width: 1920px;
+        height: 1080px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 2px solid #334155;
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+    }
+    .brand-title {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #38bdf8;
+        margin-bottom: 4px;
+    }
+    h1 {
+        font-size: 26px;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+    }
+    .subtitle {
+        font-size: 14px;
+        color: #94a3b8;
+    }
+    .meta-badges {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .meta-pill {
+        background: #1e293b;
+        border: 1px solid #475569;
+        color: #cbd5e1;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .meta-pill.highlight {
+        background: rgba(14, 165, 233, 0.15);
+        border-color: #0ea5e9;
+        color: #38bdf8;
+    }
+
+    /* Table Styling */
+    .table-container {
+        flex: 1;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 12.5px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #334155;
+        background: #1e293b;
+    }
+    th, td {
+        padding: 10px 14px;
+        text-align: left;
+        border-bottom: 1px solid #334155;
+        border-right: 1px solid #334155;
+    }
+    th:last-child, td:last-child {
+        border-right: none;
+    }
+    tr:last-child td {
+        border-bottom: none;
+    }
+    thead th {
+        background: #0f172a;
+        color: #94a3b8;
+        font-size: 11.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        vertical-align: bottom;
+    }
+    thead th.feature-col {
+        width: 17%;
+        color: #e2e8f0;
+    }
+    thead th.esp-col {
+        background: linear-gradient(180deg, #064e3b 0%, #065f46 100%);
+        color: #ffffff;
+        border-top: 3px solid #10b981;
+        position: relative;
+    }
+    td.esp-cell {
+        background: rgba(16, 185, 129, 0.08);
+        border-left: 2px solid #10b981;
+        border-right: 2px solid #10b981;
+        font-weight: 600;
+        color: #ffffff;
+    }
+    thead th.board-col {
+        width: 13.8%;
+        text-align: left;
+    }
+    .board-name {
+        font-size: 13.5px;
+        font-weight: 800;
+        color: #ffffff;
+        display: block;
+        margin-bottom: 2px;
+    }
+    .board-chip {
+        font-size: 10.5px;
+        font-weight: 500;
+        color: #94a3b8;
+        display: block;
+    }
+    .board-tag {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+    .tag-champion {
+        background: #10b981;
+        color: #022c22;
+    }
+    .tag-runner {
+        background: #3b82f6;
+        color: #172554;
+    }
+    .tag-viable {
+        background: #eab308;
+        color: #422006;
+    }
+    .tag-obsolete {
+        background: #64748b;
+        color: #0f172a;
+    }
+    .tag-fail {
+        background: #ef4444;
+        color: #450a0a;
+    }
+
+    /* Cell Badges */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    .badge-success {
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .badge-warning {
+        background: rgba(234, 179, 8, 0.2);
+        color: #facc15;
+        border: 1px solid rgba(234, 179, 8, 0.4);
+    }
+    .badge-danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .badge-neutral {
+        background: rgba(148, 163, 184, 0.15);
+        color: #cbd5e1;
+    }
+    .bold-white {
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    /* Highlights */
+    tr:nth-child(even) td:not(.esp-cell) {
+        background: #172033;
+    }
+    tr.verdict-row td {
+        font-weight: 700;
+        padding: 12px 14px;
+        background: #0f172a !important;
+    }
+
+    /* Bottom Cards */
+    .footer-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+    }
+    .card {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 14px 18px;
+    }
+    .card-title {
+        font-size: 12.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .card-title.wireless { color: #38bdf8; }
+    .card-title.multicore { color: #34d399; }
+    .card-title.verdict { color: #f59e0b; }
+    .card-text {
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: #94a3b8;
+    }
+    .card-text strong {
+        color: #f1f5f9;
+    }
+</style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        <div>
+            <div class="brand-title">Smart-ASHA (Arogya AI) &bull; Edge-AI Diagnostic Triage Workstation</div>
+            <h1>MCU Architecture Benchmark: ESP32-S3 vs. STM32 Nucleo Portfolio</h1>
+            <div class="subtitle">Systematic silicon evaluation across compute multiprocessing, Edge-AI inference, RF telemetry, ADC fidelity, and BOM economics.</div>
+        </div>
+        <div class="meta-badges">
+            <div class="meta-pill">Application: VK26-AU-FD-0006</div>
+            <div class="meta-pill">Vishwakarma Awards 2026&ndash;27</div>
+            <div class="meta-pill highlight">Clinical Workstation Firmware v12.0</div>
+        </div>
+    </div>
+
+    <!-- Master Table Section -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="feature-col">Architectural Parameter</th>
+                    <th class="esp-col">
+                        <span class="board-name" style="color: #6ee7b7;">ESP32-S3</span>
+                        <span class="board-chip" style="color: #a7f3d0;">7Semi EC200U 4G Workstation</span>
+                        <span class="board-tag tag-champion">Production Baseline</span>
+                    </th>
+                    <th class="board-col">
+                        <span class="board-name">NUCLEO-C5A3ZG</span>
+                        <span class="board-chip">STM32C5A3 (Nucleo-144)</span>
+                        <span class="board-tag tag-runner">STM Top Pick</span>
+                    </th>
+                    <th class="board-col">
+                        <span class="board-name">NUCLEO-H533RE</span>
+                        <span class="board-chip">STM32H533 (Nucleo-64)</span>
+                        <span class="board-tag tag-viable">Fast Clock</span>
+                    </th>
+                    <th class="board-col">
+                        <span class="board-name">NUCLEO-F401RE</span>
+                        <span class="board-chip">STM32F401 (Nucleo-64)</span>
+                        <span class="board-tag tag-obsolete">Legacy M4</span>
+                    </th>
+                    <th class="board-col">
+                        <span class="board-name">NUCLEO-G071RB</span>
+                        <span class="board-chip">STM32G071 (Nucleo-64)</span>
+                        <span class="board-tag tag-fail">No FPU</span>
+                    </th>
+                    <th class="board-col">
+                        <span class="board-name">NUCLEO-C051C8</span>
+                        <span class="board-chip">STM32C051 (Nucleo-64)</span>
+                        <span class="board-tag tag-fail">12 KB RAM</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>CPU Core & Multiprocessing</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">Dual-Core Xtensa LX7</span></td>
+                    <td>Single Cortex-M33</td>
+                    <td>Single Cortex-M33</td>
+                    <td>Single Cortex-M4</td>
+                    <td>Single Cortex-M0+</td>
+                    <td>Single Cortex-M0+</td>
+                </tr>
+                <tr>
+                    <td><strong>Max Clock Frequency</strong></td>
+                    <td class="esp-cell">240 MHz</td>
+                    <td>144 MHz</td>
+                    <td><span class="bold-white">250 MHz</span></td>
+                    <td>84 MHz</td>
+                    <td>64 MHz</td>
+                    <td>48 MHz</td>
+                </tr>
+                <tr>
+                    <td><strong>Working Memory (SRAM)</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">512 KB</span></td>
+                    <td>256 KB</td>
+                    <td>272 KB</td>
+                    <td>96 KB</td>
+                    <td><span class="badge badge-danger">36 KB</span></td>
+                    <td><span class="badge badge-danger">12 KB (Fatal)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Program Storage (Flash)</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">8 MB &ndash; 16 MB</span></td>
+                    <td><span class="bold-white">1 MB (1,024 KB)</span></td>
+                    <td>512 KB</td>
+                    <td>512 KB</td>
+                    <td><span class="badge badge-danger">128 KB</span></td>
+                    <td><span class="badge badge-danger">64 KB (Fatal)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Offline BLE 5.0 (Mobile App)</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">Integrated Native Radio</span></td>
+                    <td><span class="badge badge-danger">None (0% RF)</span></td>
+                    <td><span class="badge badge-danger">None (0% RF)</span></td>
+                    <td><span class="badge badge-danger">None (0% RF)</span></td>
+                    <td><span class="badge badge-danger">None (0% RF)</span></td>
+                    <td><span class="badge badge-danger">None (0% RF)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Cellular 4G LTE Telemetry</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">Integrated Onboard</span></td>
+                    <td><span class="badge badge-neutral">External Breakout</span></td>
+                    <td><span class="badge badge-neutral">External Breakout</span></td>
+                    <td><span class="badge badge-neutral">External Breakout</span></td>
+                    <td><span class="badge badge-neutral">External Breakout</span></td>
+                    <td><span class="badge badge-neutral">External Breakout</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Hardware DSP & Acceleration</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">PIE Vector SIMD</span></td>
+                    <td>DSP + FPU + CORDIC</td>
+                    <td>DSP + FPU</td>
+                    <td>Basic FPU only</td>
+                    <td><span class="badge badge-danger">No FPU / No DSP</span></td>
+                    <td><span class="badge badge-danger">No FPU / No DSP</span></td>
+                </tr>
+                <tr>
+                    <td><strong>2D-CNN Thermal Inference Time</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">~110 ms (Core 0 async)</span></td>
+                    <td>~120 ms (Time-sliced)</td>
+                    <td><span class="bold-white">&lt; 90 ms</span> (Time-sliced)</td>
+                    <td>~280 ms (High latency)</td>
+                    <td><span class="badge badge-danger">Out of Memory</span></td>
+                    <td><span class="badge badge-danger">Impossible</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Analog ADC Linearity (ECG)</strong></td>
+                    <td class="esp-cell"><span class="badge badge-warning">12-bit (eFuse Calibrated)</span></td>
+                    <td><span class="badge badge-success">12-bit Low-Noise</span></td>
+                    <td><span class="badge badge-success">12-bit Low-Noise</span></td>
+                    <td>12-bit Clean</td>
+                    <td>12-bit Clean</td>
+                    <td>12-bit Clean</td>
+                </tr>
+                <tr>
+                    <td><strong>Enclosure & CAD Sleeve Fit</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">Fits IP54 Sleeve (48x38mm)</span></td>
+                    <td><span class="badge badge-danger">Too Large (140x80mm)</span></td>
+                    <td><span class="badge badge-danger">Too Large (70x82mm)</span></td>
+                    <td><span class="badge badge-danger">Too Large (70x82mm)</span></td>
+                    <td><span class="badge badge-danger">Too Large (70x82mm)</span></td>
+                    <td><span class="badge badge-danger">Too Large (70x82mm)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Total Subsystem BOM Cost</strong></td>
+                    <td class="esp-cell"><span class="badge badge-success">&le; &#8377;2,500</span></td>
+                    <td>&#8377;6,200 (+ &#8377;3,700)</td>
+                    <td>&#8377;5,800 (+ &#8377;3,300)</td>
+                    <td>&#8377;5,400 (+ &#8377;2,900)</td>
+                    <td>&#8377;4,800 (+ &#8377;2,300)</td>
+                    <td>&#8377;4,500 (+ &#8377;2,000)</td>
+                </tr>
+                <tr class="verdict-row">
+                    <td><strong>Final Engineering Verdict</strong></td>
+                    <td class="esp-cell" style="background: rgba(16, 185, 129, 0.25) !important;">
+                        <span style="color: #6ee7b7; font-size: 13px;">&#10004; OPTIMAL WORKSTATION</span>
+                    </td>
+                    <td><span class="badge badge-warning">2nd Place (Needs BLE)</span></td>
+                    <td><span class="badge badge-warning">3rd Place (512K Flash)</span></td>
+                    <td><span class="badge badge-danger">Obsolete for AI</span></td>
+                    <td><span class="badge badge-danger">Cannot Run AI</span></td>
+                    <td><span class="badge badge-danger">Fatal Blocker</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bottom Takeaway Cards -->
+    <div class="footer-cards">
+        <div class="card">
+            <div class="card-title wireless">
+                <span>&#128246;</span> The Wireless Disconnect (0% RF on Nucleo)
+            </div>
+            <div class="card-text">
+                Smart-ASHA's primary clinical interface is a <strong>100% offline Flutter app in Airplane Mode</strong> streaming live 60 FPS pulse waves and thermal heatmaps over <strong>BLE 5.0</strong>. All 7 Nucleo boards lack on-chip wireless, forcing the addition of an external radio module (ironically an ESP32), increasing board failure points.
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title multicore">
+                <span>&#9881;</span> Asymmetric Dual-Core vs Single-Core Jitter
+            </div>
+            <div class="card-text">
+                The ESP32-S3 dedicates <strong>Core 0 strictly to 2D-CNN inference</strong> while <strong>Core 1 continuously polls the MAX30105 at 400 kHz</strong>. On single-core STM32 boards, running neural inference locks the CPU for 90&ndash;280 ms, dropping photoplethysmogram peak samples without complex DMA circular buffers.
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title verdict">
+                <span>&#127942;</span> Economic & Ergonomic Summary
+            </div>
+            <div class="card-text">
+                The 7Semi ESP32-S3 integrates MCU, 4G LTE Cat-1, GNSS, and BLE into a compact <strong>48 &times; 38 mm</strong> footprint that fits inside our <strong>210 &times; 125 &times; 45 mm IP54 handheld sleeve</strong>. Replacing it with any Nucleo board inflates the BOM by &#8377;2,500&ndash;&#8377;3,700 and exceeds the internal CAD enclosure volume.
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

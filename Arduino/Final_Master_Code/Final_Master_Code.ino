@@ -83,6 +83,7 @@ void aiTask(void *pvParameters) {
 // CORE 1: MAIN SENSORS & UI
 // ==========================================
 void setup() {
+  disableLoopWDT(); // Disable Arduino core's internal watchdog reset to prevent 'task not found'
   Serial.begin(115200);
   Wire.begin(8, 18);
   Wire.setClock(100000);
@@ -222,4 +223,5 @@ void loop() {
       break;
     }
   }
+  delay(10); // Yield to FreeRTOS scheduler & Core 0 AI task
 }

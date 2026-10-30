@@ -1,0 +1,176 @@
+=== SLIDE 1 ===
+  Pic 1 [Shape 0: Google Shape;84;p13]: pos=(0, -2), size=(12192000 x 6858000), img_bytes=25628, ext=png
+  Pic 2 [Shape 3: Google Shape;87;p13]: pos=(3170213, 2268205), size=(5851614 x 577200), img_bytes=4213, ext=png
+  Pic 3 [Shape 4: Google Shape;88;p13]: pos=(10700669, 80825), size=(1491330 x 784825), img_bytes=20676, ext=png
+  Pic 4 [Shape 5: Google Shape;89;p13]: pos=(0, 80825), size=(2428825 x 784825), img_bytes=495812, ext=png
+=== SLIDE 2 ===
+  Pic 1 [Shape 0: Google Shape;94;p14]: pos=(571500, 1369800), size=(5372100 x 2552700), img_bytes=1922, ext=png
+  Pic 2 [Shape 4: Google Shape;98;p14]: pos=(809625, 1636500), size=(304800 x 304800), img_bytes=1516, ext=png
+  Pic 3 [Shape 6: Google Shape;100;p14]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 4 [Shape 7: Google Shape;101;p14]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 5 [Shape 8: Google Shape;102;p14]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 3 ===
+  Pic 1 [Shape 0: Google Shape;107;p15]: pos=(6230075, 1597875), size=(5372100 x 2552700), img_bytes=1917, ext=png
+  Pic 2 [Shape 4: Google Shape;111;p15]: pos=(6468200, 1864575), size=(304800 x 304800), img_bytes=865, ext=png
+  Pic 3 [Shape 6: Google Shape;113;p15]: pos=(583312, 1636247), size=(5372100 x 2552700), img_bytes=1917, ext=png
+  Pic 4 [Shape 10: Google Shape;117;p15]: pos=(821437, 1902947), size=(304800 x 304800), img_bytes=865, ext=png
+  Pic 5 [Shape 11: Google Shape;118;p15]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 6 [Shape 12: Google Shape;119;p15]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 7 [Shape 13: Google Shape;120;p15]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 4 ===
+  Pic 1 [Shape 0: Google Shape;125;p16]: pos=(0, 0), size=(12192000 x 6858000), img_bytes=9443, ext=png
+  Pic 2 [Shape 1: Google Shape;126;p16]: pos=(533400, 5714641), size=(11125200 x 363140), img_bytes=498, ext=png
+  Pic 3 [Shape 2: Google Shape;127;p16]: pos=(533400, 956220), size=(2667000 x 649485), img_bytes=789, ext=png
+  Pic 4 [Shape 3: Google Shape;128;p16]: pos=(3352800, 956220), size=(2667000 x 649485), img_bytes=783, ext=png
+  Pic 5 [Shape 4: Google Shape;129;p16]: pos=(6172200, 956220), size=(2667000 x 649485), img_bytes=781, ext=png
+  Pic 6 [Shape 5: Google Shape;130;p16]: pos=(8991600, 956220), size=(2667000 x 649485), img_bytes=781, ext=png
+  Pic 7 [Shape 6: Google Shape;131;p16]: pos=(6229350, 1739051), size=(5429250 x 3801299), img_bytes=2583, ext=png
+  Pic 8 [Shape 7: Google Shape;132;p16]: pos=(533400, 1739056), size=(5429250 x 2428875), img_bytes=1768, ext=png
+  Pic 9 [Shape 9: Google Shape;134;p16]: pos=(9458325, 485775), size=(2200275 x 213270), img_bytes=2927, ext=png
+  Pic 10 [Shape 20: Google Shape;145;p16]: pos=(542925, 1748581), size=(5410200 x 2409825), img_bytes=390808, ext=png
+  Pic 11 [Shape 21: Google Shape;146;p16]: pos=(6448425, 1958131), size=(154334 x 152400), img_bytes=274, ext=png
+  Pic 12 [Shape 31: Google Shape;156;p16]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 13 [Shape 32: Google Shape;157;p16]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+=== SLIDE 5 ===
+  Pic 1 [Shape 0: Google Shape;162;p17]: pos=(571425, 1614175), size=(3530649 x 2438400), img_bytes=1651, ext=png
+  Pic 2 [Shape 1: Google Shape;163;p17]: pos=(4330674, 1614175), size=(3530649 x 2438400), img_bytes=1673, ext=png
+  Pic 3 [Shape 2: Google Shape;164;p17]: pos=(8089924, 1614175), size=(3530649 x 2438400), img_bytes=1668, ext=png
+  Pic 4 [Shape 9: Google Shape;171;p17]: pos=(809550, 1880875), size=(342900 x 304800), img_bytes=409, ext=png
+  Pic 5 [Shape 10: Google Shape;172;p17]: pos=(4568799, 1880875), size=(304800 x 304800), img_bytes=449, ext=png
+  Pic 6 [Shape 11: Google Shape;173;p17]: pos=(8328049, 1880875), size=(304800 x 304800), img_bytes=704, ext=png
+  Pic 7 [Shape 13: Google Shape;175;p17]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 8 [Shape 14: Google Shape;176;p17]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 9 [Shape 15: Google Shape;177;p17]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 6 ===
+  Pic 1 [Shape 0: Google Shape;182;p18]: pos=(0, 0), size=(12192000 x 6858000), img_bytes=9443, ext=png
+  Pic 2 [Shape 1: Google Shape;183;p18]: pos=(533400, 5310956), size=(11125200 x 363140), img_bytes=498, ext=png
+  Pic 3 [Shape 2: Google Shape;184;p18]: pos=(6229350, 956224), size=(5429250 x 4076875), img_bytes=2940, ext=png
+  Pic 4 [Shape 3: Google Shape;185;p18]: pos=(533400, 956220), size=(5429250 x 2428875), img_bytes=1766, ext=png
+  Pic 5 [Shape 5: Google Shape;187;p18]: pos=(9458325, 485775), size=(2200275 x 213270), img_bytes=2927, ext=png
+  Pic 6 [Shape 9: Google Shape;191;p18]: pos=(542925, 965745), size=(5410200 x 2409825), img_bytes=253040, ext=png
+  Pic 7 [Shape 10: Google Shape;192;p18]: pos=(6448425, 1175295), size=(154334 x 152400), img_bytes=214, ext=png
+  Pic 8 [Shape 30: Google Shape;212;p18]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 9 [Shape 31: Google Shape;213;p18]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+=== SLIDE 7 ===
+  Pic 1 [Shape 0: Google Shape;218;p19]: pos=(6248400, 1190625), size=(5372100 x 4000500), img_bytes=2548, ext=png
+  Pic 2 [Shape 1: Google Shape;219;p19]: pos=(6257925, 1200150), size=(5353050 x 3981450), img_bytes=313320, ext=png
+  Pic 3 [Shape 5: Google Shape;223;p19]: pos=(571500, 1416665), size=(190500 x 200025), img_bytes=559, ext=png
+  Pic 4 [Shape 6: Google Shape;224;p19]: pos=(571500, 2026265), size=(190500 x 200025), img_bytes=405, ext=png
+  Pic 5 [Shape 7: Google Shape;225;p19]: pos=(571500, 2635865), size=(190500 x 200025), img_bytes=490, ext=png
+  Pic 6 [Shape 9: Google Shape;227;p19]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 7 [Shape 10: Google Shape;228;p19]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 8 [Shape 11: Google Shape;229;p19]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 8 ===
+  Pic 1 [Shape 0: Google Shape;234;p20]: pos=(0, 0), size=(12192000 x 6858000), img_bytes=9443, ext=png
+  Pic 2 [Shape 1: Google Shape;235;p20]: pos=(533400, 5551726), size=(11125200 x 363140), img_bytes=498, ext=png
+  Pic 3 [Shape 2: Google Shape;236;p20]: pos=(6229350, 956224), size=(5429250 x 3559300), img_bytes=2940, ext=png
+  Pic 4 [Shape 3: Google Shape;237;p20]: pos=(533400, 956220), size=(5429250 x 2428875), img_bytes=1766, ext=png
+  Pic 5 [Shape 5: Google Shape;239;p20]: pos=(9458325, 485775), size=(2200275 x 213270), img_bytes=2927, ext=png
+  Pic 6 [Shape 8: Google Shape;242;p20]: pos=(542925, 965745), size=(5410200 x 2409825), img_bytes=113600, ext=png
+  Pic 7 [Shape 9: Google Shape;243;p20]: pos=(6448425, 1175295), size=(154334 x 152400), img_bytes=502, ext=png
+  Pic 8 [Shape 21: Google Shape;255;p20]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 9 [Shape 22: Google Shape;256;p20]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+=== SLIDE 9 ===
+  Pic 1 [Shape 0: Google Shape;261;p21]: pos=(571500, 1190625), size=(5372100 x 4000500), img_bytes=2535, ext=png
+  Pic 2 [Shape 1: Google Shape;262;p21]: pos=(581025, 1200150), size=(5353050 x 3981450), img_bytes=217560, ext=png
+  Pic 3 [Shape 5: Google Shape;266;p21]: pos=(6248400, 1465549), size=(219075 x 200025), img_bytes=452, ext=png
+  Pic 4 [Shape 6: Google Shape;267;p21]: pos=(6248400, 2075149), size=(190500 x 200025), img_bytes=509, ext=png
+  Pic 5 [Shape 7: Google Shape;268;p21]: pos=(6248400, 2684749), size=(238125 x 200025), img_bytes=639, ext=png
+  Pic 6 [Shape 9: Google Shape;270;p21]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 7 [Shape 10: Google Shape;271;p21]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 8 [Shape 11: Google Shape;272;p21]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 10 ===
+  Pic 1 [Shape 0: Google Shape;277;p22]: pos=(0, 0), size=(12192000 x 6858000), img_bytes=9443, ext=png
+  Pic 2 [Shape 1: Google Shape;278;p22]: pos=(533400, 5749634), size=(11125200 x 363140), img_bytes=498, ext=png
+  Pic 3 [Shape 2: Google Shape;279;p22]: pos=(6229350, 956226), size=(5429250 x 4468100), img_bytes=2940, ext=png
+  Pic 4 [Shape 3: Google Shape;280;p22]: pos=(533400, 956220), size=(5429250 x 2428875), img_bytes=1766, ext=png
+  Pic 5 [Shape 5: Google Shape;282;p22]: pos=(9458325, 485775), size=(2200275 x 213270), img_bytes=2927, ext=png
+  Pic 6 [Shape 9: Google Shape;286;p22]: pos=(542925, 965745), size=(5410200 x 2409825), img_bytes=26680, ext=png
+  Pic 7 [Shape 10: Google Shape;287;p22]: pos=(6448425, 1175295), size=(116234 x 152400), img_bytes=346, ext=png
+  Pic 8 [Shape 47: Google Shape;324;p22]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 9 [Shape 48: Google Shape;325;p22]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+=== SLIDE 11 ===
+  Pic 1 [Shape 0: Google Shape;330;p23]: pos=(533400, 1429300), size=(3555950 x 3737824), img_bytes=2226, ext=png
+  Pic 2 [Shape 1: Google Shape;331;p23]: pos=(4317950, 1429300), size=(3555950 x 3737824), img_bytes=2213, ext=png
+  Pic 3 [Shape 2: Google Shape;332;p23]: pos=(8102500, 1429300), size=(3556100 x 3737824), img_bytes=2221, ext=png
+  Pic 4 [Shape 4: Google Shape;334;p23]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+  Pic 5 [Shape 8: Google Shape;338;p23]: pos=(722931, 1620696), size=(192425 x 196300), img_bytes=333, ext=png
+  Pic 6 [Shape 13: Google Shape;343;p23]: pos=(4468698, 1635924), size=(192425 x 168664), img_bytes=395, ext=png
+  Pic 7 [Shape 18: Google Shape;348;p23]: pos=(8214475, 1592695), size=(318593 x 196306), img_bytes=651, ext=png
+  Pic 8 [Shape 26: Google Shape;356;p23]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 9 [Shape 27: Google Shape;357;p23]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+=== SLIDE 12 ===
+  Pic 1 [Shape 0: Google Shape;362;p24]: pos=(0, 0), size=(12192000 x 6858000), img_bytes=9443, ext=png
+  Pic 2 [Shape 1: Google Shape;363;p24]: pos=(533400, 5665754), size=(11125200 x 363140), img_bytes=498, ext=png
+  Pic 3 [Shape 2: Google Shape;364;p24]: pos=(6229350, 956223), size=(5429250 x 3282375), img_bytes=2940, ext=png
+  Pic 4 [Shape 3: Google Shape;365;p24]: pos=(533400, 956220), size=(5429250 x 2428875), img_bytes=1766, ext=png
+  Pic 5 [Shape 5: Google Shape;367;p24]: pos=(9458325, 485775), size=(2200275 x 213270), img_bytes=2927, ext=png
+  Pic 6 [Shape 8: Google Shape;370;p24]: pos=(542925, 965745), size=(5410200 x 2409825), img_bytes=201513, ext=png
+  Pic 7 [Shape 9: Google Shape;371;p24]: pos=(6448425, 1175295), size=(173384 x 152400), img_bytes=247, ext=png
+  Pic 8 [Shape 19: Google Shape;381;p24]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 9 [Shape 20: Google Shape;382;p24]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+=== SLIDE 13 ===
+  Pic 1 [Shape 0: Google Shape;387;p25]: pos=(563213, 1451250), size=(5372100 x 2552700), img_bytes=1922, ext=png
+  Pic 2 [Shape 4: Google Shape;391;p25]: pos=(801338, 1717950), size=(304800 x 304800), img_bytes=883, ext=png
+  Pic 3 [Shape 6: Google Shape;393;p25]: pos=(6488300, 1451250), size=(5140500 x 2552700), img_bytes=1668, ext=png
+  Pic 4 [Shape 9: Google Shape;396;p25]: pos=(6818525, 1717950), size=(422671 x 304800), img_bytes=749, ext=png
+  Pic 5 [Shape 10: Google Shape;397;p25]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 6 [Shape 11: Google Shape;398;p25]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 7 [Shape 12: Google Shape;399;p25]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 14 ===
+  Pic 1 [Shape 0: Google Shape;404;p26]: pos=(758745, 1402400), size=(5372100 x 2552700), img_bytes=1917, ext=png
+  Pic 2 [Shape 4: Google Shape;408;p26]: pos=(996870, 1669100), size=(266700 x 304800), img_bytes=456, ext=png
+  Pic 3 [Shape 6: Google Shape;410;p26]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 4 [Shape 7: Google Shape;411;p26]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 5 [Shape 8: Google Shape;412;p26]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 15 ===
+  Pic 1 [Shape 0: Google Shape;417;p27]: pos=(0, 0), size=(12192000 x 6858000), img_bytes=9443, ext=png
+  Pic 2 [Shape 1: Google Shape;418;p27]: pos=(533400, 956220), size=(11125200 x 1924050), img_bytes=1971, ext=png
+  Pic 3 [Shape 2: Google Shape;419;p27]: pos=(533400, 3013624), size=(5429250 x 2616513), img_bytes=2175, ext=png
+  Pic 4 [Shape 3: Google Shape;420;p27]: pos=(6229350, 3013624), size=(5429250 x 2616500), img_bytes=2171, ext=png
+  Pic 5 [Shape 5: Google Shape;422;p27]: pos=(9458325, 485775), size=(2200275 x 213270), img_bytes=2927, ext=png
+  Pic 6 [Shape 7: Google Shape;424;p27]: pos=(752475, 1175295), size=(154334 x 152400), img_bytes=380, ext=png
+  Pic 7 [Shape 18: Google Shape;435;p27]: pos=(752475, 3232695), size=(154334 x 152400), img_bytes=407, ext=png
+  Pic 8 [Shape 22: Google Shape;439;p27]: pos=(6448425, 3232695), size=(135284 x 152400), img_bytes=482, ext=png
+  Pic 9 [Shape 30: Google Shape;447;p27]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 10 [Shape 31: Google Shape;448;p27]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+=== SLIDE 16 ===
+  Pic 1 [Shape 0: Google Shape;453;p28]: pos=(946175, 1353525), size=(3530649 x 2438400), img_bytes=1651, ext=png
+  Pic 2 [Shape 3: Google Shape;456;p28]: pos=(1184300, 1620225), size=(304800 x 304800), img_bytes=712, ext=png
+  Pic 3 [Shape 5: Google Shape;458;p28]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 4 [Shape 6: Google Shape;459;p28]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 5 [Shape 7: Google Shape;460;p28]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 17 ===
+  Pic 1 [Shape 0: Google Shape;465;p29]: pos=(861033, 1434975), size=(3530649 x 2438400), img_bytes=1673, ext=png
+  Pic 2 [Shape 3: Google Shape;468;p29]: pos=(1099158, 1701675), size=(304800 x 304800), img_bytes=736, ext=png
+  Pic 3 [Shape 5: Google Shape;470;p29]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 4 [Shape 6: Google Shape;471;p29]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 5 [Shape 7: Google Shape;472;p29]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 18 ===
+  Pic 1 [Shape 0: Google Shape;477;p30]: pos=(0, 0), size=(12192000 x 6858000), img_bytes=9443, ext=png
+  Pic 2 [Shape 1: Google Shape;478;p30]: pos=(533400, 5665754), size=(11125200 x 363140), img_bytes=498, ext=png
+  Pic 3 [Shape 2: Google Shape;479;p30]: pos=(533400, 956223), size=(3568600 x 3461575), img_bytes=2446, ext=png
+  Pic 4 [Shape 3: Google Shape;480;p30]: pos=(4311550, 956223), size=(3568749 x 3461575), img_bytes=2484, ext=png
+  Pic 5 [Shape 4: Google Shape;481;p30]: pos=(8089850, 956223), size=(3568600 x 3461575), img_bytes=2483, ext=png
+  Pic 6 [Shape 6: Google Shape;483;p30]: pos=(9458325, 485775), size=(2200275 x 213270), img_bytes=2927, ext=png
+  Pic 7 [Shape 15: Google Shape;492;p30]: pos=(752475, 1175295), size=(192434 x 152400), img_bytes=618, ext=png
+  Pic 8 [Shape 17: Google Shape;494;p30]: pos=(4530625, 1175295), size=(173384 x 152400), img_bytes=512, ext=png
+  Pic 9 [Shape 19: Google Shape;496;p30]: pos=(8308925, 1175295), size=(154334 x 152400), img_bytes=376, ext=png
+  Pic 10 [Shape 21: Google Shape;498;p30]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 11 [Shape 22: Google Shape;499;p30]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+=== SLIDE 19 ===
+  Pic 1 [Shape 3: Google Shape;507;p31]: pos=(571500, 1675600), size=(857250 x 476250), img_bytes=10149, ext=png
+  Pic 2 [Shape 6: Google Shape;510;p31]: pos=(571500, 2532850), size=(857250 x 476250), img_bytes=8559, ext=png
+  Pic 3 [Shape 10: Google Shape;514;p31]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 4 [Shape 11: Google Shape;515;p31]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png
+  Pic 5 [Shape 12: Google Shape;516;p31]: pos=(10401300, 510480), size=(1257300 x 213270), img_bytes=1776, ext=png
+=== SLIDE 20 ===
+  Pic 1 [Shape 0: Google Shape;521;p32]: pos=(0, 0), size=(12192000 x 6858000), img_bytes=9978, ext=png
+  Pic 2 [Shape 14: Google Shape;535;p32]: pos=(533400, 1174700), size=(857250 x 476250), img_bytes=13446, ext=png
+  Pic 3 [Shape 17: Google Shape;538;p32]: pos=(533400, 2021830), size=(857250 x 476250), img_bytes=10743, ext=png
+  Pic 4 [Shape 20: Google Shape;541;p32]: pos=(533400, 2793355), size=(857250 x 476250), img_bytes=7106, ext=png
+  Pic 5 [Shape 23: Google Shape;544;p32]: pos=(533400, 3564880), size=(857250 x 476250), img_bytes=4603, ext=png
+  Pic 6 [Shape 26: Google Shape;547;p32]: pos=(533400, 4336405), size=(857250 x 476250), img_bytes=10504, ext=png
+  Pic 7 [Shape 29: Google Shape;550;p32]: pos=(9458325, 485775), size=(2200275 x 213270), img_bytes=2927, ext=png
+  Pic 8 [Shape 30: Google Shape;551;p32]: pos=(11095194, 6280800), size=(1096806 x 577200), img_bytes=20676, ext=png
+  Pic 9 [Shape 31: Google Shape;552;p32]: pos=(0, 6280800), size=(1786280 x 577200), img_bytes=495812, ext=png

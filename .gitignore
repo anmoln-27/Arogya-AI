@@ -78,3 +78,9 @@ libs/libraries/
 # *.onnx
 # *.npy
 # *.zip
+node_modules/
+*.apk
+dist/
+build/
+.dart_tool/
+

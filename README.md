@@ -99,6 +99,18 @@ graph TB
 
 ---
 
+## 📐 Ergonomic Industrial Design & Hardware Prototype Architecture
+
+The Smart-ASHA device enclosure is custom-engineered for frontline health workers in rural field environments (IP54 splash/dust resistant, medical-grade ASA/PC-ABS casing, 210 × 125 × 45 mm, < 450 g). It features a dedicated thermal isolation barrier to eliminate MCU heat drift on the Far-IR array, recessed optical shrouds for ambient light rejection, and isolated safety jacks for single-lead biopotentials.
+
+<p align="center">
+  <img src="figures/Figure_6_Hardware_Prototype_Architecture.png" alt="Hardware Prototype Architecture & Orthographic CAD Projections" width="850" style="border-radius: 8px;"/>
+  <br/>
+  <em>Comprehensive Hardware Prototype Architecture — (a) 3D Isometric CAD Rendering with functional callouts; (b) 6-Axis Orthographic Engineering Projections; and (c) Fabricated Physical Hardware Prototype Kit.</em>
+</p>
+
+---
+
 ## 🧠 Model Performance
 
 ### Fever Detection — FeverCNN

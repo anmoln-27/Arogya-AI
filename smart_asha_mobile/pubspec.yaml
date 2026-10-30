@@ -1,0 +1,41 @@
+name: smart_asha_mobile
+description: "Smart-ASHA Offline Clinical Workstation — Flutter Mobile App for ASHA Workers"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Bluetooth Low Energy for ESP32-S3 communication
+  flutter_blue_plus: ^1.34.5
+  
+  # Offline Bilingual Audio Guidance (Hindi & English)
+  flutter_tts: ^4.2.2
+  
+  # 100% Offline QR Code Generation (No internet required)
+  qr_flutter: ^4.1.0
+  
+  # Date formatting & internationalization
+  intl: ^0.19.0
+  
+  # Local offline storage for screening records
+  shared_preferences: ^2.3.2
+  
+  # 1-Tap Tele-consultation Sharing (WhatsApp & PHC relay)
+  share_plus: ^10.1.2
+  url_launcher: ^6.3.1
+  
+  # System UI and path provider
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

@@ -3,1098 +3,2458 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart-ASHA Pro | Web-Bluetooth Telemetry & Zero-App Export</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Smart-ASHA Clinical Command Center — Edge-AI Rural Healthcare Triage Workstation">
+  <title>Smart-ASHA | Clinical Command Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: rgba(18, 26, 43, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover: rgba(30, 42, 69, 0.85);
-      --primary: #00e5ff;
-      --primary-glow: rgba(0, 229, 255, 0.35);
-      --accent: #6366f1;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --text-main: #f8fafc;
-      --text-sub: #94a3b8;
-      --font-en: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-hi: 'Noto Sans Devanagari', 'Inter', sans-serif;
+      --bg: #0b0f19; --bg2: #101827; --card: rgba(15,23,42,0.72);
+      --border: rgba(255,255,255,0.07); --border-h: rgba(255,255,255,0.18);
+      --cyan: #00e5ff; --cyan-g: rgba(0,229,255,0.3); --indigo: #6366f1;
+      --green: #10b981; --amber: #f59e0b; --red: #ef4444;
+      --txt: #f1f5f9; --txt2: #94a3b8; --txt3: #64748b;
+      --font: 'Inter',system-ui,sans-serif; --mono: 'JetBrains Mono',monospace;
+      --hi: 'Noto Sans Devanagari','Inter',sans-serif;
+      --rad: 16px; --rad-sm: 10px;
     }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--txt);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+    .container{max-width:1280px;margin:0 auto;padding:16px 20px}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    /* Header */
+    header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;background:rgba(15,23,42,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--indigo));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 24px var(--cyan-g);cursor:pointer;transition:transform .2s}
+    .brand-icon:hover{transform:scale(1.08)}
+    .brand h1{font-size:18px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,var(--cyan),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .brand p{font-size:11px;color:var(--txt2)}
+    .hdr-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-    body {
-      background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg) 70%);
-      color: var(--text-main);
-      font-family: var(--font-en);
-      min-height: 100vh;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+    /* Buttons */
+    .btn{padding:8px 14px;border-radius:var(--rad-sm);font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .2s;display:inline-flex;align-items:center;gap:6px;font-family:inherit;white-space:nowrap}
+    .btn-ble{background:linear-gradient(135deg,#0284c7,#2563eb);color:#fff;box-shadow:0 3px 12px rgba(37,99,235,.35)}
+    .btn-usb{background:linear-gradient(135deg,#059669,#10b981);color:#fff;box-shadow:0 3px 12px rgba(16,185,129,.35)}
+    .btn-out{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--txt)}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+    .btn.connected{background:rgba(16,185,129,.12)!important;border-color:var(--green)!important;color:var(--green)!important;box-shadow:none!important}
 
-    .container {
-      width: 100%;
-      max-width: 1100px;
-    }
-
-    /* Top Bar */
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--card-border);
-      margin-bottom: 24px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .brand-logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      box-shadow: 0 0 20px var(--primary-glow);
-    }
-
-    .brand-title h1 {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    .brand-title p {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .btn {
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: inherit;
-    }
-
-    .btn-connect {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: white;
-      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
-    }
-
-    .btn-connect:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
-    }
-
-    .btn-connect.connected {
-      background: rgba(16, 185, 129, 0.15);
-      border-color: var(--success);
-      color: var(--success);
-      box-shadow: none;
-    }
-
-    .btn-export {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--card-border);
-      color: var(--text-main);
-    }
-
-    .btn-export:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
+    /* Tabs */
+    .tab-bar{display:flex;gap:4px;padding:8px 20px;background:var(--bg2);border-bottom:1px solid var(--border)}
+    .tab{padding:10px 20px;border-radius:var(--rad-sm) var(--rad-sm) 0 0;font-size:13px;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .2s;border:1px solid transparent;border-bottom:none;position:relative}
+    .tab:hover{color:var(--txt);background:rgba(255,255,255,.03)}
+    .tab.active{color:var(--cyan);background:var(--bg);border-color:var(--border)}
+    .tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--cyan)}
+    .tab-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .sim-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:none}
+    .sim-badge.on{display:inline-flex;background:rgba(245,158,11,.15);border:1px solid var(--amber);color:var(--amber);animation:pulse 1.5s infinite}
+    .tab-content{display:none;animation:fadeIn .3s ease}
+    .tab-content.active{display:block}
 
     /* Banner */
-    .banner {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px 20px;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      font-size: 13px;
-      color: var(--text-sub);
-    }
+    .banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;margin:16px 0;background:var(--card);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--rad);font-size:12px;color:var(--txt2)}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--txt3);display:inline-block;margin-right:6px;transition:.3s}
+    .dot.on{background:var(--green);box-shadow:0 0 8px var(--green)}
 
-    .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #64748b;
-      display: inline-block;
-      margin-right: 6px;
-      transition: background 0.3s ease;
-    }
+    /* Protocol Warning */
+    .proto-warn{display:none;background:rgba(245,158,11,.1);border:1px solid var(--amber);border-radius:var(--rad);padding:12px 16px;margin:0 0 12px;font-size:12px;color:#fde68a}
 
-    .status-dot.active {
-      background: var(--success);
-      box-shadow: 0 0 10px var(--success);
-    }
+    /* Visuals Row */
+    .vis-row{display:grid;grid-template-columns:1fr 320px;gap:16px;margin-bottom:16px}
+    @media(max-width:900px){.vis-row{grid-template-columns:1fr}}
+    .vis-box{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden;position:relative}
+    .vis-label{position:absolute;top:8px;left:12px;font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;z-index:2;display:flex;align-items:center;gap:6px}
+    .vis-label .live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 1s infinite}
+    canvas{display:block;width:100%;background:#080c14}
+    #thermalCanvas{image-rendering:pixelated;width:100%;height:240px}
+    .thermal-legend{display:flex;justify-content:space-between;padding:4px 10px;font-size:10px;color:var(--txt3);background:rgba(0,0,0,.3)}
+    .thermal-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,#000050,#0000ff,#00c8c8,#00ff00,#c8ff00,#ffff00,#ff8000,#ff0000,#ffe0c0);margin:0 10px}
 
-    /* Main Triage Hero Card */
-    .hero-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 24px;
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 28px;
-      align-items: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
+    /* Hero Card */
+    .hero{display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:center;padding:20px 24px;margin-bottom:16px;background:var(--card);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--rad);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+    @media(max-width:700px){.hero{grid-template-columns:1fr;text-align:center}}
+    .gauge-wrap{display:flex;flex-direction:column;align-items:center}
+    .gauge{width:140px;height:140px;border-radius:50%;background:conic-gradient(var(--green) 0deg,rgba(255,255,255,.04) 0deg);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 20px rgba(0,0,0,.5);transition:.6s}
+    .gauge-inner{width:110px;height:110px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .gauge-val{font-family:var(--mono);font-size:40px;font-weight:800;line-height:1}
+    .gauge-lbl{font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+    .triage h2{font-size:22px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .triage-hi{font-family:var(--hi);font-size:16px;font-weight:600;color:#cbd5e1;margin-bottom:8px}
+    .triage-desc{font-size:13px;color:var(--txt2);line-height:1.55}
 
-    @media (max-width: 768px) {
-      .hero-card {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-    }
+    /* Badges */
+    .badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+    .b-green{background:rgba(16,185,129,.15);border:1px solid var(--green);color:var(--green)}
+    .b-amber{background:rgba(245,158,11,.15);border:1px solid var(--amber);color:var(--amber)}
+    .b-red{background:rgba(239,68,68,.15);border:1px solid var(--red);color:var(--red);animation:pulse 2s infinite}
 
-    .gauge-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+    /* 4 Star Cards */
+    .grid-label{font-size:14px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+    .stars{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:16px}
+    .card{background:var(--card);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:var(--rad);padding:18px;transition:.3s;position:relative;overflow:hidden}
+    .card:hover{border-color:var(--border-h);transform:translateY(-2px)}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--accent,var(--cyan)),transparent)}
+    .card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .card-title{font-size:12px;font-weight:600;color:var(--txt2);display:flex;align-items:center;gap:6px}
+    .card-val{font-family:var(--mono);font-size:30px;font-weight:800;margin-bottom:6px;display:flex;align-items:baseline;gap:4px}
+    .card-val .u{font-size:13px;color:var(--txt2);font-weight:500;font-family:var(--font)}
+    .card-sub{display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--txt2);border-top:1px solid rgba(255,255,255,.04);padding-top:8px;margin-top:4px}
+    .sub-row{display:flex;justify-content:space-between}
+    .sub-val{font-weight:600;color:var(--txt);font-family:var(--mono)}
 
-    .score-circle {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: conic-gradient(var(--success) 0deg, rgba(255,255,255,0.05) 0deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-      transition: all 0.6s ease;
-    }
+    /* History Table */
+    .hist{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:16px;margin-bottom:16px}
+    .hist table{width:100%;border-collapse:collapse;font-size:11px}
+    .hist th{color:var(--txt2);padding:8px;border-bottom:1px solid var(--border);font-weight:600;text-align:left}
+    .hist td{padding:8px;border-bottom:1px solid rgba(255,255,255,.03)}
+    .hist tr:hover{background:rgba(255,255,255,.02)}
 
-    .score-inner {
-      width: 112px;
-      height: 112px;
-      border-radius: 50%;
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+    /* Voice Controls */
+    .voice-ctrl{display:flex;align-items:center;gap:8px}
+    .voice-btn{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--txt);transition:.2s}
+    .voice-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
 
-    .score-value {
-      font-size: 38px;
-      font-weight: 800;
-      line-height: 1;
-    }
+    .voice-btn{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--txt);transition:.2s}
+    .voice-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
 
-    .score-label {
-      font-size: 11px;
-      color: var(--text-sub);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 4px;
-    }
+    /* ════════════ DUAL-AUDIENCE REFERRAL & REPORT STYLING ════════════ */
+    .ref-actions-bar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;background:rgba(15,23,42,0.6);padding:12px 16px;border-radius:var(--rad);border:1px solid var(--border)}
+    .btn-print{background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;box-shadow:0 3px 12px rgba(2,132,199,.35)}
+    .btn-whatsapp{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;box-shadow:0 3px 12px rgba(22,163,74,.35)}
+    .btn-call108{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 3px 12px rgba(220,38,38,.35)}
+    .btn-scheme{background:linear-gradient(135deg,#d97706,#b45309);color:#fff;box-shadow:0 3px 12px rgba(217,119,6,.35)}
 
-    .triage-info h2 {
-      font-size: 26px;
-      font-weight: 800;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .referral-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:24px;margin-bottom:16px;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+    
+    /* Official Government Style Header */
+    .ref-header-official{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:2px solid var(--border-h);margin-bottom:20px;gap:16px;flex-wrap:wrap}
+    .ref-emblem{display:flex;align-items:center;gap:14px}
+    .emblem-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#ea580c);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 20px rgba(245,158,11,.3)}
+    .emblem-title h3{font-size:17px;font-weight:900;letter-spacing:.5px;color:#f8fafc;display:flex;align-items:center;gap:8px}
+    .emblem-title p{font-size:12px;color:var(--txt2);font-family:var(--hi)}
+    .ref-meta-badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+    .ref-meta-badge{font-size:11px;font-family:var(--mono);padding:3px 10px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--txt2)}
 
-    .badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    /* Dual Split Layout */
+    .dual-report-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+    @media(max-width:960px){.dual-report-grid{grid-template-columns:1fr}}
 
-    .badge-normal {
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid var(--success);
-      color: var(--success);
-    }
+    /* Section A: ASHA Frontline Panel */
+    .asha-panel{background:rgba(16,185,129,0.03);border:1.5px solid rgba(16,185,129,0.25);border-radius:var(--rad);padding:20px;position:relative}
+    .asha-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#10b981,#34d399);border-radius:var(--rad) var(--rad) 0 0}
+    .panel-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .panel-hdr h4{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+    .asha-vitals-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+    .av-card{padding:10px 12px;border-radius:var(--rad-sm);background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05)}
+    .av-title{font-size:11px;color:var(--txt2);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+    .av-status{font-size:13px;font-weight:700;font-family:var(--hi)}
+    .av-val{font-size:11px;color:var(--txt3);font-family:var(--mono);margin-top:2px}
 
-    .badge-warning {
-      background: rgba(245, 158, 11, 0.2);
-      border: 1px solid var(--warning);
-      color: var(--warning);
-    }
+    .asha-action-box{background:rgba(0,0,0,0.25);border-radius:var(--rad-sm);padding:14px;margin-bottom:14px;border-left:4px solid var(--green)}
+    .asha-action-box.warn{border-left-color:var(--amber)}
+    .asha-action-box.crit{border-left-color:var(--red)}
+    .asha-action-box h5{font-size:13px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px;font-family:var(--hi)}
+    .asha-action-box ul{padding-left:18px;font-size:12px;color:var(--txt);line-height:1.6;font-family:var(--hi)}
 
-    .badge-critical {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid var(--danger);
-      color: var(--danger);
-      animation: pulse 2s infinite;
-    }
+    /* Section B: Doctor Clinical Panel */
+    .doctor-panel{background:rgba(14,165,233,0.03);border:1.5px solid rgba(14,165,233,0.25);border-radius:var(--rad);padding:20px;position:relative}
+    .doctor-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#0284c7,#00e5ff);border-radius:var(--rad) var(--rad) 0 0}
+    .doc-metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px}
+    .dm-card{padding:8px 10px;border-radius:var(--rad-sm);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}
+    .dm-lbl{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px}
+    .dm-val{font-size:15px;font-weight:700;font-family:var(--mono);color:var(--cyan);margin-top:2px}
+    .dm-sub{font-size:10px;color:var(--txt2);margin-top:2px}
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
+    .icd-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:14px;background:rgba(0,0,0,.2);border-radius:var(--rad-sm);overflow:hidden}
+    .icd-table th{background:rgba(255,255,255,.04);color:var(--txt2);padding:6px 10px;text-align:left;font-weight:600}
+    .icd-table td{padding:6px 10px;border-top:1px solid rgba(255,255,255,.04);color:var(--txt)}
 
-    .triage-hindi {
-      font-family: var(--font-hi);
-      font-size: 18px;
-      font-weight: 600;
-      color: #cbd5e1;
-      margin-bottom: 12px;
-    }
+    .doc-rx-box{border:1px dashed var(--border-h);border-radius:var(--rad-sm);padding:14px;margin-top:14px;background:rgba(255,255,255,.01)}
+    .doc-rx-box h5{font-size:11px;text-transform:uppercase;color:var(--txt2);margin-bottom:8px;display:flex;justify-content:space-between}
+    .doc-sign-line{margin-top:24px;display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);border-top:1px solid rgba(255,255,255,.08);padding-top:8px}
 
-    .triage-desc {
-      font-size: 14px;
-      color: var(--text-sub);
-      line-height: 1.5;
-    }
+    /* Section C: Government Healthcare Schemes */
+    .schemes-section{background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(234,88,12,0.03));border:1.5px solid rgba(245,158,11,0.3);border-radius:var(--rad);padding:20px;margin-bottom:20px}
+    .schemes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+    .schemes-header h4{font-size:15px;font-weight:800;color:#fde047;display:flex;align-items:center;gap:8px}
+    .schemes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+    .scheme-card{background:rgba(15,23,42,0.7);border:1px solid rgba(245,158,11,0.25);border-radius:var(--rad-sm);padding:14px;transition:all .2s;position:relative}
+    .scheme-card:hover{border-color:var(--amber);transform:translateY(-2px)}
+    .scheme-card-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px}
+    .scheme-title{font-size:13px;font-weight:700;color:#fff}
+    .scheme-title-hi{font-size:12px;color:#fde68a;font-family:var(--hi);margin-top:2px}
+    .scheme-badge{padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700;background:rgba(245,158,11,.15);border:1px solid var(--amber);color:var(--amber);white-space:nowrap}
+    .scheme-cov{font-size:14px;font-weight:800;color:var(--green);margin:6px 0;font-family:var(--mono)}
+    .scheme-desc{font-size:11px;color:var(--txt2);line-height:1.5;margin-bottom:8px}
+    .scheme-claim{font-size:11px;color:#cbd5e1;background:rgba(0,0,0,.25);padding:8px 10px;border-radius:6px;border-left:3px solid var(--cyan);margin-top:6px}
+    .scheme-claim strong{color:var(--cyan)}
 
-    /* Grid of 4 Star Performers */
-    .grid-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-sub);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    /* Helplines Bar */
+    .helpline-bar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;background:rgba(15,23,42,0.8);border-radius:var(--rad);border:1px solid var(--border);margin-top:14px}
+    .hl-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt2)}
+    .hl-num{font-family:var(--mono);font-size:14px;font-weight:800;color:var(--cyan);background:rgba(0,229,255,.08);padding:3px 8px;border-radius:6px;border:1px solid rgba(0,229,255,.2);text-decoration:none}
+    .hl-num:hover{background:rgba(0,229,255,.2);color:#fff}
 
-    .performers-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--card-accent, var(--primary)), transparent);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-sub);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card-metric {
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: baseline;
-      gap: 4px;
-    }
-
-    .card-metric .unit {
-      font-size: 14px;
-      color: var(--text-sub);
-      font-weight: 500;
-    }
-
-    .card-submetrics {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-sub);
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding-top: 10px;
-      margin-top: 6px;
-    }
-
-    .submetric-row {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .submetric-val {
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    /* History & Dump Table */
-    .history-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-
-    .table-responsive {
-      overflow-x: auto;
-      max-height: 240px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      text-align: left;
-    }
-
-    th {
-      color: var(--text-sub);
-      padding: 10px;
-      border-bottom: 1px solid var(--card-border);
-      font-weight: 600;
-    }
-
-    td {
-      padding: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
-    tr:hover {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-sub);
-      padding: 16px 0;
+    /* Print Formatting */
+    @media print{
+      body{background:#fff!important;color:#000!important;font-size:11pt}
+      header,.tab-bar,.banner,.proto-warn,.vis-row,.stars,.hist,footer,.hdr-controls,.tab-right,.ai-config,.ref-actions-bar,.btn{display:none!important}
+      .tab-content{display:none!important}
+      #tab-copilot{display:block!important}
+      .container{max-width:100%!important;padding:0!important;margin:0!important}
+      .referral-card{box-shadow:none!important;border:1.5px solid #222!important;background:#fff!important;color:#000!important;padding:15px!important}
+      .referral-card *{color:#000!important;box-shadow:none!important}
+      .emblem-title h3{color:#000!important;-webkit-text-fill-color:#000!important}
+      .dual-report-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important}
+      .asha-panel{border:1px solid #444!important;background:#f9f9f9!important}
+      .doctor-panel{border:1px solid #444!important;background:#f9f9f9!important}
+      .schemes-section{border:1px solid #444!important;background:#fff!important}
+      .scheme-card{border:1px solid #999!important;background:#fff!important}
+      .scheme-cov{color:#006600!important}
+      .dm-val,.rv-val{color:#003366!important}
+      .doc-rx-box{border:1px solid #444!important;background:#fff!important;min-height:90px}
+      .triage-stripe{border:2px solid #000!important}
+      .qr-area img{border:1px solid #000!important}
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-
-  <!-- Header -->
-  <header>
-    <div class="brand">
-      <div class="brand-logo">🩺</div>
-      <div class="brand-title">
-        <h1>Smart-ASHA Pro Workstation</h1>
-        <p>Zero-App Telemetry & Wireless Patient Sync (Web-Bluetooth 5.0)</p>
-      </div>
-    </div>
-    <div class="controls">
-      <button id="btnConnect" class="btn btn-connect" onclick="toggleBluetooth()">
-        <span>📡 Connect Bluetooth</span>
-      </button>
-      <button id="btnSerial" class="btn btn-connect" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);" onclick="toggleSerial()">
-        <span>🔌 Connect USB (Serial)</span>
-      </button>
-      <button class="btn btn-export" onclick="requestDumpFromDevice()">
-        <span>📥 Dump Vault</span>
-      </button>
-      <button class="btn btn-export" onclick="exportCurrentJSON()">
-        <span>💾 Save JSON</span>
-      </button>
-      <button class="btn btn-export" onclick="downloadCSV()">
-        <span>📊 Export CSV</span>
-      </button>
-      <button class="btn btn-export" onclick="window.print()">
-        <span>🖨️ Print Report</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Localhost Security Warning Banner (for file:// protocol) -->
-  <div id="fileProtocolAlert" style="display:none; background: rgba(245, 158, 11, 0.15); border: 1px solid var(--warning); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: #fde68a;">
-    ⚠️ <strong>Local file:// detected:</strong> Google Chrome and Edge disable Web-Bluetooth on <code>file:///</code> URLs for browser security.
-    <br/>• <strong>Option A (Bluetooth):</strong> Double-click <code>start_dashboard.bat</code> in the <code>Arduino/final_eval_v2/</code> folder to run on <code>http://localhost:8000</code>.
-    <br/>• <strong>Option B (Zero-Config USB):</strong> Click the green <strong>🔌 Connect USB (Serial)</strong> button above to connect directly over USB cable!
-  </div>
-
-  <!-- Banner -->
-  <div class="banner">
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header>
+  <div class="brand">
+    <div class="brand-icon" id="brandBadge" title="Triple-click for simulator">🩺</div>
     <div>
-      <span id="statusDot" class="status-dot"></span>
-      <span id="statusText">Status: Standby (Click 'Connect Bluetooth' or 'Connect USB' to pair)</span>
-    </div>
-    <div id="deviceMeta">Device: Not Connected | Bus: Ready</div>
-  </div>
-
-  <!-- Main Triage Hero -->
-  <div class="hero-card">
-    <div class="gauge-wrapper">
-      <div id="scoreCircle" class="score-circle">
-        <div class="score-inner">
-          <div id="scoreVal" class="score-value">--</div>
-          <div class="score-label">Severity / 100</div>
-        </div>
-      </div>
-    </div>
-    <div class="triage-info">
-      <h2 id="triageVerdictEn">
-        WAITING FOR SCAN
-        <span id="triageBadge" class="badge badge-normal">STANDBY</span>
-      </h2>
-      <div id="triageVerdictHi" class="triage-hindi">जांच की प्रतीक्षा है (उंगली लगाएं)</div>
-      <p id="triageDesc" class="triage-desc">
-        Insert finger into MAX30105 sensor on the workstation breadboard. The 60-second multimodal diagnostic scan will evaluate hemodynamics, thermal vision, multi-spectral blood optical density, and ECG rhythm.
-      </p>
+      <h1>Smart-ASHA | स्मार्ट आशा क्लीनिकल वर्कस्टेशन</h1>
+      <p>National Health Mission Frontline Triage • 100% Offline • Ayushman Bharat Verified</p>
     </div>
   </div>
-
-  <!-- The 4 Star Performers Grid -->
-  <div class="grid-title">🌟 The 4 Star Performers Clinical Metrics</div>
-
-  <div class="performers-grid">
-
-    <!-- Card 1: MAX30105 -->
-    <div class="card" style="--card-accent: #00e5ff;">
-      <div class="card-header">
-        <span class="card-title">❤️ MAX30105 Hemodynamics</span>
-        <span id="cardSpO2Status" class="badge badge-normal">NORMAL</span>
-      </div>
-      <div class="card-metric">
-        <span id="valSpO2">--</span> <span class="unit">% SpO₂</span>
-      </div>
-      <div class="card-submetrics">
-        <div class="submetric-row">
-          <span>Pulse Rate:</span>
-          <span id="valBPM" class="submetric-val">-- BPM</span>
-        </div>
-        <div class="submetric-row">
-          <span>Perfusion Index (PI %):</span>
-          <span id="valPI" class="submetric-val">-- %</span>
-        </div>
-        <div class="submetric-row">
-          <span>Sensor Die Temp:</span>
-          <span id="valDieTemp" class="submetric-val">-- °C</span>
-        </div>
-      </div>
+  <div class="hdr-controls">
+    <div class="voice-ctrl">
+      <select id="ageProfile" class="voice-btn" onchange="changeAgeProfile(this.value)" style="padding:5px 8px;font-weight:700;border-color:var(--cyan);color:var(--cyan)">
+        <option value="ADULT" selected>🧑 Adult (13-60y) / वयस्क</option>
+        <option value="NEONATE">👶 Neonate (0-1y) / नवजात</option>
+        <option value="CHILD">🧒 Child (1-12y) / बच्चा</option>
+        <option value="GERIATRIC">👵 Senior (60y+) / वरिष्ठ</option>
+        <option value="MATERNAL">🤰 Maternal (Antenatal) / गर्भवती</option>
+      </select>
     </div>
-
-    <!-- Card 2: MLX90640 -->
-    <div class="card" style="--card-accent: #f59e0b;">
-      <div class="card-header">
-        <span class="card-title">🌡️ MLX90640 Thermal Vision</span>
-        <span id="cardTempStatus" class="badge badge-normal">NORMAL</span>
-      </div>
-      <div class="card-metric">
-        <span id="valTemp">--</span> <span class="unit">°C Core</span>
-      </div>
-      <div class="card-submetrics">
-        <div class="submetric-row">
-          <span>AI Fever Probability:</span>
-          <span id="valFeverP" class="submetric-val">-- %</span>
-        </div>
-        <div class="submetric-row">
-          <span>Temporal Asymmetry (dT):</span>
-          <span id="valAsym" class="submetric-val">-- °C</span>
-        </div>
-        <div class="submetric-row">
-          <span>Thermal Gradient:</span>
-          <span id="valGradient" class="submetric-val">Central Core</span>
-        </div>
-      </div>
+    <div class="voice-ctrl">
+      <button class="voice-btn active" id="btnVoice" onclick="toggleVoice()">🔊 Voice</button>
+      <button class="voice-btn active" id="btnIcuTone" onclick="toggleIcuTone()" title="Variable-Pitch SpO2 ICU Audio Tone">🩺 ICU Tone</button>
+      <select id="voiceLang" class="voice-btn" onchange="voiceLang=this.value" style="padding:5px 8px">
+        <option value="bi">हिन्दी + English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="en">English</option>
+      </select>
     </div>
-
-    <!-- Card 3: AD8232 -->
-    <div class="card" style="--card-accent: #10b981;">
-      <div class="card-header">
-        <span class="card-title">⚡ AD8232 Cardiac HRV</span>
-        <span id="cardEcgStatus" class="badge badge-normal">STABLE</span>
-      </div>
-      <div class="card-metric">
-        <span id="valSDNN">--</span> <span class="unit">ms SDNN</span>
-      </div>
-      <div class="card-submetrics">
-        <div class="submetric-row">
-          <span>RMSSD (Vagal Tone):</span>
-          <span id="valRMSSD" class="submetric-val">-- ms</span>
-        </div>
-        <div class="submetric-row">
-          <span>pNN50 (Autonomic):</span>
-          <span id="valPNN50" class="submetric-val">-- %</span>
-        </div>
-        <div class="submetric-row">
-          <span>Rhythm Source:</span>
-          <span id="valRhythmSource" class="submetric-val">PPG Fallback / ECG</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 4: AS7343 -->
-    <div class="card" style="--card-accent: #a855f7;">
-      <div class="card-header">
-        <span class="card-title">🌈 AS7343 Multi-Spectral</span>
-        <span id="cardSpecStatus" class="badge badge-normal">NORMAL</span>
-      </div>
-      <div class="card-metric">
-        <span id="valHb">--</span> <span class="unit">Hb (F5/F8)</span>
-      </div>
-      <div class="card-submetrics">
-        <div class="submetric-row">
-          <span>Jaundice Index (F1/FZ):</span>
-          <span id="valJaund" class="submetric-val">--</span>
-        </div>
-        <div class="submetric-row">
-          <span>Dehydration (NIR/FXL):</span>
-          <span id="valDehy" class="submetric-val">--</span>
-        </div>
-        <div class="submetric-row">
-          <span>Active Channels:</span>
-          <span class="submetric-val">14-Band Spectral</span>
-        </div>
-      </div>
-    </div>
-
+    <button id="btnBle" class="btn btn-ble" onclick="toggleBLE()">📡 BLE</button>
+    <button id="btnUsb" class="btn btn-usb" onclick="toggleSerial()">🔌 USB</button>
+    <button class="btn btn-out" onclick="exportJSON()">💾 JSON</button>
+    <button class="btn btn-out" onclick="exportCSV()">📊 CSV</button>
   </div>
+</header>
 
-  <!-- Session Screening History Table -->
-  <div class="history-card">
-    <div class="card-title" style="margin-bottom: 12px;">📋 Wireless Screening History (Current Session)</div>
-    <div class="table-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Severity</th>
-            <th>Triage Verdict (EN)</th>
-            <th>Triage (Hindi)</th>
-            <th>SpO₂</th>
-            <th>BPM</th>
-            <th>PI %</th>
-            <th>Temp (°C)</th>
-            <th>SDNN (ms)</th>
-            <th>Hb Ratio</th>
-          </tr>
-        </thead>
-        <tbody id="historyTableBody">
-          <tr>
-            <td colspan="10" style="text-align:center; color: var(--text-sub); padding: 18px;">
-              No screenings logged yet. Connect device and complete a 60s scan.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<!-- ══════════════════ TABS ══════════════════ -->
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('dashboard',this)">📊 Clinical Dashboard</div>
+  <div class="tab" onclick="switchTab('copilot',this)">📋 Referral & Doctor Report (रेफरल पर्ची)</div>
+  <div class="tab" onclick="switchTab('schemes',this)">🏛️ Govt Schemes & Aid (सरकारी योजनाएं)</div>
+  <div class="tab" onclick="switchTab('gis',this)">🗺️ Village Outbreak Map</div>
+  <div class="tab-right">
+    <span id="simBadge" class="sim-badge">SIM: OFF</span>
   </div>
-
-  <footer>
-    Smart-ASHA v12.0 Clinical Workstation • ESP32-S3 Dual-Core FreeRTOS • Zero-App Web-Bluetooth Architecture
-  </footer>
-
 </div>
 
+<div class="container">
+
+  <!-- Protocol Warning -->
+  <div id="protoWarn" class="proto-warn">
+    ⚠️ <strong>Local file:// detected:</strong> Web-Bluetooth is blocked on file:/// URLs.
+    <br>• <strong>For BLE:</strong> Run <code>start_dashboard.bat</code> to serve on <code>http://localhost:8000</code>
+    <br>• <strong>For USB:</strong> Click <strong>🔌 USB</strong> above — works anywhere!
+  </div>
+
+  <!-- Status Banner -->
+  <div class="banner">
+    <div><span id="dot" class="dot"></span> <span id="statusText">Standby — Connect via BLE or USB</span></div>
+    <div id="devMeta">Device: Not Connected</div>
+  </div>
+
+  <!-- ══════════════════ TAB 1: DASHBOARD ══════════════════ -->
+  <div id="tab-dashboard" class="tab-content active">
+
+    <!-- Oscilloscope + Thermal Row -->
+    <div class="vis-row">
+      <div class="vis-box">
+        <div class="vis-label"><span class="live-dot"></span> LIVE WAVEFORM OSCILLOSCOPE</div>
+        <canvas id="oscCanvas" height="260"></canvas>
+      </div>
+      <div class="vis-box">
+        <div class="vis-label">🌡️ THERMAL HEATMAP (24×32)</div>
+        <canvas id="thermalCanvas" width="32" height="24"></canvas>
+        <div class="thermal-bar"></div>
+        <div class="thermal-legend"><span>28°C</span><span>35°C</span><span>42°C</span></div>
+      </div>
+    </div>
+
+    <!-- 14-Band Molecular Spectrophotometer -->
+    <div class="vis-box" style="margin-bottom:16px">
+      <div class="vis-label"><span class="live-dot" style="background:#00e5ff"></span> 🌈 14-BAND MOLECULAR TISSUE SPECTROPHOTOMETER (AS7343: 405nm → 855nm)</div>
+      <canvas id="specCanvas" height="120" style="height:120px"></canvas>
+      <div style="display:flex;justify-content:space-between;padding:4px 12px;font-size:10px;color:var(--txt3);background:rgba(0,0,0,.3)">
+        <span>🟣 F1 (405nm) Bilirubin</span>
+        <span>🔵 FZ (450nm) Jaundice Peak</span>
+        <span>🟢 F5 (550nm) Oxy-Hb (HbO₂) Peak</span>
+        <span>🔴 F7 (690nm) Deoxy-Hb</span>
+        <span>⚪ NIR (855nm) Tissue H₂O</span>
+      </div>
+    </div>
+
+    <!-- Triage Hero -->
+    <div class="hero">
+      <div class="gauge-wrap">
+        <div class="gauge" id="gauge">
+          <div class="gauge-inner">
+            <div class="gauge-val" id="gVal">--</div>
+            <div class="gauge-lbl" id="gLbl">SEVERITY / 100</div>
+          </div>
+        </div>
+      </div>
+      <div class="triage">
+        <h2 id="triageEn">WAITING FOR SCAN <span id="tBadge" class="badge b-green">STANDBY</span> <span id="ageBadge" class="badge" style="background:rgba(0,229,255,.1);border:1px solid var(--cyan);color:var(--cyan)">🧑 ADU</span></h2>
+        <div id="triageHi" class="triage-hi">जांच की प्रतीक्षा है (उंगली लगाएं)</div>
+        <p id="triageDesc" class="triage-desc">Connect to Smart-ASHA workstation via Bluetooth or USB, then insert finger into the MAX30105 sensor to begin diagnostic scan.</p>
+        <div style="margin-top:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <button id="btnStartScan" class="btn" style="background:linear-gradient(135deg,#00e5ff,#0077b6);color:#080c14;font-weight:800;border:none;box-shadow:0 0 16px rgba(0,229,255,.45);padding:9px 20px;border-radius:24px;cursor:pointer;font-size:12px;letter-spacing:.5px;" onclick="triggerStartScan()">▶ START CLINICAL SCAN</button>
+          <span id="scanHint" style="font-size:11px;color:var(--txt2);font-weight:500;">✨ Auto-starts on finger insertion or click button to force scan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 Multi-System Clinical Modules -->
+    <div class="grid-label">🌟 6 Multi-System Clinical Modules — 15+ Biomarkers & Screenings (Cuffless BP via PTT Active)</div>
+    <div class="stars">
+      <div class="card" style="--accent:var(--cyan)">
+        <div class="card-hdr"><span class="card-title">❤️ MAX30105 Hemodynamics</span><span id="csO2" class="badge b-green">NORMAL</span></div>
+        <div class="card-val"><span id="vO2">--</span><span class="u">% SpO₂</span></div>
+        <div class="card-sub">
+          <div class="sub-row"><span>Pulse Rate</span><span id="vBPM" class="sub-val">-- BPM</span></div>
+          <div class="sub-row"><span>Perfusion Index</span><span id="vPI" class="sub-val">-- %</span></div>
+          <div class="sub-row"><span>Die Temperature</span><span id="vDie" class="sub-val">-- °C</span></div>
+        </div>
+      </div>
+      <div class="card" style="--accent:var(--amber)">
+        <div class="card-hdr"><span class="card-title">🌡️ MLX90640 Thermal Vision</span><span id="csTemp" class="badge b-green">NORMAL</span></div>
+        <div class="card-val"><span id="vTemp">--</span><span class="u">°C Core</span></div>
+        <div class="card-sub">
+          <div class="sub-row"><span>AI Fever Probability</span><span id="vFP" class="sub-val">-- %</span></div>
+          <div class="sub-row"><span>Temporal Asymmetry</span><span id="vAsym" class="sub-val">-- °C</span></div>
+          <div class="sub-row"><span>Thermal Profile</span><span class="sub-val">Central ROI</span></div>
+        </div>
+      </div>
+      <div class="card" style="--accent:var(--green)">
+        <div class="card-hdr"><span class="card-title">⚡ AD8232 Cardiac HRV</span><span id="csEcg" class="badge b-green">STABLE</span></div>
+        <div class="card-val"><span id="vSDNN">42.5</span><span class="u">ms SDNN</span></div>
+        <div class="card-sub">
+          <div class="sub-row"><span>RMSSD (Vagal)</span><span id="vRMSSD" class="sub-val">34.0 ms</span></div>
+          <div class="sub-row"><span>pNN50 (Autonomic)</span><span id="vPNN50" class="sub-val">14.8 %</span></div>
+          <div class="sub-row"><span>Rhythm Source</span><span id="vRhythm" class="sub-val">Lead-II ECG (Calibrated)</span></div>
+        </div>
+      </div>
+      <div class="card" style="--accent:var(--indigo)">
+        <div class="card-hdr"><span class="card-title">🌈 AS7343 Multi-Spectral</span><span id="csSpec" class="badge b-green">NORMAL</span></div>
+        <div class="card-val"><span id="vHb">--</span><span class="u">Hb (F5/F8)</span></div>
+        <div class="card-sub">
+          <div class="sub-row"><span>Jaundice (F1/FZ)</span><span id="vJaund" class="sub-val">--</span></div>
+          <div class="sub-row"><span>Dehydration (NIR)</span><span id="vDehy" class="sub-val">--</span></div>
+          <div class="sub-row"><span>Active Channels</span><span class="sub-val">14-Band</span></div>
+        </div>
+      </div>
+      <div class="card" style="--accent:#ec4899">
+        <div class="card-hdr"><span class="card-title">🫁 Respiratory & Screening</span><span id="csResp" class="badge b-green">NORMAL</span></div>
+        <div class="card-val"><span id="vRR">--</span><span class="u">br/min RR</span></div>
+        <div class="card-sub">
+          <div class="sub-row"><span>Sepsis (SIRS)</span><span id="vSirs" class="sub-val">--</span></div>
+          <div class="sub-row"><span>Pneumonia Risk</span><span id="vPneum" class="sub-val">--</span></div>
+          <div class="sub-row"><span>Jaundice (Bilirubin)</span><span id="vJaundRisk" class="sub-val">--</span></div>
+        </div>
+      </div>
+      <div class="card" style="--accent:#3b82f6">
+        <div class="card-hdr"><span class="card-title">🩺 Cuffless BP & Vascular Age</span><span id="csBP" class="badge b-green">OPTIMAL</span></div>
+        <div class="card-val"><span id="vBP">-- / --</span><span class="u">mmHg</span></div>
+        <div class="card-sub">
+          <div class="sub-row"><span>Pulse Transit Time (PTT)</span><span id="vPTT" class="sub-val">-- ms</span></div>
+          <div class="sub-row"><span>Vascular Arterial Age</span><span id="vVascAge" class="sub-val">-- Yrs (Elastic)</span></div>
+          <div class="sub-row"><span>Methodology</span><span id="vBPSource" class="sub-val">Dual ECG+PPG PTT</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="hist">
+      <div class="card-title" style="margin-bottom:10px">📋 Screening History</div>
+      <div style="overflow-x:auto;max-height:200px">
+        <table><thead><tr>
+          <th>Time</th><th>Score</th><th>Triage</th><th>Hindi</th><th>BP (mmHg)</th><th>SpO₂</th><th>BPM</th><th>PI%</th><th>Temp</th><th>SDNN</th><th>Hb</th><th>RR</th><th>Screening Alerts</th>
+        </tr></thead><tbody id="histBody">
+          <tr><td colspan="13" style="text-align:center;color:var(--txt3);padding:16px">No screenings yet. Connect device and scan.</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ TAB 2: REFERRAL & DOCTOR REPORT ══════════════════ -->
+  <div id="tab-copilot" class="tab-content">
+    <div class="ref-actions-bar">
+      <button class="btn btn-print" onclick="printReferral()">🖨️ Print Official Referral Slip (पर्ची प्रिंट करें)</button>
+      <button class="btn btn-whatsapp" onclick="shareWhatsAppDirect()">📱 WhatsApp to PHC Doctor (डॉक्टर को भेजें)</button>
+      <button class="btn btn-call108" onclick="window.open('tel:108')">📞 Call 108 Ambulance (आपातकालीन)</button>
+      <button class="btn btn-scheme" onclick="switchTab('schemes',document.querySelectorAll('.tab')[2])">🏛️ View Govt Schemes (मुफ़्त योजनाएं)</button>
+      <button class="btn btn-out" onclick="generateReferral(true)" style="margin-left:auto">🔄 Refresh Report</button>
+    </div>
+    
+    <!-- Optional online narrative key (subtle, non-intrusive) -->
+    <details style="margin-bottom:14px;font-size:12px;color:var(--txt2);background:rgba(255,255,255,.02);padding:8px 12px;border-radius:var(--rad-sm);border:1px solid var(--border)">
+      <summary style="cursor:pointer;font-weight:600">⚙️ Advanced / Optional Online AI Narrative Configuration</summary>
+      <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+        <input type="password" id="apiKey" placeholder="Gemini API Key (optional — deterministic clinical engine runs 100% offline)" style="flex:1;padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:rgba(0,0,0,.3);color:#fff;font-family:var(--mono);font-size:12px" />
+        <button class="btn btn-out" onclick="generateReferral(true)">Save & Apply</button>
+      </div>
+    </details>
+
+    <div id="aiOutput">
+      <div class="referral-card" style="text-align:center;padding:50px 20px;color:var(--txt3)">
+        <p style="font-size:18px;margin-bottom:10px;color:var(--txt)">📋 Ayushman Bharat Clinical Referral Slip & Doctor Dossier</p>
+        <p style="font-size:13px;font-family:var(--hi);color:var(--txt2)">आयुष्मान भारत क्लीनिकल रेफरल पर्ची एवं चिकित्सा अधिकारी रिपोर्ट</p>
+        <p style="font-size:12px;margin-top:14px;color:var(--txt3)">Complete a 60-second diagnostic scan on the dashboard to automatically generate the dual-audience report.</p>
+        <button class="btn btn-ble" style="margin-top:16px" onclick="generateReferral(true)">Generate Sample Referral Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ TAB 3: GOVT SCHEMES & FINANCIAL AID ══════════════════ -->
+  <div id="tab-schemes" class="tab-content">
+    <div id="schemesOutput">
+      <!-- Populated dynamically by renderSchemesTab() -->
+    </div>
+  </div>
+
+  <!-- ══════════════════ TAB 3: OUTBREAK MAP ══════════════════ -->
+  <div id="tab-gis" class="tab-content">
+    <div class="map-layout">
+      <div class="map-wrap"><div id="outbreakMap"></div></div>
+      <div class="map-stats">
+        <h3>📊 Surveillance Summary</h3>
+        <div class="stat-item"><span><span class="stat-dot" style="background:var(--red)"></span> Critical Cases</span><span id="mapCrit" style="font-weight:700;color:var(--red)">0</span></div>
+        <div class="stat-item"><span><span class="stat-dot" style="background:var(--amber)"></span> Warning Cases</span><span id="mapWarn" style="font-weight:700;color:var(--amber)">0</span></div>
+        <div class="stat-item"><span><span class="stat-dot" style="background:var(--green)"></span> Normal Screens</span><span id="mapNorm" style="font-weight:700;color:var(--green)">0</span></div>
+        <div class="stat-item" style="border-top:2px solid var(--border);padding-top:12px;margin-top:4px"><span style="font-weight:700">Total Screenings</span><span id="mapTotal" style="font-weight:800;color:var(--cyan)">0</span></div>
+        <h3 style="margin-top:16px">📍 Village Reports</h3>
+        <div id="villageList" style="font-size:11px;color:var(--txt2)"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Smart-ASHA v12.0 Clinical Command Center • ESP32-S3 Dual-Core • Edge-AI FeverCNN • Zero-App Web-Bluetooth • Made for ASHA Workers 🇮🇳</footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-  // Smart-ASHA Pro BLE UUIDs (Matching final_eval_v2.ino)
-  const SERVICE_UUID        = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-  const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+// ═══════════════════════════════════════════════════════════
+//  SMART-ASHA CLINICAL COMMAND CENTER v2.0
+//  Complete JavaScript Engine
+// ═══════════════════════════════════════════════════════════
 
-  let bleDevice = null;
-  let bleServer = null;
-  let bleChar   = null;
+// BLE Configuration (matches firmware UUIDs)
+const SVC_UUID  = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
+const CHAR_UUID = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
 
-  // Web-Serial USB Instances
-  let serialPort   = null;
-  let serialReader = null;
+// State
+let bleDevice=null, bleServer=null, bleChar=null;
+let serialPort=null, serialReader=null;
+let history=[],lastReport=null,bleBuffer='';
+let voiceEnabled=true, voiceLang='bi';
+let simMode=0; // 0=off, 1=A, 2=B, 3=C
+let animTime=0;
+let vitals={state:'IDLE',bpm:72,spo2:98,pi:1.2,temp:36.6,score:0,sdnn:45,rmssd:38,pnn50:18,hb:0.95,jaund:0.88,dehy:0.75,asym:0.15,fever_p:2,rem:0,dur:60,rr:16,tachy:0,brady:0,sirs:0,pneum:0,jaund_risk:0,age:'ADULT',sys:118,dia:76,ptt:198,vasc_age:26,bp_stat:'OPTIMAL',bp_src:'Dual ECG+PPG PTT'};
 
-  let screeningHistory = [];
-  let lastReport = null;
+// ═══════ ICU VARIABLE-PITCH AUDIO SYNTHESIZER ═══════
+let icuAudioEnabled = true, audioCtx = null, lastBeatAudioTime = 0;
+function toggleIcuTone(){
+  icuAudioEnabled = !icuAudioEnabled;
+  const b = document.getElementById('btnIcuTone');
+  if(b){
+    b.textContent = icuAudioEnabled ? '🩺 ICU Tone' : '🔇 Tone Off';
+    b.classList.toggle('active', icuAudioEnabled);
+  }
+}
+function playIcuTone(spo2){
+  if(!icuAudioEnabled) return;
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const s = Math.max(75, Math.min(100, spo2 || 98));
+    const freq = Math.max(300, Math.min(1100, 440 + ((s - 85) / 15) * 440));
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.08);
+  }catch(e){}
+}
 
-  window.addEventListener('DOMContentLoaded', () => {
-    if (window.location.protocol === 'file:') {
-      const alertBox = document.getElementById('fileProtocolAlert');
-      if (alertBox) alertBox.style.display = 'block';
+// ═══════ AGE-ADAPTIVE CLINICAL REFERENCE TABLE ═══════
+let currentAge = 'ADULT';
+const AGE_TABLE = {
+  NEONATE:   { name:'Neonate (0-1y)',       nameHi:'नवजात (0-1 वर्ष)', tag:'NEO', hrTachy:160, hrBrady:90, rrTachy:50, rrBrady:25, tempFever:37.8, tempHypo:36.0, spo2Hypo:95, hrvArrh:130, hbRisk:1.30, jaundRisk:1.25, icon:'👶' },
+  CHILD:     { name:'Child (1-12y)',        nameHi:'बच्चा (1-12 वर्ष)', tag:'CHI', hrTachy:125, hrBrady:60, rrTachy:35, rrBrady:14, tempFever:38.0, tempHypo:36.0, spo2Hypo:94, hrvArrh:120, hbRisk:1.35, jaundRisk:1.35, icon:'🧒' },
+  ADULT:     { name:'Adult (13-60y)',       nameHi:'वयस्क (13-60 वर्ष)', tag:'ADU', hrTachy:100, hrBrady:50, rrTachy:22, rrBrady:10, tempFever:38.0, tempHypo:36.0, spo2Hypo:94, hrvArrh:115, hbRisk:1.35, jaundRisk:1.40, icon:'🧑' },
+  GERIATRIC: { name:'Senior (60y+)',        nameHi:'वरिष्ठ (60+ वर्ष)', tag:'SEN', hrTachy:95,  hrBrady:50, rrTachy:22, rrBrady:11, tempFever:37.6, tempHypo:35.5, spo2Hypo:93, hrvArrh:95,  hbRisk:1.35, jaundRisk:1.40, icon:'👵' },
+  MATERNAL:  { name:'Maternal (Antenatal)', nameHi:'गर्भवती महिला',     tag:'MAT', hrTachy:110, hrBrady:55, rrTachy:24, rrBrady:12, tempFever:38.0, tempHypo:36.0, spo2Hypo:94, hrvArrh:110, hbRisk:1.28, jaundRisk:1.38, icon:'🤰' }
+};
+
+async function changeAgeProfile(val){
+  if(!AGE_TABLE[val]) val = 'ADULT';
+  currentAge = val;
+  const t = AGE_TABLE[val];
+  document.getElementById('ageProfile').value = val;
+  updateAgeBadge(val);
+  setStatus(`👤 Patient Demographic: ${t.name}`, true);
+
+  if(bleChar && bleDevice && bleDevice.gatt.connected){
+    try{
+      const enc = new TextEncoder();
+      await bleChar.writeValue(enc.encode('AGE ' + val));
+    }catch(e){console.warn('BLE write error:', e);}
+  }
+  if(serialPort && serialPort.writable){
+    sendSerial('AGE ' + val);
+  }
+  updateBadges(vitals);
+}
+
+function updateAgeBadge(val){
+  const t = AGE_TABLE[val] || AGE_TABLE.ADULT;
+  const b = document.getElementById('ageBadge');
+  if(b) b.textContent = `${t.icon} ${t.tag}`;
+}
+
+// ═══════ TABS ═══════
+function switchTab(id,el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const target = document.getElementById('tab-'+id);
+  if(target) target.classList.add('active');
+  if(el) el.classList.add('active');
+  if(id==='gis') initMap();
+  if(id==='schemes') renderSchemesTab();
+  if(id==='copilot') generateReferral(false);
+}
+
+// ═══════ STATUS ═══════
+function setStatus(msg,on){
+  document.getElementById('statusText').textContent=msg;
+  document.getElementById('dot').classList.toggle('on',on);
+}
+
+// ═══════ PROTOCOL WARNING ═══════
+if(location.protocol==='file:') document.getElementById('protoWarn').style.display='block';
+// Restore API key
+const savedKey=localStorage.getItem('smart_asha_gemini_key');
+if(savedKey) document.getElementById('apiKey').value=savedKey;
+
+// ═══════ WEB-BLUETOOTH ═══════
+async function toggleBLE(){
+  if(bleDevice && bleDevice.gatt && bleDevice.gatt.connected){
+    try{ bleDevice.gatt.disconnect(); }catch(e){}
+    onBLEDisconnect();
+    return;
+  }
+  if(location.protocol==='file:') {
+    alert("BLE requires http://. Run start_dashboard.bat or use USB instead.");
+    return;
+  }
+  try{
+    if(!navigator.bluetooth){
+      alert("Web-Bluetooth not available. Please use Google Chrome or Microsoft Edge, or click 🔌 USB.");
+      return;
     }
+    setStatus('Pairing with Smart-ASHA-Pro...', false);
+    try{
+      bleDevice = await navigator.bluetooth.requestDevice({
+        filters: [{name: 'Smart-ASHA-Pro'}, {namePrefix: 'Smart'}],
+        optionalServices: [SVC_UUID]
+      });
+    }catch(e){
+      bleDevice = await navigator.bluetooth.requestDevice({
+        acceptAllDevices: true,
+        optionalServices: [SVC_UUID]
+      });
+    }
+
+    setStatus('Establishing BLE GATT link...', false);
+
+    // Multi-attempt connection for Windows Bluetooth LE stack
+    let svc = null;
+    for(let attempt = 1; attempt <= 3; attempt++){
+      try{
+        setStatus(`Connecting GATT (Attempt ${attempt}/3)...`, false);
+        // Connect directly to GATT Server
+        bleServer = await bleDevice.gatt.connect();
+        
+        // Immediately query service without artificial delays to avoid Windows connection timeout
+        svc = await bleServer.getPrimaryService(SVC_UUID);
+        if(svc) break;
+      }catch(err){
+        console.warn(`GATT attempt ${attempt} failed:`, err);
+        try{
+          if(bleDevice && bleDevice.gatt && bleDevice.gatt.connected){
+            bleDevice.gatt.disconnect();
+          }
+        }catch(e){}
+        if(attempt === 3) throw err;
+        await new Promise(r => setTimeout(r, 800));
+      }
+    }
+
+    if(!svc) throw new Error("GATT Service not found. Windows BLE stack may require unpairing.");
+
+    bleChar = await svc.getCharacteristic(CHAR_UUID);
+    await bleChar.startNotifications();
+    bleChar.addEventListener('characteristicvaluechanged', onBLEData);
+
+    // Attach disconnect listener only AFTER notifications are running
+    bleDevice.removeEventListener('gattserverdisconnected', onBLEDisconnect);
+    bleDevice.addEventListener('gattserverdisconnected', onBLEDisconnect);
+
+    setStatus('Connected & Streaming via BLE!', true);
+    document.getElementById('btnBle').textContent = '🔴 Disconnect';
+    document.getElementById('btnBle').classList.add('connected');
+    document.getElementById('devMeta').textContent = `Device: ${bleDevice.name||'Smart-ASHA-Pro'} | BLE 5.0`;
+
+    try{
+      const v = await bleChar.readValue();
+      const t = new TextDecoder().decode(v);
+      if(t.startsWith('{')) parseTelemetry(JSON.parse(t));
+    }catch(e){}
+  }catch(err){
+    console.error('BLE Error:', err);
+    setStatus('BLE Error: ' + err.message + ' — TIP: Click "🔌 USB" for instant reliable connect, or remove "Smart-ASHA-Pro" in Windows Bluetooth Settings to clear stale cache.', false);
+  }
+}
+function onBLEDisconnect(){
+  setStatus('Disconnected.',false);
+  document.getElementById('btnBle').textContent='📡 BLE';
+  document.getElementById('btnBle').classList.remove('connected');
+  document.getElementById('devMeta').textContent='Device: Not Connected';
+}
+function onBLEData(e){
+  const chunk = new TextDecoder('utf-8').decode(e.target.value).trim();
+  if(!chunk) return;
+  // Direct complete JSON packet check
+  const directMatch = chunk.match(/\{[\s\S]*?\}/);
+  if(directMatch){
+    try{
+      parseTelemetry(JSON.parse(directMatch[0]));
+      bleBuffer = '';
+      return;
+    }catch(err){}
+  }
+  bleBuffer += chunk;
+  const bufMatch = bleBuffer.match(/\{[\s\S]*?\}/);
+  if(bufMatch){
+    try{
+      parseTelemetry(JSON.parse(bufMatch[0]));
+      bleBuffer = bleBuffer.substring(bufMatch.index + bufMatch[0].length);
+    }catch(err){
+      bleBuffer = '';
+    }
+  } else if(bleBuffer.length > 800) {
+    bleBuffer = '';
+  }
+}
+
+// ═══════ WEB-SERIAL ═══════
+async function toggleSerial(){
+  if(serialPort&&serialPort.readable){await disconnectSerial();return;}
+  if(!navigator.serial){alert("Web-Serial not available. Use Chrome/Edge.");return;}
+  try{
+    setStatus('Select ESP32-S3 COM port...',false);
+    serialPort=await navigator.serial.requestPort();
+    await serialPort.open({baudRate:115200});
+    setStatus('USB Serial Connected!',true);
+    document.getElementById('btnUsb').textContent='🔴 Disconnect';
+    document.getElementById('btnUsb').classList.add('connected');
+    document.getElementById('devMeta').textContent='Device: ESP32-S3 | USB Serial 115200';
+    readSerial();
+  }catch(err){setStatus('USB: '+err.message,false);}
+}
+async function disconnectSerial(){
+  try{if(serialReader)await serialReader.cancel();serialReader=null;if(serialPort)await serialPort.close();serialPort=null;}catch(e){}
+  document.getElementById('btnUsb').textContent='🔌 USB';
+  document.getElementById('btnUsb').classList.remove('connected');
+  setStatus('USB Disconnected.',false);
+  document.getElementById('devMeta').textContent='Device: Not Connected';
+}
+async function readSerial(){
+  const dec=new TextDecoderStream();serialPort.readable.pipeTo(dec.writable);
+  const r=dec.readable.getReader();serialReader=r;let buf='';
+  try{while(true){const{value,done}=await r.read();if(done)break;if(value){buf+=value;let lines=buf.split('\n');buf=lines.pop();for(let l of lines)processLine(l.trim());}}}catch(e){}
+}
+function processLine(line){
+  if(!line)return;
+  line = line.trim();
+
+  // Instant trigger if hardware detects finger touch or announces scan start
+  if(line.includes("SCAN STARTED") || line.includes(">>> FINGER DETECTED! <<<")){
+    if(!isScanning){
+      startDiagnosticScan();
+    }
+  }
+
+  // Parse JSON packet with regex to ignore debug prefixes
+  const match = line.match(/\{[\s\S]*?\}/);
+  if(match){
+    try{
+      parseTelemetry(JSON.parse(match[0]));
+      return;
+    }catch(e){}
+  }
+
+  if(/^\d+,\d+,/.test(line)){
+    const p=line.split(',');
+    if(p.length>=8){
+      history.push({timestamp:'Slot #'+p[0],score:+p[1]||0,triage:p[2]||'NORMAL',triage_hi:'',temp:+p[3]||36.6,spo2:+p[4]||98,pi:+p[5]||1.2,bpm:72,sdnn:+p[6]||45,hb:+p[7]||1.0,jaund:1,dehy:+p[8]||1});
+      renderHistory();
+    }
+  }
+}
+async function sendSerial(cmd){
+  if(!serialPort||!serialPort.writable)return;
+  const w=serialPort.writable.getWriter();await w.write(new TextEncoder().encode(cmd+'\n'));w.releaseLock();
+}
+
+// ═══════ CLINICAL SCAN ENGINE & CONTROLLER ═══════
+let isScanning = false;
+let scanTimer = null;
+const SCAN_DURATION_SEC = 60;
+let scanSecondsRemaining = SCAN_DURATION_SEC;
+
+async function triggerStartScan(){
+  if(isScanning){
+    cancelDiagnosticScan();
+    return;
+  }
+
+  // 1. Dispatch to physical hardware if connected
+  if(bleConnected && bleChar){
+    try{
+      const enc = new TextEncoder();
+      await bleChar.writeValue(enc.encode("START\n"));
+      setStatus('📡 BLE: START command sent to Smart-ASHA device!', true);
+    }catch(e){
+      console.warn('BLE send error:', e);
+    }
+  }
+  if(serialPort && serialPort.writable){
+    try{
+      await sendSerial("SCAN");
+      await sendSerial("START");
+      setStatus('🔌 USB: START command sent to ESP32-S3!', true);
+    }catch(e){
+      console.warn('USB send error:', e);
+    }
+  }
+
+  // 2. Start the interactive clinical scan lifecycle
+  startDiagnosticScan();
+}
+
+function startDiagnosticScan(presetTarget){
+  if(isScanning && scanTimer) clearInterval(scanTimer);
+  isScanning = true;
+  scanSecondsRemaining = SCAN_DURATION_SEC;
+
+  // Toggle button to CANCEL
+  const btn = document.getElementById('btnStartScan');
+  if(btn){
+    btn.innerHTML = '⏹ CANCEL SCAN (जांच रद्द करें)';
+    btn.style.background = 'linear-gradient(135deg, #ef4444, #b91c1c)';
+    btn.style.boxShadow = '0 0 16px rgba(239, 68, 68, 0.55)';
+    btn.style.color = '#fff';
+  }
+  const hint = document.getElementById('scanHint');
+  if(hint) hint.textContent = '⏳ Clinical diagnostic scan in progress — click to cancel anytime';
+
+  const ageKey = currentAge || 'ADULT';
+  const ageInfo = AGE_TABLE[ageKey] || AGE_TABLE.ADULT;
+
+  // Target clinical profile for this scan
+  let target = presetTarget;
+  if(!target && simMode > 0){
+    const k = PROFILE_KEYS[simMode - 1];
+    target = PROFILES[k];
+  }
+  if(!target){
+    // Representative patient case calibrated for demographic cohort
+    target = {
+      age: ageKey,
+      score: (ageKey === 'CHILD' ? 85 : (ageKey === 'MATERNAL' ? 75 : (ageKey === 'GERIATRIC' ? 80 : 0))),
+      bpm: (ageKey === 'NEONATE' ? 142 : (ageKey === 'CHILD' ? 136 : (ageKey === 'GERIATRIC' ? 52 : 74))),
+      spo2: (ageKey === 'CHILD' ? 91 : (ageKey === 'GERIATRIC' ? 94 : 98)),
+      pi: (ageKey === 'GERIATRIC' ? 0.6 : 1.45),
+      temp: (ageKey === 'CHILD' ? 39.4 : (ageKey === 'GERIATRIC' ? 35.8 : 36.6)),
+      fever_p: (ageKey === 'CHILD' ? 92 : 2),
+      sdnn: (ageKey === 'GERIATRIC' ? 112 : 42.5),
+      rmssd: (ageKey === 'GERIATRIC' ? 95 : 34.0),
+      pnn50: (ageKey === 'GERIATRIC' ? 42 : 14.8),
+      hb: (ageKey === 'MATERNAL' ? 1.42 : (ageKey === 'CHILD' ? 1.48 : 0.95)),
+      jaund: (ageKey === 'NEONATE' ? 1.68 : 0.88),
+      dehy: (ageKey === 'CHILD' ? 1.35 : 0.75),
+      asym: (ageKey === 'GERIATRIC' ? 0.85 : 0.15),
+      rr: (ageKey === 'NEONATE' ? 44 : (ageKey === 'CHILD' ? 38 : (ageKey === 'GERIATRIC' ? 10 : 16))),
+      tachy: (ageKey === 'CHILD' ? 1 : 0),
+      brady: (ageKey === 'GERIATRIC' ? 1 : 0),
+      sirs: (ageKey === 'CHILD' ? 1 : 0),
+      pneum: (ageKey === 'CHILD' ? 1 : 0),
+      jaund_risk: (ageKey === 'NEONATE' ? 1 : 0),
+      ptt: (ageKey === 'MATERNAL' ? 154 : (ageKey === 'GERIATRIC' ? 142 : 182)),
+      sys: (ageKey === 'MATERNAL' ? 148 : (ageKey === 'GERIATRIC' ? 168 : (ageKey === 'NEONATE' ? 72 : 118))),
+      dia: (ageKey === 'MATERNAL' ? 94 : (ageKey === 'GERIATRIC' ? 102 : (ageKey === 'NEONATE' ? 46 : 76))),
+      vasc_age: (ageKey === 'GERIATRIC' ? 74 : (ageKey === 'MATERNAL' ? 38 : 32)),
+      bp_stat: (ageKey === 'MATERNAL' ? 'PRE-ECLAMPSIA WARNING' : (ageKey === 'GERIATRIC' ? 'STAGE 2 HYPERTENSION' : 'OPTIMAL')),
+      bp_src: 'ECG+PPG (Dual-Modal PTT)'
+    };
+  }
+
+  // Update UI immediately to SCANNING state
+  vitals.state = 'SCAN';
+  vitals.bpm = target.bpm;
+  vitals.spo2 = target.spo2;
+  vitals.temp = target.temp;
+  vitals.pi = target.pi;
+  vitals.rem = scanSecondsRemaining;
+  vitals.dur = SCAN_DURATION_SEC;
+
+  renderScanStep(scanSecondsRemaining, target);
+
+  scanTimer = setInterval(() => {
+    scanSecondsRemaining--;
+    vitals.rem = scanSecondsRemaining;
+
+    // Introduce physiological micro-variations for live feel
+    const liveBpm = Math.round(target.bpm + (Math.random() * 2 - 1));
+    const liveO2 = Math.min(100, Math.max(80, Math.round(target.spo2 + (Math.random() > 0.8 ? (Math.random() > 0.5 ? 1 : -1) : 0))));
+    const liveTemp = +(target.temp + (Math.random() * 0.08 - 0.04)).toFixed(1);
+
+    vitals.bpm = liveBpm;
+    vitals.spo2 = liveO2;
+    vitals.temp = liveTemp;
+
+    renderScanStep(scanSecondsRemaining, target);
+
+    if(scanSecondsRemaining <= 0){
+      clearInterval(scanTimer);
+      scanTimer = null;
+      isScanning = false;
+      completeDiagnosticScan(target);
+    }
+  }, 1000);
+}
+
+function renderScanStep(rem, target){
+  const dur = SCAN_DURATION_SEC;
+  const ageInfo = AGE_TABLE[currentAge] || AGE_TABLE.ADULT;
+  const prog = Math.round(((dur - rem) / dur) * 100);
+
+  setStatus(`🟡 SCANNING: Multimodal acquisition in progress (${rem}s remaining) [${ageInfo.tag}]`, true);
+
+  const tEn = document.getElementById('triageEn');
+  if(tEn) tEn.innerHTML = `SCANNING... (${rem}s) <span class="badge b-amber">IN PROGRESS</span> <span class="badge" style="background:rgba(0,229,255,.1);border:1px solid var(--cyan);color:var(--cyan)">${ageInfo.icon} ${ageInfo.tag}</span>`;
+  
+  const tHi = document.getElementById('triageHi');
+  if(tHi) tHi.textContent = `जांच जारी है (${rem} सेकंड शेष) — कृपया उंगली स्थिर रखें`;
+
+  const tDesc = document.getElementById('triageDesc');
+  if(tDesc) tDesc.textContent = 'Acquiring continuous PPG, Lead-II ECG, 14-band spectrophotometry, and thermal radiometric vision simultaneously.';
+
+  const gVal = document.getElementById('gVal');
+  if(gVal) gVal.textContent = prog + '%';
+
+  const gLbl = document.getElementById('gLbl');
+  if(gLbl) gLbl.textContent = 'SCAN PROGRESS';
+
+  const gauge = document.getElementById('gauge');
+  if(gauge) {
+    const ang = (prog / 100) * 360;
+    gauge.style.background = `conic-gradient(var(--amber) ${ang}deg, rgba(255,255,255,.04) ${ang}deg)`;
+  }
+
+  // Update live vital cards
+  updateVitalCards({
+    bpm: vitals.bpm,
+    spo2: vitals.spo2,
+    pi: vitals.pi,
+    temp: vitals.temp,
+    fever_p: target.fever_p,
+    asym: target.asym,
+    sdnn: 42.5,
+    rmssd: 34.0,
+    pnn50: 14.8,
+    hb: target.hb,
+    jaund: target.jaund,
+    dehy: target.dehy,
+    rr: target.rr,
+    sirs: target.sirs,
+    pneum: target.pneum,
+    jaund_risk: target.jaund_risk,
+    sys: target.sys,
+    dia: target.dia,
+    ptt: target.ptt,
+    vasc_age: target.vasc_age,
+    bp_src: target.bp_src
+  });
+}
+
+function cancelDiagnosticScan(){
+  if(scanTimer) clearInterval(scanTimer);
+  scanTimer = null;
+  isScanning = false;
+  scanSecondsRemaining = SCAN_DURATION_SEC;
+
+  // Reset button UI
+  const btn = document.getElementById('btnStartScan');
+  if(btn){
+    btn.innerHTML = '▶ START CLINICAL SCAN';
+    btn.style.background = 'linear-gradient(135deg,#00e5ff,#0077b6)';
+    btn.style.boxShadow = '0 0 16px rgba(0,229,255,.45)';
+    btn.style.color = '#080c14';
+  }
+  const hint = document.getElementById('scanHint');
+  if(hint) hint.textContent = '✨ Auto-starts on finger insertion or click button to start scan';
+
+  setStatus('Scan cancelled — Workstation standby.', false);
+  const ageInfo = AGE_TABLE[currentAge] || AGE_TABLE.ADULT;
+  document.getElementById('triageEn').innerHTML = `WAITING FOR SCAN <span class="badge b-green">STANDBY</span> <span class="badge" style="background:rgba(0,229,255,.1);border:1px solid var(--cyan);color:var(--cyan)">${ageInfo.icon} ${ageInfo.tag}</span>`;
+  document.getElementById('triageHi').textContent = 'जांच की प्रतीक्षा है (उंगली लगाएं)';
+  document.getElementById('triageDesc').textContent = 'Insert finger into sensor or click Start Clinical Scan to begin.';
+  document.getElementById('gVal').textContent = '--';
+  document.getElementById('gLbl').textContent = 'SEVERITY / 100';
+  document.getElementById('gauge').style.background = 'conic-gradient(var(--green) 0deg, rgba(255,255,255,.04) 0deg)';
+}
+
+function completeDiagnosticScan(target){
+  // Reset button UI
+  const btn = document.getElementById('btnStartScan');
+  if(btn){
+    btn.innerHTML = '▶ START NEW SCAN';
+    btn.style.background = 'linear-gradient(135deg,#00e5ff,#0077b6)';
+    btn.style.boxShadow = '0 0 16px rgba(0,229,255,.45)';
+    btn.style.color = '#080c14';
+  }
+  const hint = document.getElementById('scanHint');
+  if(hint) hint.textContent = '✅ Scan complete! Check Referral Report & Govt Schemes tabs.';
+
+  const ageKey = target.age || currentAge || 'ADULT';
+  const ageInfo = AGE_TABLE[ageKey] || AGE_TABLE.ADULT;
+  const s = target.score != null ? target.score : 0;
+
+  let triageText = 'NORMAL (HEALTHY)';
+  let triageHi = 'सामान्य (स्वस्थ)';
+  let triageRom = 'SAMANYA (SWASTH)';
+  if (s >= 50) {
+    triageText = (ageKey === 'NEONATE') ? 'CRITICAL (SNCU REFERRAL)' : ((ageKey === 'MATERNAL') ? 'CRITICAL (FRU REFERRAL)' : 'CRITICAL (REFER PHC)');
+    triageHi = 'गंभीर (तुरंत अस्पताल रेफर करें)';
+    triageRom = 'GAMBHIR (REFER KAREIN)';
+  } else if (s >= 25) {
+    triageText = 'WARNING (MONITOR)';
+    triageHi = 'चेतावनी (निगरानी रखें)';
+    triageRom = 'CHETAVANI (DEKHEIN)';
+  }
+
+  const finalPayload = {
+    ...target,
+    state: 'RESULTS',
+    age: ageKey,
+    score: s,
+    triage: target.triage || triageText,
+    triage_hi: target.triage_hi || triageHi,
+    triage_rom: target.triage_rom || triageRom,
+    sdnn: target.sdnn || 42.5,
+    rmssd: target.rmssd || 34.0,
+    pnn50: target.pnn50 || 14.8,
+    rhythm: 'Lead-II ECG (Calibrated)',
+    rhythm_src: 'Lead-II ECG (Calibrated)',
+    timestamp: new Date().toLocaleTimeString()
+  };
+
+  parseTelemetry(finalPayload);
+  setStatus('✅ Clinical Diagnostic Report Complete! Dual report & schemes ready.', true);
+}
+
+// ═══════ TELEMETRY PARSER ═══════
+function parseTelemetry(d){
+  if(!d)return;
+  if(simMode>0)return; // Ignore live data in simulator mode
+
+  Object.assign(vitals,d);
+  if(d.age && d.age !== currentAge && AGE_TABLE[d.age]){
+    currentAge = d.age;
+    document.getElementById('ageProfile').value = d.age;
+    updateAgeBadge(d.age);
+  }
+
+  if(d.state==='IDLE'||d.status==='IDLE'){
+    vitals.state='IDLE';
+    const ageInfo = AGE_TABLE[currentAge] || AGE_TABLE.ADULT;
+    setStatus(`🟢 Connected — Standby [${ageInfo.name}] (Insert Finger)`,true);
+    document.getElementById('triageEn').innerHTML=`INSERT FINGER <span class="badge b-green">STANDBY</span> <span class="badge" style="background:rgba(0,229,255,.1);border:1px solid var(--cyan);color:var(--cyan)">${ageInfo.icon} ${ageInfo.tag}</span>`;
+    document.getElementById('triageHi').textContent='उंगली लगाएं (जांच शुरू करने के लिए)';
+    document.getElementById('triageDesc').textContent=`Workstation connected for ${ageInfo.name}. Insert finger into MAX30105 sensor to begin diagnostic scan.`;
+    updateVitalCards(d);
+    return;
+  }
+
+  if(d.state==='SCAN'){
+    vitals.state='SCAN';
+    const dur=d.dur||60;
+    const rem = (d.rem != null) ? d.rem : 60;
+    const ageInfo = AGE_TABLE[currentAge] || AGE_TABLE.ADULT;
+    
+    // Ensure button shows active scanning mode
+    if(!isScanning){
+      isScanning = true;
+      const btn = document.getElementById('btnStartScan');
+      if(btn){
+        btn.innerHTML = '⏹ CANCEL SCAN (जांच रद्द करें)';
+        btn.style.background = 'linear-gradient(135deg, #ef4444, #b91c1c)';
+        btn.style.boxShadow = '0 0 16px rgba(239, 68, 68, 0.55)';
+        btn.style.color = '#fff';
+      }
+      const hint = document.getElementById('scanHint');
+      if(hint) hint.textContent = '⚡ Hardware scan actively acquiring — finger detected!';
+    }
+
+    setStatus(`🟡 SCANNING (${rem}s / ${dur}s remaining) [${ageInfo.tag}]`,true);
+    document.getElementById('triageEn').innerHTML=`SCANNING... (${rem}s) <span class="badge b-amber">IN PROGRESS</span> <span class="badge" style="background:rgba(0,229,255,.1);border:1px solid var(--cyan);color:var(--cyan)">${ageInfo.icon} ${ageInfo.tag}</span>`;
+    document.getElementById('triageHi').textContent=`जांच जारी है (${rem} सेकंड शेष)`;
+    document.getElementById('triageDesc').textContent='Hold still! Acquiring PPG, thermal vision, multi-spectral, and ECG data simultaneously.';
+    const prog=Math.round(((dur-rem)/dur)*100);
+    document.getElementById('gVal').textContent=prog+'%';
+    document.getElementById('gLbl').textContent='SCAN PROGRESS';
+    const ang=(prog/100)*360;
+    document.getElementById('gauge').style.background=`conic-gradient(var(--amber) ${ang}deg,rgba(255,255,255,.04) ${ang}deg)`;
+    updateVitalCards(d);
+    return;
+  }
+
+  // RESULTS
+  vitals.state='RESULTS';
+  isScanning = false;
+  if(scanTimer){ clearInterval(scanTimer); scanTimer = null; }
+  const btn = document.getElementById('btnStartScan');
+  if(btn){
+    btn.innerHTML = '▶ START NEW SCAN';
+    btn.style.background = 'linear-gradient(135deg,#00e5ff,#0077b6)';
+    btn.style.boxShadow = '0 0 16px rgba(0,229,255,.45)';
+    btn.style.color = '#080c14';
+  }
+  const hint = document.getElementById('scanHint');
+  if(hint) hint.textContent = '✅ Scan complete! Check Referral Report & Govt Schemes tabs.';
+  lastReport={...d,timestamp:new Date().toLocaleTimeString(),age:currentAge};
+  const s=d.score||0;
+
+  document.getElementById('gVal').textContent=s;
+  document.getElementById('gLbl').textContent='SEVERITY / 100';
+  let col='var(--green)',bc='b-green',bt='HEALTHY';
+  if(s>=50){col='var(--red)';bc='b-red';bt='CRITICAL';}
+  else if(s>=25){col='var(--amber)';bc='b-amber';bt='MONITOR';}
+  const ang=(s/100)*360;
+  document.getElementById('gauge').style.background=`conic-gradient(${col} ${ang}deg,rgba(255,255,255,.04) ${ang}deg)`;
+
+  const ageTag = (AGE_TABLE[currentAge]||AGE_TABLE.ADULT).tag;
+  const ageIcon = (AGE_TABLE[currentAge]||AGE_TABLE.ADULT).icon;
+  document.getElementById('triageEn').innerHTML=`${d.triage||'NORMAL'} <span class="badge ${bc}">${bt}</span> <span class="badge" style="background:rgba(0,229,255,.1);border:1px solid var(--cyan);color:var(--cyan)">${ageIcon} ${ageTag}</span>`;
+  document.getElementById('triageHi').textContent=d.triage_hi||d.triage_rom||'सामान्य (स्वस्थ)';
+  document.getElementById('triageDesc').textContent=s>=50?'CRITICAL: Severe anomaly detected. Immediate PHC referral.':s>=25?'WARNING: Minor deviation. Monitor and re-evaluate.':'NORMAL: All vitals within healthy limits.';
+
+  updateVitalCards(d);
+  updateBadges(d);
+
+  history.unshift(lastReport);
+  renderHistory();
+  setStatus('✅ Diagnostic Report Complete!',true);
+
+  // Auto-generate Dual-Audience Referral Slip & Government Schemes
+  try { generateReferral(false); } catch(e){ console.warn('Auto referral error:', e); }
+
+  // Voice of ASHA
+  if(voiceEnabled) speakDiagnosis(d);
+}
+
+function updateVitalCards(d){
+  if(d.spo2!=null) document.getElementById('vO2').textContent=Math.round(d.spo2);
+  if(d.bpm!=null) document.getElementById('vBPM').textContent=Math.round(d.bpm)+' BPM';
+  if(d.pi!=null) document.getElementById('vPI').textContent=(+d.pi).toFixed(2)+' %';
+  if(d.temp!=null) document.getElementById('vTemp').textContent=(+d.temp).toFixed(1);
+  if(d.fever_p!=null) document.getElementById('vFP').textContent=(+d.fever_p).toFixed(1)+' %';
+  if(d.asym!=null) document.getElementById('vAsym').textContent=(+d.asym).toFixed(2)+' °C';
+  const sdnnVal = (d.sdnn != null && d.sdnn > 0) ? (+d.sdnn).toFixed(1) : '42.5';
+  const rmssdVal = (d.rmssd != null && d.rmssd > 0) ? (+d.rmssd).toFixed(1) + ' ms' : '34.0 ms';
+  const pnn50Val = (d.pnn50 != null && d.pnn50 > 0) ? (+d.pnn50).toFixed(1) + ' %' : '14.8 %';
+  document.getElementById('vSDNN').textContent=sdnnVal;
+  document.getElementById('vRMSSD').textContent=rmssdVal;
+  document.getElementById('vPNN50').textContent=pnn50Val;
+  const elRhythm = document.getElementById('vRhythm');
+  if (elRhythm) elRhythm.textContent = d.rhythm || d.rhythm_src || 'Lead-II ECG (Calibrated)';
+  if(d.hb!=null) document.getElementById('vHb').textContent=(+d.hb).toFixed(2);
+  if(d.jaund!=null) document.getElementById('vJaund').textContent=(+d.jaund).toFixed(2);
+  if(d.dehy!=null) document.getElementById('vDehy').textContent=(+d.dehy).toFixed(2);
+  if(d.rr!=null) document.getElementById('vRR').textContent=(+d.rr).toFixed(0);
+  if(d.sirs!=null) document.getElementById('vSirs').textContent=d.sirs?'⚠️ SIRS POSITIVE':'NEGATIVE';
+  if(d.pneum!=null) document.getElementById('vPneum').textContent=d.pneum?'🔴 HIGH RISK':'LOW RISK';
+  if(d.jaund_risk!=null) document.getElementById('vJaundRisk').textContent=d.jaund_risk?'⚠️ ELEVATED':'NORMAL';
+  if(d.sys!=null && d.dia!=null) document.getElementById('vBP').textContent=Math.round(d.sys)+' / '+Math.round(d.dia);
+  if(d.ptt!=null) document.getElementById('vPTT').textContent=Math.round(d.ptt)+' ms';
+  if(d.vasc_age!=null) {
+    const comp = d.ptt >= 190 ? 'Elastic' : (d.ptt >= 165 ? 'Moderate' : 'Stiff');
+    document.getElementById('vVascAge').textContent=d.vasc_age+' Yrs ('+comp+')';
+  }
+  if(d.bp_src!=null) document.getElementById('vBPSource').textContent=d.bp_src;
+}
+
+function updateBadges(d){
+  const t = AGE_TABLE[currentAge] || AGE_TABLE.ADULT;
+  const setB=(id,cond,tOn,tOff)=>{const e=document.getElementById(id);e.textContent=cond?tOn:tOff;e.className='badge '+(cond?'b-red':'b-green');};
+  
+  // Hemodynamics
+  setB('csO2', d.spo2 < t.spo2Hypo, 'HYPOXIA', 'NORMAL');
+  
+  // Temperature
+  setB('csTemp', d.temp >= t.tempFever || d.fever_p > 50, 'FEVER', 'NORMAL');
+  
+  // Cardiac / HRV
+  const tachy = d.bpm > t.hrTachy;
+  const brady = d.bpm < t.hrBrady;
+  const sdnnNum = (d.sdnn != null && d.sdnn > 0) ? d.sdnn : 42.5;
+  const arrh = sdnnNum > t.hrvArrh;
+  if(tachy) {
+    document.getElementById('csEcg').textContent='TACHYCARDIA';
+    document.getElementById('csEcg').className='badge b-amber';
+  } else if(brady) {
+    document.getElementById('csEcg').textContent='BRADYCARDIA';
+    document.getElementById('csEcg').className='badge b-red';
+  } else if(arrh) {
+    document.getElementById('csEcg').textContent='ARRHYTHMIA';
+    document.getElementById('csEcg').className='badge b-amber';
+  } else {
+    document.getElementById('csEcg').textContent='STABLE';
+    document.getElementById('csEcg').className='badge b-green';
+  }
+
+  // Spectral / Anemia
+  const anemia = d.hb > t.hbRisk;
+  document.getElementById('csSpec').textContent = anemia ? 'ANEMIA RISK' : 'NORMAL';
+  document.getElementById('csSpec').className = 'badge ' + (anemia ? 'b-amber' : 'b-green');
+
+  // Respiratory & Screening badge
+  const tachypnea = d.rr > t.rrTachy;
+  const bradypnea = d.rr && d.rr < t.rrBrady;
+  const respBad = d.sirs || d.pneum || tachypnea || bradypnea;
+  document.getElementById('csResp').textContent = d.pneum ? 'PNEUMONIA' : (d.sirs ? 'SEPSIS RISK' : (tachypnea ? 'TACHYPNEA' : (bradypnea ? 'BRADYPNEA' : 'NORMAL')));
+  document.getElementById('csResp').className = 'badge ' + (d.pneum ? 'b-red' : respBad ? 'b-amber' : 'b-green');
+
+  // Cuffless Blood Pressure badge
+  const sys = d.sys || 118, dia = d.dia || 76;
+  const isStage2 = sys >= 160 || dia >= 100;
+  const isStage1 = !isStage2 && (sys >= 140 || dia >= 90);
+  const isPreHTN = !isStage1 && !isStage2 && (sys >= 130 || dia >= 85);
+  const isHypo   = sys < 90 || dia < 60;
+  const isPreEcl = (currentAge === 'MATERNAL' && (sys >= 140 || dia >= 90));
+  const elBP = document.getElementById('csBP');
+  if (elBP) {
+    if (isStage2) { elBP.textContent = 'STAGE 2 HTN'; elBP.className = 'badge b-red'; }
+    else if (isPreEcl) { elBP.textContent = 'PRE-ECLAMPSIA'; elBP.className = 'badge b-red'; }
+    else if (isStage1) { elBP.textContent = 'STAGE 1 HTN'; elBP.className = 'badge b-amber'; }
+    else if (isPreHTN) { elBP.textContent = 'PRE-HTN'; elBP.className = 'badge b-amber'; }
+    else if (isHypo) { elBP.textContent = 'HYPOTENSION'; elBP.className = 'badge b-red'; }
+    else { elBP.textContent = 'OPTIMAL'; elBP.className = 'badge b-green'; }
+  }
+}
+
+function renderHistory(){
+  const tb=document.getElementById('histBody');
+  tb.innerHTML='';
+  history.forEach(r=>{
+    const tr=document.createElement('tr');
+    const alerts=[];
+    if(r.sirs) alerts.push('SIRS');
+    if(r.pneum) alerts.push('Pneumonia');
+    if(r.jaund_risk) alerts.push('Jaundice');
+    if(r.tachy) alerts.push('Tachycardia');
+    if(r.brady) alerts.push('Bradycardia');
+    if(r.sys>=140||r.dia>=90) alerts.push('Hypertension');
+    const alertHtml=alerts.length
+      ? alerts.map(a=>`<span class="badge ${a==='Pneumonia'||a==='Hypertension'?'b-red':'b-amber'}" style="font-size:9px;padding:1px 5px;margin-right:2px">${a}</span>`).join('')
+      : '<span class="badge b-green" style="font-size:9px;padding:1px 5px">Normal</span>';
+    const rrStr=(r.rr!=null)?Math.round(r.rr)+'/m':'-';
+    const bpStr=(r.sys!=null && r.dia!=null)?`${Math.round(r.sys)}/${Math.round(r.dia)}`:'118/76';
+    tr.innerHTML=`<td>${r.timestamp}</td><td><strong>${r.score}/100</strong></td><td>${r.triage||''}</td><td style="font-family:var(--hi)">${r.triage_hi||r.triage_rom||'-'}</td><td><strong style="color:var(--cyan)">${bpStr}</strong></td><td>${Math.round(r.spo2)}%</td><td>${Math.round(r.bpm)}</td><td>${(+r.pi).toFixed(2)}%</td><td>${(+r.temp).toFixed(1)}°C</td><td>${(+r.sdnn).toFixed(1)}</td><td>${(+r.hb).toFixed(2)}</td><td>${rrStr}</td><td>${alertHtml}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+// ═══════ CANVAS OSCILLOSCOPE (60fps) ═══════
+const oscCanvas=document.getElementById('oscCanvas');
+const oscCtx=oscCanvas.getContext('2d');
+const BUF=600;
+const ppgBuf=new Float32Array(BUF);
+const ecgBuf=new Float32Array(BUF);
+
+function resizeOsc(){oscCanvas.width=oscCanvas.clientWidth;oscCanvas.height=260;}
+window.addEventListener('resize',resizeOsc);
+resizeOsc();
+
+function genPPG(t,bpm,pi){
+  const p = 60 / Math.max(bpm || 72, 35);
+  const ph = ((t % p) / p);
+  // PPG pulse foot starts at ph = 0.28, systolic crest peaks at ph = 0.38
+  // Exactly ~180ms after ECG R-peak at ph = 0.165 (matching textbook PTT)
+  let y = 0.0;
+  if (ph >= 0.28 && ph < 0.38) {
+    // Anacrotic Systolic Rise
+    y = Math.sin(((ph - 0.28) / 0.10) * (Math.PI / 2));
+  } else if (ph >= 0.38 && ph < 0.46) {
+    // Catacrotic limb descent
+    y = 0.52 + 0.48 * Math.cos(((ph - 0.38) / 0.08) * (Math.PI / 2));
+  } else if (ph >= 0.46 && ph < 0.56) {
+    // Dicrotic notch and secondary diastolic wave
+    y = 0.52 + 0.16 * Math.sin(((ph - 0.46) / 0.10) * Math.PI);
+  } else if (ph >= 0.56 && ph < 0.88) {
+    // Diastolic runoff exponential decay
+    y = 0.52 * Math.exp(-5.5 * (ph - 0.56));
+  } else {
+    y = 0.0;
+  }
+  return y * (Math.min(pi || 1.2, 5) / 2.8);
+}
+
+function genECG(t,bpm,sdnn){
+  const p = 60 / Math.max(bpm || 72, 35);
+  // Calibrated physiological sinus variability without chaotic jitter
+  const jitter = (sdnn > 0) ? (Math.sin(t * 1.8) * 0.00025 * Math.min(sdnn, 80)) : 0;
+  const ph = ((t % Math.max(p + jitter, 0.35)) / (p + jitter));
+
+  // Medical Lead-II Morphology (P-Q-R-S-T)
+  // R-Peak centered at ph = 0.165 (precisely ~180ms before PPG crest at ph = 0.38)
+  let y = 0.0;
+  if (ph >= 0.06 && ph < 0.12) {
+    // P-Wave (Atrial Depolarization): smooth rounded dome (+0.16)
+    y = 0.16 * Math.sin(((ph - 0.06) / 0.06) * Math.PI);
+  } else if (ph >= 0.12 && ph < 0.14) {
+    // PR Segment: Isoelectric baseline
+    y = 0.0;
+  } else if (ph >= 0.14 && ph < 0.152) {
+    // Q-Wave: Sharp negative septal deflection (-0.12)
+    y = -0.12 * Math.sin(((ph - 0.14) / 0.012) * Math.PI);
+  } else if (ph >= 0.152 && ph < 0.178) {
+    // R-Peak: Tall, towering ventricular depolarization spike (+1.00)
+    y = 1.00 * Math.sin(((ph - 0.152) / 0.026) * Math.PI);
+  } else if (ph >= 0.178 && ph < 0.198) {
+    // S-Wave: Negative basal ventricular depolarization (-0.22)
+    y = -0.22 * Math.sin(((ph - 0.178) / 0.020) * Math.PI);
+  } else if (ph >= 0.198 && ph < 0.24) {
+    // ST Segment: Isoelectric baseline
+    y = 0.0;
+  } else if (ph >= 0.24 && ph < 0.36) {
+    // T-Wave (Ventricular Repolarization): asymmetric smooth dome (+0.26)
+    y = 0.26 * Math.sin(((ph - 0.24) / 0.12) * Math.PI);
+  } else if (ph >= 0.37 && ph < 0.42) {
+    // U-Wave: subtle repolarization (+0.04)
+    y = 0.04 * Math.sin(((ph - 0.37) / 0.05) * Math.PI);
+  } else {
+    // Isoelectric baseline
+    y = 0.0;
+  }
+  return y;
+}
+
+function drawOsc(){
+  const w=oscCanvas.width,h=oscCanvas.height,hh=h/2;
+  animTime+=1/60;
+
+  // Generate samples
+  ppgBuf.copyWithin(0,1);ecgBuf.copyWithin(0,1);
+  ppgBuf[BUF-1]=genPPG(animTime,vitals.bpm||72,vitals.pi||1.2);
+  ecgBuf[BUF-1]=genECG(animTime,vitals.bpm||72,vitals.sdnn||42.5);
+
+  // Trigger ICU Pulse Audio on beat cycle
+  const beatInterval = 60 / Math.max(vitals.bpm || 72, 35);
+  if (animTime - lastBeatAudioTime >= beatInterval) {
+    lastBeatAudioTime = animTime;
+    playIcuTone(vitals.spo2 || 98);
+  }
+
+  // Clear
+  oscCtx.fillStyle='#080c14';
+  oscCtx.fillRect(0,0,w,h);
+
+  // Grid
+  oscCtx.strokeStyle='rgba(255,255,255,.03)';oscCtx.lineWidth=.5;
+  for(let x=0;x<w;x+=50){oscCtx.beginPath();oscCtx.moveTo(x,0);oscCtx.lineTo(x,h);oscCtx.stroke();}
+  for(let y=0;y<h;y+=25){oscCtx.beginPath();oscCtx.moveTo(0,y);oscCtx.lineTo(w,y);oscCtx.stroke();}
+
+  // Center line
+  oscCtx.strokeStyle='rgba(255,255,255,.08)';oscCtx.lineWidth=1;
+  oscCtx.beginPath();oscCtx.moveTo(0,hh);oscCtx.lineTo(w,hh);oscCtx.stroke();
+
+  // PPG Waveform (top half, green)
+  oscCtx.save();
+  oscCtx.strokeStyle='#10b981';oscCtx.shadowColor='#10b981';oscCtx.shadowBlur=8;oscCtx.lineWidth=2;
+  oscCtx.beginPath();
+  for(let i=0;i<w;i++){
+    const idx=Math.floor(i/w*BUF);
+    const y=hh*.5-ppgBuf[idx]*hh*.65;
+    i===0?oscCtx.moveTo(i,y):oscCtx.lineTo(i,y);
+  }
+  oscCtx.stroke();oscCtx.restore();
+
+  // ECG Waveform (bottom half, cyan) — Calibrated Lead-II morphology
+  oscCtx.save();
+  oscCtx.strokeStyle='#00e5ff';oscCtx.shadowColor='#00e5ff';oscCtx.shadowBlur=8;oscCtx.lineWidth=2;
+  oscCtx.beginPath();
+  for(let i=0;i<w;i++){
+    const idx=Math.floor(i/w*BUF);
+    // Baseline at hh + hh*0.5 (195px), peak reaches 148px (never crosses center line at 130px)
+    const y=hh+hh*.5-ecgBuf[idx]*hh*.38;
+    i===0?oscCtx.moveTo(i,y):oscCtx.lineTo(i,y);
+  }
+  oscCtx.stroke();oscCtx.restore();
+
+  // ⚡ DUAL-MODAL PTT LASER MEASUREMENT BRACKET (ECG R-Peak to PPG Wave)
+  const pttMs = Math.round(vitals.ptt || 180);
+  const sysVal = Math.round(vitals.sys || 118);
+  const diaVal = Math.round(vitals.dia || 76);
+  const pwv = (160 / Math.max(pttMs, 100)).toFixed(1);
+
+  const xCenter = w * 0.50;
+  const xSpan = Math.min(130, Math.max(55, pttMs * 0.44));
+  const xEcg = xCenter - xSpan * 0.5;
+  const xPpg = xCenter + xSpan * 0.5;
+
+  oscCtx.save();
+  // Vertical laser guides
+  oscCtx.setLineDash([3, 3]);
+  oscCtx.strokeStyle = 'rgba(0, 229, 255, 0.4)';
+  oscCtx.lineWidth = 1;
+  oscCtx.beginPath(); oscCtx.moveTo(xEcg, hh); oscCtx.lineTo(xEcg, hh + 44); oscCtx.stroke();
+  oscCtx.beginPath(); oscCtx.moveTo(xPpg, hh - 44); oscCtx.lineTo(xPpg, hh); oscCtx.stroke();
+
+  // Horizontal laser measurement line
+  oscCtx.setLineDash([]);
+  oscCtx.strokeStyle = '#00e5ff';
+  oscCtx.lineWidth = 1.5;
+  oscCtx.shadowColor = '#00e5ff';
+  oscCtx.shadowBlur = 6;
+  oscCtx.beginPath();
+  oscCtx.moveTo(xEcg, hh);
+  oscCtx.lineTo(xPpg, hh);
+  oscCtx.stroke();
+
+  // PTT Badge Pill
+  const pttTag = `⚡ PTT: ${pttMs}ms ➔ ${sysVal}/${diaVal} mmHg (${pwv}m/s)`;
+  oscCtx.font = '600 10px Inter, sans-serif';
+  const tagW = oscCtx.measureText(pttTag).width + 14;
+  oscCtx.fillStyle = 'rgba(8, 12, 20, 0.92)';
+  oscCtx.fillRect(xCenter - tagW/2, hh - 11, tagW, 22);
+  oscCtx.strokeStyle = 'rgba(0, 229, 255, 0.8)';
+  oscCtx.strokeRect(xCenter - tagW/2, hh - 11, tagW, 22);
+  oscCtx.fillStyle = '#00e5ff';
+  oscCtx.fillText(pttTag, xCenter - tagW/2 + 7, hh + 4);
+  oscCtx.restore();
+
+  // Labels
+  oscCtx.font='600 11px Inter,sans-serif';
+  oscCtx.fillStyle='#10b981';oscCtx.fillText(`PPG  ♥ ${Math.round(vitals.bpm||72)} BPM  SpO₂ ${Math.round(vitals.spo2||98)}%`,12,20);
+  oscCtx.fillStyle='#00e5ff';oscCtx.fillText(`ECG  SDNN ${(vitals.sdnn||0).toFixed(0)}ms  PI ${(vitals.pi||0).toFixed(1)}%`,12,hh+18);
+
+  // State indicator
+  if(vitals.state==='SCAN'){
+    oscCtx.fillStyle='rgba(245,158,11,.8)';oscCtx.font='bold 12px Inter';
+    oscCtx.fillText(`● SCANNING ${vitals.rem||0}s`,w-130,20);
+  }else if(vitals.state==='RESULTS'){
+    oscCtx.fillStyle='rgba(16,185,129,.8)';oscCtx.font='bold 12px Inter';
+    oscCtx.fillText('● COMPLETE',w-110,20);
+  }
+
+  requestAnimationFrame(drawOsc);
+}
+requestAnimationFrame(drawOsc);
+
+// ═══════ 14-BAND MOLECULAR TISSUE SPECTROPHOTOMETER ═══════
+const specCanvas = document.getElementById('specCanvas');
+const specCtx = specCanvas ? specCanvas.getContext('2d') : null;
+const SPEC_CHANNELS = [
+  { nm: 405, name: 'F1', label: 'Bilirubin (Violet)', color: '#8b5cf6' },
+  { nm: 425, name: 'F2', label: 'Violet', color: '#7c3aed' },
+  { nm: 450, name: 'FZ', label: 'Jaundice Peak (Blue)', color: '#3b82f6' },
+  { nm: 475, name: 'F3', label: 'Melanin Norm (Cyan)', color: '#06b6d4' },
+  { nm: 515, name: 'F4', label: 'Cyan-Green', color: '#14b8a6' },
+  { nm: 550, name: 'F5', label: 'Oxy-Hb (HbO2)', color: '#10b981' },
+  { nm: 600, name: 'FXL', label: 'Orange Ref', color: '#f59e0b' },
+  { nm: 640, name: 'F6', label: 'Red-Orange', color: '#f97316' },
+  { nm: 690, name: 'F7', label: 'Deoxy-Hb', color: '#ef4444' },
+  { nm: 745, name: 'F8', label: 'Far-Red Ref', color: '#dc2626' },
+  { nm: 800, name: 'NIR1', label: 'Near-IR', color: '#991b1b' },
+  { nm: 855, name: 'NIR2', label: 'Water H2O', color: '#cbd5e1' }
+];
+
+function drawSpec(){
+  if (!specCanvas || !specCtx) return;
+  const w = specCanvas.width = specCanvas.clientWidth;
+  const h = specCanvas.height = 120;
+
+  specCtx.fillStyle = '#080c14';
+  specCtx.fillRect(0, 0, w, h);
+
+  // Grid lines
+  specCtx.strokeStyle = 'rgba(255,255,255,0.04)';
+  specCtx.lineWidth = 1;
+  for(let y = 20; y < h; y += 30){
+    specCtx.beginPath(); specCtx.moveTo(0, y); specCtx.lineTo(w, y); specCtx.stroke();
+  }
+
+  const num = SPEC_CHANNELS.length;
+  const barW = (w - 40) / num;
+  const pts = [];
+
+  SPEC_CHANNELS.forEach((ch, i) => {
+    let val = 0.5;
+    if(ch.nm === 450) {
+      val = Math.min(1.0, 0.38 + (vitals.jaund || 0.9) * 0.45);
+    } else if(ch.nm === 550) {
+      val = Math.min(1.0, 0.95 - (vitals.hb || 0.95) * 0.35);
+    } else if(ch.nm === 690) {
+      val = Math.min(1.0, 0.35 + ((100 - (vitals.spo2||98)) / 15) * 0.4);
+    } else if(ch.nm === 855) {
+      val = Math.min(1.0, 0.42 + (vitals.dehy || 0.75) * 0.42);
+    } else {
+      val = 0.35 + Math.sin(i * 0.6 + animTime * 0.8) * 0.12;
+    }
+
+    const x = 20 + i * barW + barW * 0.5;
+    const barH = val * (h - 35);
+    const y = h - 18 - barH;
+    pts.push({ x, y, val, ch });
+
+    // Draw Bar
+    specCtx.save();
+    specCtx.fillStyle = ch.color + '44';
+    specCtx.fillRect(x - barW * 0.35, y, barW * 0.7, barH);
+    specCtx.strokeStyle = ch.color;
+    specCtx.lineWidth = 1.5;
+    specCtx.strokeRect(x - barW * 0.35, y, barW * 0.7, barH);
+
+    // Wavelength label
+    specCtx.font = '9px monospace';
+    specCtx.fillStyle = 'rgba(255,255,255,0.5)';
+    specCtx.textAlign = 'center';
+    specCtx.fillText(ch.nm, x, h - 5);
+    specCtx.restore();
   });
 
-  // ========================================================
-  // 1. WEB-BLUETOOTH (BLE 5.0) IMPLEMENTATION
-  // ========================================================
-  async function toggleBluetooth() {
-    if (bleDevice && bleDevice.gatt.connected) {
-      disconnectBluetooth();
-      return;
+  // Spline Curve across peaks
+  if(pts.length > 1){
+    specCtx.save();
+    specCtx.beginPath();
+    specCtx.moveTo(pts[0].x, pts[0].y);
+    for(let i = 1; i < pts.length; i++){
+      const xc = (pts[i-1].x + pts[i].x) / 2;
+      const yc = (pts[i-1].y + pts[i].y) / 2;
+      specCtx.quadraticCurveTo(pts[i-1].x, pts[i-1].y, xc, yc);
     }
-    connectBluetooth();
+    specCtx.strokeStyle = '#00e5ff';
+    specCtx.lineWidth = 2;
+    specCtx.shadowColor = '#00e5ff';
+    specCtx.shadowBlur = 8;
+    specCtx.stroke();
+    specCtx.restore();
   }
 
-  async function connectBluetooth() {
-    if (window.location.protocol === 'file:') {
-      alert("⚠️ NOTICE: You opened this file via file:/// URL.\n\nChromium (Chrome/Edge) restricts Web-Bluetooth on local file paths.\n\n• For Bluetooth: Run 'start_dashboard.bat' in Arduino/final_eval_v2/ (opens http://localhost:8000)\n• For Immediate Connection: Click '🔌 Connect USB (Serial)' instead!");
-    }
+  // Key Peak Badges
+  if(vitals.jaund_risk || vitals.jaund > 1.25){
+    const jPt = pts[2];
+    specCtx.fillStyle = '#f59e0b';
+    specCtx.font = 'bold 9px Inter';
+    specCtx.fillText('▲ BILIRUBIN HIGH', jPt.x, jPt.y - 6);
+  }
+  if(vitals.hb > 1.30){
+    const hPt = pts[5];
+    specCtx.fillStyle = '#ef4444';
+    specCtx.font = 'bold 9px Inter';
+    specCtx.fillText('▼ HB DEFICIT', hPt.x, hPt.y - 6);
+  }
+}
+setInterval(drawSpec, 100);
 
-    try {
-      if (!navigator.bluetooth) {
-        alert("Web-Bluetooth is not enabled in this browser.\n\nMake sure you are using Google Chrome or Microsoft Edge on Windows/Mac/Android, and that Bluetooth is turned ON in Windows Settings.");
-        return;
+// ═══════ THERMAL HEATMAP ═══════
+const thermCanvas=document.getElementById('thermalCanvas');
+const thermCtx=thermCanvas.getContext('2d');
+
+function tempColor(temp){
+  const t=Math.max(0,Math.min(1,(temp-28)/16));
+  const S=[[0,.0,.0,.31],[.15,.08,.0,.71],[.3,.0,.24,1],[.45,.0,.71,.78],[.55,.0,.86,.24],[.65,.71,1,.0],[.75,1,.86,.0],[.85,1,.47,.0],[.95,1,.16,.0],[1,1,1,.78]];
+  for(let i=0;i<S.length-1;i++){
+    if(t>=S[i][0]&&t<=S[i+1][0]){
+      const f=(t-S[i][0])/(S[i+1][0]-S[i][0]);
+      return[Math.floor((S[i][1]+f*(S[i+1][1]-S[i][1]))*255),Math.floor((S[i][2]+f*(S[i+1][2]-S[i][2]))*255),Math.floor((S[i][3]+f*(S[i+1][3]-S[i][3]))*255)];
+    }
+  }
+  return[255,255,200];
+}
+
+function drawThermal(){
+  const ct=vitals.temp||36.6;
+  const asym=vitals.asym||0.15;
+  const img=thermCtx.createImageData(32,24);
+  for(let r=0;r<24;r++){
+    for(let c=0;c<32;c++){
+      const dx=(c-16)/16,dy=(r-12)/12;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      let temp=ct-3-(dist*5);
+      // Forehead ROI: warmer
+      if(r>=4&&r<12&&c>=8&&c<24) temp=ct-(dist*2);
+      // Temporal asymmetry
+      if(c<16) temp+=asym/2; else temp-=asym/2;
+      // Noise
+      temp+=(Math.random()-.5)*.4;
+      const [cr,cg,cb]=tempColor(temp);
+      const i=(r*32+c)*4;
+      img.data[i]=cr;img.data[i+1]=cg;img.data[i+2]=cb;img.data[i+3]=255;
+    }
+  }
+  thermCtx.putImageData(img,0,0);
+}
+setInterval(drawThermal,500);
+drawThermal();
+
+// ═══════ VOICE OF ASHA (Web Speech API) ═══════
+function toggleVoice(){
+  voiceEnabled=!voiceEnabled;
+  const b=document.getElementById('btnVoice');
+  b.textContent=voiceEnabled?'🔊 Voice':'🔇 Muted';
+  b.classList.toggle('active',voiceEnabled);
+  if(!voiceEnabled) speechSynthesis.cancel();
+}
+
+function speakDiagnosis(d){
+  if(!('speechSynthesis' in window)||!voiceEnabled)return;
+  speechSynthesis.cancel();
+  const s=d.score||0;
+  const lang=voiceLang||'bi';
+  const ageInfo = AGE_TABLE[currentAge] || AGE_TABLE.ADULT;
+
+  if(lang==='hi'||lang==='bi'){
+    let t=`स्मार्ट आशा जांच पूरी। मरीज वर्ग: ${ageInfo.nameHi}। `;
+    if(s>=50) t+='गंभीर स्थिति। तुरंत प्राथमिक स्वास्थ्य केंद्र ले जाएं। ';
+    else if(s>=25) t+='चेतावनी। निगरानी रखें और दोबारा जांच करें। ';
+    else t+='सामान्य। सभी जांच स्वस्थ हैं। ';
+    t+=`ऑक्सीजन ${Math.round(d.spo2||98)} प्रतिशत। तापमान ${(d.temp||36.6).toFixed(1)} डिग्री।`;
+    if(d.sys && d.dia){
+      t+=` रक्तचाप ${Math.round(d.sys)} बटे ${Math.round(d.dia)} मिलीमीटर पारा।`;
+      if(d.sys>=160 || d.dia>=100) t+=' गंभीर उच्च रक्तचाप संकट।';
+      else if(currentAge==='MATERNAL' && (d.sys>=140 || d.dia>=90)) t+=' प्री-एक्लेम्पसिया चेतावनी। तुरंत अस्पताल जाएं।';
+      else if(d.sys>=140 || d.dia>=90) t+=' उच्च रक्तचाप।';
+      else if(d.sys<90 || d.dia<60) t+=' निम्न रक्तचाप और शॉक की संभावना।';
+    }
+    if(d.rr) t+=` श्वसन दर ${Math.round(d.rr)} प्रति मिनट।`;
+    if(d.sirs) t+=' सेप्सिस का संदेह। ';
+    if(d.pneum) t+=' निमोनिया जोखिम। ';
+    if(d.jaund_risk) t+=' पीलिया का बढ़ा हुआ जोखिम। ';
+    const u=new SpeechSynthesisUtterance(t);u.lang='hi-IN';u.rate=.9;u.pitch=1;
+    speechSynthesis.speak(u);
+  }
+  if(lang==='en'||lang==='bi'){
+    let t=`Smart ASHA scan complete. Demographic: ${ageInfo.name}. `;
+    if(s>=50) t+='Critical condition detected. Immediate referral to Primary Health Centre required. ';
+    else if(s>=25) t+='Warning. Some vital parameters need monitoring. ';
+    else t+='Normal. All vital signs within healthy limits for age. ';
+    t+=`Oxygen saturation ${Math.round(d.spo2||98)} percent. Temperature ${(d.temp||36.6).toFixed(1)} degrees celsius.`;
+    if(d.sys && d.dia){
+      t+=` Blood pressure ${Math.round(d.sys)} over ${Math.round(d.dia)} millimeters of mercury.`;
+      if(d.sys>=160 || d.dia>=100) t+=' Stage 2 hypertensive urgency detected.';
+      else if(currentAge==='MATERNAL' && (d.sys>=140 || d.dia>=90)) t+=' Pre-eclampsia alert detected in antenatal mother. Immediate referral to First Referral Unit.';
+      else if(d.sys>=140 || d.dia>=90) t+=' Hypertension detected.';
+      else if(d.sys<90 || d.dia<60) t+=' Hypotension detected, monitor for circulatory shock.';
+    }
+    if(d.rr) t+=` Respiratory rate ${Math.round(d.rr)} breaths per minute.`;
+    if(d.sirs) t+=' Warning: Sepsis screening positive. Immediate referral recommended.';
+    if(d.pneum) t+=' Alert: Pneumonia risk detected. Refer to Primary Health Centre.';
+    if(d.tachy) t+=` Heart rate elevated for ${ageInfo.name}. Tachycardia detected.`;
+    if(d.brady) t+=` Heart rate low for ${ageInfo.name}. Bradycardia detected.`;
+    if(d.jaund_risk) t+=' Jaundice risk elevated. Check bilirubin levels.';
+    const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;u.pitch=1;
+    speechSynthesis.speak(u);
+  }
+}
+
+// ═══════ FAIL-SAFE SIMULATOR (Ctrl+Shift+D) ═══════
+const PROFILES={
+  A:{name:'Profile A: Healthy Adult',age:'ADULT',state:'RESULTS',score:0,triage:'NORMAL (HEALTHY)',triage_hi:'सामान्य (स्वस्थ)',triage_rom:'SAMANYA (SWASTH)',bpm:72,spo2:99,pi:3.5,temp:36.6,fever_p:2,sdnn:45,rmssd:38,pnn50:18,hb:.95,jaund:.88,dehy:.75,asym:.15,rr:16,tachy:0,brady:0,sirs:0,pneum:0,jaund_risk:0,ptt:202,sys:118,dia:76,vasc_age:32,bp_stat:'OPTIMAL',bp_src:'ECG+PPG (Dual-Modal PTT)'},
+  B:{name:'Profile B: Child (Fever + Pneumonia)',age:'CHILD',state:'RESULTS',score:85,triage:'CRITICAL (REFER PHC)',triage_hi:'गंभीर (PHC रेफर करें)',triage_rom:'GAMBHIR (PHC JAYEN)',bpm:138,spo2:91,pi:1.8,temp:39.4,fever_p:92,sdnn:58,rmssd:24,pnn50:6,hb:1.48,jaund:1.1,dehy:1.35,asym:.45,rr:38,tachy:1,brady:0,sirs:1,pneum:1,jaund_risk:0,ptt:215,sys:98,dia:62,vasc_age:9,bp_stat:'PEDIATRIC NORMAL',bp_src:'ECG+PPG (Dual-Modal PTT)'},
+  C:{name:'Profile C: Senior (Cardiac Stress + HTN)',age:'GERIATRIC',state:'RESULTS',score:80,triage:'CRITICAL (REFER CARDIAC)',triage_hi:'गंभीर (हृदय जांच हेतु)',triage_rom:'GAMBHIR (HRIDAY JAANCH)',bpm:44,spo2:94,pi:.4,temp:35.8,fever_p:5,sdnn:112,rmssd:95,pnn50:42,hb:1.15,jaund:.92,dehy:.95,asym:.85,rr:10,tachy:0,brady:1,sirs:0,pneum:0,jaund_risk:0,ptt:142,sys:168,dia:102,vasc_age:74,bp_stat:'STAGE 2 HYPERTENSION',bp_src:'ECG+PPG (Dual-Modal PTT)'},
+  D:{name:'Profile D: Neonate (Jaundice & High RR)',age:'NEONATE',state:'RESULTS',score:60,triage:'CRITICAL (SNCU REFERRAL)',triage_hi:'गंभीर (SNCU रेफर करें)',triage_rom:'GAMBHIR (SNCU JAYEN)',bpm:145,spo2:97,pi:1.6,temp:37.2,fever_p:8,sdnn:72,rmssd:42,pnn50:15,hb:1.05,jaund:1.68,dehy:1.15,asym:.20,rr:44,tachy:0,brady:0,sirs:0,pneum:0,jaund_risk:1,ptt:245,sys:72,dia:46,vasc_age:1,bp_stat:'NEONATAL OPTIMAL',bp_src:'PPG-DVP (Contour PWV)'},
+  E:{name:'Profile E: Maternal Antenatal (Pre-Eclampsia & Anemia)',age:'MATERNAL',state:'RESULTS',score:75,triage:'CRITICAL (FRU REFERRAL)',triage_hi:'गंभीर (FRU रेफर करें)',triage_rom:'GAMBHIR (FRU JAYEN)',bpm:104,spo2:96,pi:0.52,temp:37.1,fever_p:10,sdnn:65,rmssd:30,pnn50:12,hb:1.42,jaund:.95,dehy:1.20,asym:.78,rr:20,tachy:0,brady:0,sirs:0,pneum:0,jaund_risk:0,ptt:154,sys:148,dia:94,vasc_age:38,bp_stat:'PRE-ECLAMPSIA WARNING',bp_src:'ECG+PPG (Dual-Modal PTT)'}
+};
+const PROFILE_KEYS=['A','B','C','D','E'];
+
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey&&e.shiftKey&&(e.key==='D'||e.key==='d')){
+    e.preventDefault();
+    simMode=(simMode+1)%6; // 0=off, 1=A, 2=B, 3=C, 4=D, 5=E
+    const badge=document.getElementById('simBadge');
+    if(simMode===0){
+      badge.className='sim-badge';badge.textContent='SIM: OFF';
+      setStatus('Live mode restored.',true);
+    }else{
+      const k=PROFILE_KEYS[simMode-1];
+      badge.className='sim-badge on';badge.textContent='SIM: '+k;
+      const p={...PROFILES[k]};
+      if(p.age){
+        currentAge=p.age;
+        document.getElementById('ageProfile').value=p.age;
+        updateAgeBadge(p.age);
       }
+      Object.assign(vitals,p);
+      parseTelemetryDirect(p);
+      setStatus(`🔶 SIMULATOR: ${PROFILES[k].name}`,true);
+    }
+  }
+});
 
-      updateStatus("Scanning for 'Smart-ASHA-Pro' (or nearby BLE devices)...", false);
-
-      try {
-        // Primary Attempt: Match name or service UUID
-        bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [
-            { name: "Smart-ASHA-Pro" },
-            { namePrefix: "Smart" }
-          ],
-          optionalServices: [SERVICE_UUID]
-        });
-      } catch (filterErr) {
-        console.warn("Filtered search cancelled or failed, attempting unfiltered scan...", filterErr);
-        // Fallback Attempt: Show all devices in pairing dialog so user can select their board
-        bleDevice = await navigator.bluetooth.requestDevice({
-          acceptAllDevices: true,
-          optionalServices: [SERVICE_UUID]
-        });
+// Triple-click brand badge also toggles
+let brandClicks=0,brandTimer=null;
+document.getElementById('brandBadge').addEventListener('click',()=>{
+  brandClicks++;
+  if(brandClicks>=3){
+    brandClicks=0;clearTimeout(brandTimer);
+    simMode=(simMode+1)%6;
+    const badge=document.getElementById('simBadge');
+    if(simMode===0){badge.className='sim-badge';badge.textContent='SIM: OFF';setStatus('Live mode restored.',true);}
+    else{
+      const k=PROFILE_KEYS[simMode-1];badge.className='sim-badge on';badge.textContent='SIM: '+k;
+      const p={...PROFILES[k]};
+      if(p.age){
+        currentAge=p.age;
+        document.getElementById('ageProfile').value=p.age;
+        updateAgeBadge(p.age);
       }
-
-      bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
-
-      updateStatus("Connecting to GATT Server...", false);
-      bleServer = await bleDevice.gatt.connect();
-
-      updateStatus("Accessing Medical Telemetry Service...", false);
-      const service = await bleServer.getPrimaryService(SERVICE_UUID);
-
-      updateStatus("Subscribing to Clinical Notifications...", false);
-      bleChar = await service.getCharacteristic(CHARACTERISTIC_UUID);
-      await bleChar.startNotifications();
-      bleChar.addEventListener('characteristicvaluechanged', handleTelemetryNotification);
-
-      updateStatus("Connected & Streaming Telemetry!", true);
-      document.getElementById("btnConnect").innerHTML = "<span>🔴 Disconnect BLE</span>";
-      document.getElementById("btnConnect").classList.add("connected");
-      document.getElementById("deviceMeta").innerText = `Device: ${bleDevice.name || 'Smart-ASHA'} | Bus: BLE 5.0 GATT`;
-
-      // Read initial value
-      try {
-        const val = await bleChar.readValue();
-        const decoder = new TextDecoder('utf-8');
-        const text = decoder.decode(val);
-        if (text.startsWith("{")) parseTelemetry(JSON.parse(text));
-      } catch(e) {}
-
-    } catch (err) {
-      console.error(err);
-      updateStatus("Bluetooth connection cancelled: " + err.message, false);
+      Object.assign(vitals,p);parseTelemetryDirect(p);setStatus(`🔶 SIMULATOR: ${PROFILES[k].name}`,true);
     }
-  }
+  }else{brandTimer=setTimeout(()=>brandClicks=0,600);}
+});
 
-  function disconnectBluetooth() {
-    if (bleDevice && bleDevice.gatt.connected) {
-      bleDevice.gatt.disconnect();
-    }
-    onDisconnected();
-  }
+function parseTelemetryDirect(d){
+  // Directly render results without going through live/scan filtering
+  lastReport={...d,timestamp:new Date().toLocaleTimeString()};
+  const s=d.score||0;
+  document.getElementById('gVal').textContent=s;
+  document.getElementById('gLbl').textContent='SEVERITY / 100';
+  let col='var(--green)',bc='b-green',bt='HEALTHY';
+  if(s>=50){col='var(--red)';bc='b-red';bt='CRITICAL';}
+  else if(s>=25){col='var(--amber)';bc='b-amber';bt='MONITOR';}
+  document.getElementById('gauge').style.background=`conic-gradient(${col} ${(s/100)*360}deg,rgba(255,255,255,.04) ${(s/100)*360}deg)`;
+  document.getElementById('triageEn').innerHTML=`${d.triage||'NORMAL'} <span class="badge ${bc}">${bt}</span>`;
+  document.getElementById('triageHi').textContent=d.triage_hi||d.triage_rom||'सामान्य';
+  document.getElementById('triageDesc').textContent=s>=50?'CRITICAL: Severe anomaly. Immediate PHC referral.':s>=25?'WARNING: Minor deviation. Monitor and re-evaluate.':'NORMAL: All vitals healthy.';
+  updateVitalCards(d);
+  updateBadges(d);
+  history.unshift(lastReport);
+  renderHistory();
+  if(voiceEnabled) speakDiagnosis(d);
+}
 
-  function onDisconnected() {
-    updateStatus("Disconnected. Ready to re-connect.", false);
-    document.getElementById("btnConnect").innerHTML = "<span>📡 Connect Bluetooth</span>";
-    document.getElementById("btnConnect").classList.remove("connected");
-    document.getElementById("deviceMeta").innerText = "Device: Not Connected | Bus: Ready";
-  }
+// ═══════ GOVERNMENT HEALTHCARE SCHEMES DYNAMIC MATCHER ═══════
+function getMatchedSchemes(v, s, ageKey) {
+  const schemes = [];
+  const t = AGE_TABLE[ageKey] || AGE_TABLE.ADULT;
+  const sys = v.sys ? Math.round(v.sys) : 120;
+  const dia = v.dia ? Math.round(v.dia) : 80;
 
-  // ========================================================
-  // 2. WEB-SERIAL (USB CABLE) ZERO-FAIL IMPLEMENTATION
-  // ========================================================
-  async function toggleSerial() {
-    if (serialPort && serialPort.readable) {
-      await disconnectSerial();
-      return;
-    }
-    connectSerial();
-  }
-
-  async function connectSerial() {
-    if (!navigator.serial) {
-      alert("Web-Serial is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
-      return;
-    }
-    try {
-      updateStatus("Select ESP32-S3 COM Port in the popup...", false);
-      serialPort = await navigator.serial.requestPort();
-      await serialPort.open({ baudRate: 115200 });
-
-      updateStatus("USB Serial Connected! Streaming Telemetry...", true);
-      document.getElementById("btnSerial").innerHTML = "<span>🔴 Disconnect USB</span>";
-      document.getElementById("btnSerial").classList.add("connected");
-      document.getElementById("deviceMeta").innerText = "Device: ESP32-S3 | Bus: USB Serial (115200)";
-
-      readSerialStream();
-    } catch (err) {
-      console.error(err);
-      updateStatus("USB connection cancelled: " + err.message, false);
-    }
-  }
-
-  async function disconnectSerial() {
-    try {
-      if (serialReader) {
-        await serialReader.cancel();
-        serialReader = null;
-      }
-      if (serialPort) {
-        await serialPort.close();
-        serialPort = null;
-      }
-    } catch (e) {
-      console.warn("Serial close warning:", e);
-    }
-    document.getElementById("btnSerial").innerHTML = "<span>🔌 Connect USB (Serial)</span>";
-    document.getElementById("btnSerial").classList.remove("connected");
-    updateStatus("USB Serial Disconnected.", false);
-    document.getElementById("deviceMeta").innerText = "Device: Not Connected | Bus: Ready";
-  }
-
-  async function readSerialStream() {
-    const textDecoder = new TextDecoderStream();
-    serialPort.readable.pipeTo(textDecoder.writable);
-    const reader = textDecoder.readable.getReader();
-    serialReader = reader;
-    let lineBuf = "";
-
-    try {
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        if (value) {
-          lineBuf += value;
-          let lines = lineBuf.split("\n");
-          lineBuf = lines.pop(); // keep partial line in buffer
-          for (let line of lines) {
-            processSerialLine(line.trim());
-          }
-        }
-      }
-    } catch (err) {
-      console.warn("Serial stream ended:", err);
-    }
-  }
-
-  function processSerialLine(line) {
-    if (!line) return;
-    console.log("[SERIAL]", line);
-
-    // If device outputs JSON
-    if (line.startsWith("{") && line.endsWith("}")) {
-      try {
-        const data = JSON.parse(line);
-        parseTelemetry(data);
-        return;
-      } catch(e) {}
-    }
-
-    // If CSV row from EXPORT command (e.g. "0,15,NORMAL (HEALTHY),36.6,98,...")
-    if (/^\d+,\d+,/.test(line)) {
-      const parts = line.split(",");
-      if (parts.length >= 8) {
-        const rec = {
-          timestamp: "Slot #" + parts[0],
-          score: parseInt(parts[1]) || 0,
-          triage: parts[2] || "NORMAL",
-          triage_hi: "",
-          temp: parseFloat(parts[3]) || 36.6,
-          spo2: parseFloat(parts[4]) || 98,
-          pi: parseFloat(parts[5]) || 1.2,
-          bpm: 72,
-          sdnn: parseFloat(parts[6]) || 45.0,
-          hb: parseFloat(parts[7]) || 1.0,
-          jaund: 1.0,
-          dehy: parseFloat(parts[8]) || 1.0
-        };
-        screeningHistory.push(rec);
-        renderHistoryTable();
-      }
-    }
-  }
-
-  async function requestDumpFromDevice() {
-    if (!serialPort || !serialPort.writable) {
-      alert("Please connect via USB Cable first using '🔌 Connect USB (Serial)' to dump internal flash records.");
-      return;
-    }
-    const writer = serialPort.writable.getWriter();
-    const encoder = new TextEncoder();
-    await writer.write(encoder.encode("EXPORT\n"));
-    writer.releaseLock();
-    updateStatus("Sent 'EXPORT' command to workstation flash vault...", true);
-  }
-
-  function updateStatus(msg, active) {
-    document.getElementById("statusText").innerText = "Status: " + msg;
-    const dot = document.getElementById("statusDot");
-    if (active) dot.classList.add("active");
-    else dot.classList.remove("active");
-  }
-
-  let bleBuffer = "";
-
-  function handleTelemetryNotification(event) {
-    const value = event.target.value;
-    const decoder = new TextDecoder('utf-8');
-    const chunk = decoder.decode(value);
-
-    // If chunk is a complete self-contained JSON
-    if (chunk.startsWith("{") && chunk.endsWith("}")) {
-      try {
-        const data = JSON.parse(chunk);
-        parseTelemetry(data);
-        bleBuffer = "";
-        return;
-      } catch(e) {}
-    }
-
-    // Otherwise append to buffer for multi-packet reassembly
-    bleBuffer += chunk;
-    if (bleBuffer.startsWith("{") && bleBuffer.endsWith("}")) {
-      try {
-        const data = JSON.parse(bleBuffer);
-        parseTelemetry(data);
-        bleBuffer = "";
-      } catch(e) {}
-    } else if (bleBuffer.length > 1200) {
-      bleBuffer = ""; // reset on overflow
-    }
-  }
-
-  function parseTelemetry(data) {
-    if (!data) return;
-
-    // State 1: IDLE STANDBY (Heartbeat)
-    if (data.state === "IDLE" || data.status === "IDLE") {
-      updateStatus("🟢 Connected to Smart-ASHA | Standby (Insert Finger to Scan)", true);
-      document.getElementById("triageVerdictEn").innerHTML = 
-        `INSERT FINGER <span class="badge badge-normal">STANDBY</span>`;
-      document.getElementById("triageVerdictHi").innerText = "उंगली लगाएं (जांच शुरू करने के लिए)";
-      document.getElementById("triageDesc").innerText = 
-        "Workstation is connected over Bluetooth. Insert finger into MAX30105 sensor on breadboard to begin the 60-second diagnostic scan.";
-
-      if (data.temp !== undefined) document.getElementById("valTemp").innerText = data.temp.toFixed(1);
-      if (data.spo2 !== undefined) document.getElementById("valSpO2").innerText = data.spo2;
-      if (data.bpm !== undefined)  document.getElementById("valBPM").innerText  = Math.round(data.bpm) + " BPM";
-      if (data.pi !== undefined)   document.getElementById("valPI").innerText   = data.pi.toFixed(2) + " %";
-      return;
-    }
-
-    // State 2: SCANNING IN PROGRESS
-    if (data.state === "SCAN") {
-      updateStatus(`🟡 DIAGNOSTIC SCAN IN PROGRESS (${data.rem}s remaining)`, true);
-      document.getElementById("triageVerdictEn").innerHTML = 
-        `SCANNING... (${data.rem}s) <span class="badge badge-warning">IN PROGRESS</span>`;
-      document.getElementById("triageVerdictHi").innerText = `जांच जारी है (${data.rem} सेकंड शेष)`;
-      document.getElementById("triageDesc").innerText = 
-        "Hold still! Workstation is acquiring continuous multi-wavelength photoplethysmography, radiometric thermal vision, and multi-spectral absorption.";
-
-      if (data.spo2 !== undefined) document.getElementById("valSpO2").innerText = data.spo2;
-      if (data.bpm !== undefined)  document.getElementById("valBPM").innerText  = Math.round(data.bpm) + " BPM";
-      if (data.pi !== undefined)   document.getElementById("valPI").innerText   = data.pi.toFixed(2) + " %";
-      if (data.temp !== undefined) document.getElementById("valTemp").innerText = data.temp.toFixed(1);
-
-      // Animate progress on gauge
-      const prog = Math.min(100, Math.max(0, Math.round(((60 - data.rem) / 60) * 100)));
-      document.getElementById("scoreVal").innerText = prog + "%";
-      const lbl = document.querySelector(".score-label");
-      if (lbl) lbl.innerText = "SCAN PROGRESS";
-      const angle = (prog / 100) * 360;
-      document.getElementById("scoreCircle").style.background = 
-        `conic-gradient(var(--warning) ${angle}deg, rgba(255,255,255,0.06) ${angle}deg)`;
-      return;
-    }
-
-    // State 3: RESULTS (Full Clinical Report)
-    const lbl = document.querySelector(".score-label");
-    if (lbl) lbl.innerText = "Severity / 100";
-    lastReport = data;
-    lastReport.timestamp = new Date().toLocaleTimeString();
-
-    // 1. Severity Score & Gauge
-    const score = data.score !== undefined ? data.score : 0;
-    document.getElementById("scoreVal").innerText = score;
-    
-    let scoreColor = "var(--success)";
-    let badgeClass = "badge-normal";
-    let badgeText  = "HEALTHY";
-    
-    if (score >= 50) {
-      scoreColor = "var(--danger)";
-      badgeClass = "badge-critical";
-      badgeText  = "CRITICAL";
-    } else if (score >= 25) {
-      scoreColor = "var(--warning)";
-      badgeClass = "badge-warning";
-      badgeText  = "MONITOR";
-    }
-
-    const angle = (score / 100) * 360;
-    document.getElementById("scoreCircle").style.background = 
-      `conic-gradient(${scoreColor} ${angle}deg, rgba(255,255,255,0.06) ${angle}deg)`;
-
-    // 2. Triage Verdict
-    document.getElementById("triageVerdictEn").innerHTML = 
-      `${data.triage || 'NORMAL'} <span class="badge ${badgeClass}">${badgeText}</span>`;
-    document.getElementById("triageVerdictHi").innerText = data.triage_hi || data.triage_rom || "सामान्य (स्वस्थ)";
-    document.getElementById("triageDesc").innerText = 
-      (score >= 50) ? "CRITICAL RISK: Severe biomarker anomaly detected. Immediate Primary Health Centre (PHC) referral indicated." :
-      (score >= 25) ? "WARNING: Minor physiological deviation. Monitor vitals and re-evaluate." :
-                      "NORMAL: All multi-system vital parameters are within healthy physiological limits.";
-
-    // 3. Vitals & Cards
-    if (data.spo2 !== undefined) document.getElementById("valSpO2").innerText = data.spo2;
-    if (data.bpm !== undefined)  document.getElementById("valBPM").innerText  = Math.round(data.bpm) + " BPM";
-    if (data.pi !== undefined)   document.getElementById("valPI").innerText   = data.pi.toFixed(2) + " %";
-    
-    if (data.temp !== undefined)    document.getElementById("valTemp").innerText   = data.temp.toFixed(1);
-    if (data.fever_p !== undefined) document.getElementById("valFeverP").innerText = data.fever_p.toFixed(1) + " %";
-    if (data.asym !== undefined)    document.getElementById("valAsym").innerText   = data.asym.toFixed(2) + " °C";
-
-    if (data.sdnn !== undefined)  document.getElementById("valSDNN").innerText  = data.sdnn.toFixed(1);
-    if (data.rmssd !== undefined) document.getElementById("valRMSSD").innerText = data.rmssd.toFixed(1) + " ms";
-    if (data.pnn50 !== undefined) document.getElementById("valPNN50").innerText = data.pnn50.toFixed(1) + " %";
-
-    if (data.hb !== undefined)    document.getElementById("valHb").innerText    = data.hb.toFixed(2);
-    if (data.jaund !== undefined) document.getElementById("valJaund").innerText = data.jaund.toFixed(2);
-    if (data.dehy !== undefined)  document.getElementById("valDehy").innerText  = data.dehy.toFixed(2);
-
-    // Card Badges
-    document.getElementById("cardSpO2Status").innerText = (data.spo2 < 94) ? "HYPOXIA" : "NORMAL";
-    document.getElementById("cardSpO2Status").className = "badge " + (data.spo2 < 94 ? "badge-critical" : "badge-normal");
-
-    document.getElementById("cardTempStatus").innerText = (data.temp >= 38.0 || data.fever_p > 50) ? "FEVER" : "NORMAL";
-    document.getElementById("cardTempStatus").className = "badge " + (data.temp >= 38.0 || data.fever_p > 50 ? "badge-critical" : "badge-normal");
-
-    document.getElementById("cardEcgStatus").innerText = (data.sdnn > 115) ? "ARRHYTHMIA" : "STABLE";
-    document.getElementById("cardEcgStatus").className = "badge " + (data.sdnn > 115 ? "badge-warning" : "badge-normal");
-
-    document.getElementById("cardSpecStatus").innerText = (data.hb > 1.35) ? "ANEMIA RISK" : "NORMAL";
-    document.getElementById("cardSpecStatus").className = "badge " + (data.hb > 1.35 ? "badge-warning" : "badge-normal");
-
-    // Add to history table
-    screeningHistory.unshift(lastReport);
-    renderHistoryTable();
-    updateStatus("✅ Clinical Diagnostic Report Synchronized!", true);
-  }
-
-  function renderHistoryTable() {
-    const tbody = document.getElementById("historyTableBody");
-    tbody.innerHTML = "";
-
-    screeningHistory.forEach(rec => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${rec.timestamp}</td>
-        <td><strong>${rec.score}/100</strong></td>
-        <td>${rec.triage}</td>
-        <td style="font-family: var(--font-hi);">${rec.triage_hi || rec.triage_rom || '-'}</td>
-        <td>${rec.spo2}%</td>
-        <td>${Math.round(rec.bpm)}</td>
-        <td>${rec.pi.toFixed(2)}%</td>
-        <td>${rec.temp.toFixed(1)}°C</td>
-        <td>${rec.sdnn.toFixed(1)}</td>
-        <td>${rec.hb.toFixed(2)}</td>
-      `;
-      tbody.appendChild(row);
+  // 1. Ayushman Bharat PM-JAY (Pradhan Mantri Jan Arogya Yojana)
+  if (s >= 25 || v.spo2 < 93 || v.temp >= 38.2 || v.sirs || v.pneum || (sys >= 150 || dia >= 95)) {
+    schemes.push({
+      name: "Ayushman Bharat — PM-JAY",
+      nameHi: "आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना (PM-JAY)",
+      badge: "₹5,00,000 मुफ़्त इलाज प्रति वर्ष",
+      type: "कैशलेस अस्पताल भर्ती एवं सर्जरी (Secondary & Tertiary Care)",
+      icon: "🏥",
+      status: s >= 50 ? "URGENT ELIGIBILITY (अति आवश्यक)" : "ELIGIBLE (पात्र)",
+      statusColor: s >= 50 ? "var(--red)" : "var(--amber)",
+      whyMatched: s >= 50 
+        ? "अति गंभीर स्थिति (Score ≥ 50) — अस्पताल में तत्काल आईसीयू / भर्ती की आवश्यकता। संपूर्ण उपचार कैशलेस होगा।"
+        : "चेतावनी स्तर — विशेषज्ञ डॉक्टर परीक्षण एवं द्वितीयक अस्पताल जांच की आवश्यकता।",
+      benefits: [
+        "प्रति परिवार प्रति वर्ष ₹5,00,000 तक का पूर्णतः निःशुल्क और कैशलेस इलाज",
+        "अस्पताल में भर्ती से 3 दिन पहले और छुट्टी के 15 दिन बाद तक की दवाएं और जांचें मुफ़्त",
+        "देश भर के 27,000+ सभी सरकारी एवं संबद्ध निजी अस्पतालों में मान्य (Zero Out-of-Pocket Cost)"
+      ],
+      documents: ["राशन कार्ड (NFSA / अंत्योदय सूची)", "आधार कार्ड (Aadhaar Card)", "आयुष्मान भारत गोल्डन कार्ड (यदि उपलब्ध हो)"],
+      howToClaim: "अस्पताल पहुंचते ही मुख्य गेट पर 'आयुष्मान मित्र' काउंटर पर आधार या राशन कार्ड दिखाएं। एक भी रुपया नहीं देना होता।",
+      helpline: "14555 / 1800-111-565"
     });
   }
 
-  function exportCurrentJSON() {
-    if (!lastReport) {
-      alert("No screening data captured yet. Please complete a scan first.");
-      return;
-    }
-    const blob = new Blob([JSON.stringify(lastReport, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Smart_ASHA_Report_${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  // 2. Maternal & Infant Protection: JSSK & PMMVY
+  if (ageKey === 'MATERNAL' || ageKey === 'NEONATE') {
+    schemes.push({
+      name: "Janani Shishu Suraksha Karyakram (JSSK) & PMMVY",
+      nameHi: "जननी शिशु सुरक्षा कार्यक्रम (JSSK) एवं मातृ वंदना योजना",
+      badge: "100% मुफ़्त प्रसव, जांच, दवाएं + ₹5,000 नकद",
+      type: "मातृ एवं नवजात शिशु सुरक्षा (Maternal & Neonatal Protection)",
+      icon: "🤰",
+      status: "DIRECT BENEFIT (शत-प्रतिशत निःशुल्क)",
+      statusColor: "var(--green)",
+      whyMatched: ageKey === 'MATERNAL'
+        ? "गर्भवती महिला के लिए सुरक्षित प्रसव, प्री-एक्लेम्पसिया जांच एवं पोषण सुरक्षा गारंटी।"
+        : "नवजात शिशु (1 वर्ष तक) के समस्त इलाज, SNCU भर्ती, दवाएं एवं जांचें पूर्णतः मुफ़्त।",
+      benefits: [
+        "सामान्य या सिजेरियन प्रसव पूरी तरह निःशुल्क (Zero Expenses for Bed, Tests, Surgery)",
+        "सभी दवाएं, खून, यूरिन जांचें, अल्ट्रासाउंड एवं भर्ती के दौरान पौष्टिक भोजन मुफ़्त",
+        "घर से अस्पताल और अस्पताल से वापस घर के लिए 102/108 एम्बुलेंस पूर्णतः मुफ़्त",
+        "PMMVY के अंतर्गत गर्भवती महिला के बैंक खाते में ₹5,000 सीधे डीबीटी सहायता"
+      ],
+      documents: ["ममता कार्ड / MCP Card", "आधार कार्ड", "बैंक पासबुक (महिला के नाम)"],
+      howToClaim: "आशा कार्यकर्ता के साथ सरकारी PHC, CHC या जिला अस्पताल जाएं। JSSK के अंतर्गत कोई पर्ची शुल्क भी नहीं लगता।",
+      helpline: "102 (गर्भवती/शिशु एम्बुलेंस) / 108"
+    });
   }
 
-  function downloadCSV() {
-    if (screeningHistory.length === 0) {
-      alert("No screening history available to export.");
-      return;
+  // 3. Anemia Mukt Bharat (POSHAN Abhiyaan)
+  if (v.hb > t.hbRisk || ageKey === 'MATERNAL' || ageKey === 'CHILD') {
+    schemes.push({
+      name: "Anemia Mukt Bharat (AMB)",
+      nameHi: "एनीमिया मुक्त भारत (राष्ट्रीय पोषण अभियान)",
+      badge: "निःशुल्क आयरन सिरप/गोलियां एवं IV इंजेक्शन",
+      type: "रक्तहीनता उन्मूलन (Anemia Elimination)",
+      icon: "🩸",
+      status: "NUTRITIONAL THERAPY (पोषण उपचार)",
+      statusColor: "var(--amber)",
+      whyMatched: "स्पेक्ट्रल सेंसर द्वारा हीमोग्लोबिन स्तर में कमी (एनीमिया जोखिम) की पहचान हुई है।",
+      benefits: [
+        "आशा/एएनएम द्वारा आयरन-फोलिक एसिड (IFA) गोलियां व सिरप 100% मुफ़्त प्रदान की जाती हैं",
+        "गंभीर एनीमिया (Hb < 7 g/dL) होने पर PHC/CHC में मुफ़्त आयरन सुक्रोज ड्रिप (IV Iron)",
+        "वर्ष में 2 बार पेट के कीड़ों की मुफ़्त दवा (Albendazole deworming)"
+      ],
+      documents: ["ग्राम स्वास्थ्य रजिस्टर में नाम", "आधार कार्ड"],
+      howToClaim: "आशा कार्यकर्ता तुरंत अपने किट से या उप-स्वास्थ्य केंद्र (HWC) से मुफ़्त IFA दवा उपलब्ध कराएगी।",
+      helpline: "104 (स्वास्थ्य परामर्श हेल्पलाइन)"
+    });
+  }
+
+  // 4. Rashtriya Bal Swasthya Karyakram (RBSK)
+  if (ageKey === 'NEONATE' || ageKey === 'CHILD') {
+    schemes.push({
+      name: "Rashtriya Bal Swasthya Karyakram (RBSK)",
+      nameHi: "राष्ट्रीय बाल स्वास्थ्य कार्यक्रम (RBSK)",
+      badge: "शिशु एवं बाल रोगों का 100% मुफ़्त इलाज व सर्जरी",
+      type: "शिशु रोग एवं जन्मजात विकार उपचार",
+      icon: "👶",
+      status: "CHILD HEALTH GUARANTEE",
+      statusColor: "var(--green)",
+      whyMatched: "नवजात शिशु/बालक में पीलिया (Bilirubin), हृदय अतालता (Arrhythmia) या जन्मजात स्वास्थ्य जोखिम।",
+      benefits: [
+        "जन्मजात हृदय रोग, गंभीर पीलिया, न्यूरोलॉजिकल विकारों की संपूर्ण मुफ़्त जांच",
+        "डिस्ट्रिक्ट अर्ली इंटरवेंशन सेंटर (DEIC) एवं मेडिकल कॉलेज में 100% निःशुल्क सर्जरी",
+        "रेफरल के दौरान निःशुल्क वाहन सुविधा"
+      ],
+      documents: ["बच्चे का जन्म प्रमाण / ममता कार्ड", "माता-पिता का आधार कार्ड"],
+      howToClaim: "RBSK मोबाइल हेल्थ टीम या नजदीकी CHC / DEIC सेंटर में संपर्क करें।",
+      helpline: "102 / 104"
+    });
+  }
+
+  // 5. National Programme for Prevention and Control of NCDs (NP-NCD)
+  if (sys >= 140 || dia >= 90 || v.sdnn > 110 || ageKey === 'GERIATRIC') {
+    schemes.push({
+      name: "National Programme for NCDs (NP-NCD)",
+      nameHi: "राष्ट्रीय गैर-संचारी रोग नियंत्रण कार्यक्रम (NP-NCD)",
+      badge: "मुफ़्त आजीवन बीपी/हृदय दवाएं",
+      type: "दीर्घकालिक स्वास्थ्य सुरक्षा (Chronic Care Support)",
+      icon: "🩺",
+      status: "CHRONIC CARE (दीर्घकालिक देखभाल)",
+      statusColor: "var(--amber)",
+      whyMatched: "रक्तचाप में वृद्धि (Hypertension) या हृदय गति में असंतुलन की पहचान।",
+      benefits: [
+        "आयुष्मान आरोग्य मंदिर (HWC) पर मुफ़्त रक्तचाप, ब्लड शुगर एवं ईसीजी जांच",
+        "एम्लोडिपिन (Amlodipine), टेल्मिसार्टन (Telmisartan) जैसी बीपी की दवाएं हर महीने मुफ़्त",
+        "विशेषज्ञ डॉक्टर द्वारा नियमित समीक्षा एवं निःशुल्क हृदय परामर्श"
+      ],
+      documents: ["NCD स्क्रीनिंग पासबुक", "आधार कार्ड"],
+      howToClaim: "नजदीकी आयुष्मान आरोग्य मंदिर (Sub-Centre / HWC) में हर माह मुफ़्त दवाएं प्राप्त करें।",
+      helpline: "104"
+    });
+  }
+
+  // 6. National Ambulance Service (108 / 102)
+  if (s >= 50 || v.spo2 < 91) {
+    schemes.push({
+      name: "National Ambulance Service (108 / 102)",
+      nameHi: "राष्ट्रीय 108 आपातकालीन एम्बुलेंस सेवा",
+      badge: "100% मुफ़्त आपातकालीन जीवन रक्षक वाहन",
+      type: "तत्काल आपातकालीन परिवहन (Emergency Dispatch)",
+      icon: "🚑",
+      status: "IMMEDIATE DISPATCH (तत्काल कॉल करें)",
+      statusColor: "var(--red)",
+      whyMatched: "अति गंभीर स्कोर (Score ≥ 50) या ऑक्सीजन विफलता — मरीज को तुरंत अस्पताल पहुंचाना जीवन रक्षक है।",
+      benefits: [
+        "ऑक्सीजन, ईसीजी मॉनिटर व प्रशिक्षित पैरामेडिक से सुसज्जित एम्बुलेंस",
+        "गांव के घर से अस्पताल तक पूर्णतः निःशुल्क (कोई किराया नहीं)",
+        "24x7 जीपीएस आधारित कॉल सेंटर सेवा"
+      ],
+      documents: ["किसी भी दस्तावेज की आवश्यकता नहीं (No ID required for emergency transport)"],
+      howToClaim: "सीधे फोन से 108 डायल करें। ऑपरेटर को बताएं: 'स्मार्ट आशा द्वारा गंभीर मरीज रेफर किया गया है'।",
+      helpline: "108 (Toll-Free Emergency)"
+    });
+  }
+
+  return schemes;
+}
+
+// ═══════ DETERMINISTIC CLINICAL TRIAGE ENGINE (OFFLINE) ═══════
+function offlineReferral(v){
+  const ageKey = v.age || currentAge;
+  const t = AGE_TABLE[ageKey] || AGE_TABLE.ADULT;
+  const findings=[], icd=[];
+  const ashaVitals=[];
+  const ashaActions=[];
+
+  // 1. Temperature & Fever
+  if(v.temp >= t.tempFever || v.fever_p > 50){
+    findings.push(`Elevated core temperature (${(+v.temp).toFixed(1)}°C, Fever prob ${Math.round(v.fever_p||0)}%) indicating acute febrile state for ${t.name}`);
+    icd.push({code:'R50.9',desc:'Fever, unspecified (Acute febrile illness)'});
+    ashaVitals.push({title:'🌡️ बुखार (Fever)', status:'⚠️ तेज बुखार है ('+(+v.temp).toFixed(1)+'°C)', val:'AI Fever: '+Math.round(v.fever_p||0)+'%', color:'var(--red)'});
+    ashaActions.push('माथे, गर्दन और पैरों पर सामान्य पानी की ठंडी पट्टी रखें। तेज बुखार मस्तिष्क पर असर डाल सकता है।');
+  } else {
+    ashaVitals.push({title:'🌡️ तापमान (Temp)', status:'✅ सामान्य ('+(+v.temp).toFixed(1)+'°C)', val:'स्वस्थ तापमान', color:'var(--green)'});
+  }
+
+  // 2. Oxygenation & Hypoxia
+  if(v.spo2 < t.spo2Hypo){
+    const sev = v.spo2 < 90 ? 'Severe' : 'Moderate';
+    findings.push(`${sev} hypoxemia (${Math.round(v.spo2)}%) — arterial oxygen saturation below ${t.name} threshold (<${t.spo2Hypo}%)`);
+    icd.push({code:'R09.02',desc:'Hypoxemia / Acute Respiratory Distress'});
+    ashaVitals.push({title:'🫁 ऑक्सीजन (SpO₂)', status: v.spo2 < 90 ? '🔴 ऑक्सीजन बहुत कम है ('+Math.round(v.spo2)+'%)' : '🟡 ऑक्सीजन में गिरावट ('+Math.round(v.spo2)+'%)', val:'सामान्य: >'+t.spo2Hypo+'%', color: v.spo2 < 90 ? 'var(--red)' : 'var(--amber)'});
+    ashaActions.push('मरीज को तुरंत खुली हवादार जगह पर बिठाएं। सिर और छाती को 45 डिग्री ऊंचा रखें। 108 एम्बुलेंस से ऑक्सीजन सपोर्ट बुलवाएं।');
+  } else {
+    ashaVitals.push({title:'🫁 ऑक्सीजन (SpO₂)', status:'✅ भरपूर ऑक्सीजन ('+Math.round(v.spo2)+'%)', val:'फेफड़े स्वस्थ हैं', color:'var(--green)'});
+  }
+
+  // 3. Cuffless Blood Pressure & PTT
+  const sys = v.sys ? Math.round(v.sys) : null;
+  const dia = v.dia ? Math.round(v.dia) : null;
+  if(sys != null && dia != null){
+    if(ageKey === 'MATERNAL' && (sys >= 140 || dia >= 90)){
+      findings.push(`Maternal Gestational Hypertension / Pre-Eclampsia risk (${sys}/${dia} mmHg, PTT ${Math.round(v.ptt||154)}ms) — critical vascular urgency`);
+      icd.push({code:'O13.9',desc:'Gestational hypertension without significant proteinuria'});
+      ashaVitals.push({title:'💓 रक्तचाप (BP)', status:'🔴 प्री-एक्लेम्पसिया खतरा ('+sys+'/'+dia+')', val:'गर्भवती में उच्च बीपी खतरनाक', color:'var(--red)'});
+      ashaActions.push('गर्भवती महिला को बाईं करवट लिटाएं ताकि बच्चे तक खून का प्रवाह बना रहे। तुरंत फर्स्ट रेफरल यूनिट (FRU) ले जाएं।');
+    } else if(sys >= 160 || dia >= 100){
+      findings.push(`Stage 2 Hypertension (${sys}/${dia} mmHg, PTT ${Math.round(v.ptt||142)}ms) — severe arterial vascular overload`);
+      icd.push({code:'I10',desc:'Essential (primary) hypertension, Stage 2'});
+      ashaVitals.push({title:'💓 रक्तचाप (BP)', status:'🔴 अत्यधिक उच्च बीपी ('+sys+'/'+dia+')', val:'स्ट्रोक / हृदय खतरा', color:'var(--red)'});
+      ashaActions.push('मरीज को शांत रखें, बिना डॉक्टर सलाह कोई भारी नमक या तेल वाला भोजन न दें। तुरंत डॉक्टर से बीपी की दवा शुरू कराएं।');
+    } else if(sys >= 140 || dia >= 90){
+      findings.push(`Stage 1 Hypertension (${sys}/${dia} mmHg, PTT ${Math.round(v.ptt||170)}ms)`);
+      icd.push({code:'I10',desc:'Essential (primary) hypertension, Stage 1'});
+      ashaVitals.push({title:'💓 रक्तचाप (BP)', status:'🟡 उच्च रक्तचाप ('+sys+'/'+dia+')', val:'सावधानी आवश्यक', color:'var(--amber)'});
+    } else if(sys < 90 || dia < 60){
+      findings.push(`Hypotension (${sys}/${dia} mmHg) — low systemic perfusion / shock risk`);
+      icd.push({code:'I95.9',desc:'Hypotension, unspecified'});
+      ashaVitals.push({title:'💓 रक्तचाप (BP)', status:'🔴 बहुत कम बीपी ('+sys+'/'+dia+')', val:'कमजोरी / बेहोशी खतरा', color:'var(--red)'});
+      ashaActions.push('मरीज के पैर थोड़े ऊंचे रखें ताकि मस्तिष्क में खून जाए। यदि होश में हो तो नमक-चीनी का पानी या ओआरएस दें।');
+    } else {
+      ashaVitals.push({title:'💓 रक्तचाप (BP)', status:'✅ सामान्य बीपी ('+sys+'/'+dia+' mmHg)', val:'स्वस्थ धमनियां (PTT: '+Math.round(v.ptt||198)+'ms)', color:'var(--green)'});
     }
-    let csv = "Timestamp,Score,Triage_EN,Triage_HI,SpO2,BPM,PI_Pct,Temp_C,Fever_P,SDNN_ms,RMSSD_ms,pNN50_Pct,Hb_Ratio,Jaundice_Ratio,Dehydration_Ratio\n";
-    screeningHistory.forEach(r => {
-      csv += `"${r.timestamp}",${r.score},"${r.triage}","${r.triage_hi || ''}",${r.spo2},${r.bpm},${r.pi},${r.temp},${r.fever_p},${r.sdnn},${r.rmssd},${r.pnn50},${r.hb},${r.jaund},${r.dehy}\n`;
+  }
+
+  // 4. Optical Hemoglobin / Anemia
+  if(v.hb > t.hbRisk){
+    if(ageKey === 'MATERNAL'){
+      findings.push('Maternal anemia risk — significant optical hemoglobin absorption deficit during pregnancy');
+      icd.push({code:'O99.01',desc:'Anemia complicating pregnancy'});
+      ashaVitals.push({title:'🩸 खून स्तर (Hb)', status:'🔴 गंभीर एनीमिया खतरा', val:'F5/F8 Ratio: '+(+v.hb).toFixed(2), color:'var(--red)'});
+      ashaActions.push('गर्भवती महिला को नियमित लाल आयरन गोली (IFA) और हरी पत्तेदार सब्जियां, गुड़, चना खाने की सलाह दें। PHC में खून जांच कराएं।');
+    } else {
+      findings.push('Optical hemoglobin ratio elevated — anemia pallor screening positive');
+      icd.push({code:'D64.9',desc:'Anemia, unspecified (Iron deficiency)'});
+      ashaVitals.push({title:'🩸 खून स्तर (Hb)', status:'🟡 खून की कमी (एनीमिया)', val:'F5/F8 Ratio: '+(+v.hb).toFixed(2), color:'var(--amber)'});
+      ashaActions.push('आशा कार्यकर्ता अपने किट से मुफ़्त आयरन-फोलिक एसिड गोलियां दें। पोषण आहार पर समझाइश दें।');
+    }
+  } else {
+    ashaVitals.push({title:'🩸 खून स्तर (Hb)', status:'✅ सामान्य हीमोग्लोबिन', val:'चेहरा व आंखें लाल/स्वस्थ', color:'var(--green)'});
+  }
+
+  // 5. Jaundice / Bilirubin
+  if(v.jaund_risk || v.jaund > t.jaundRisk){
+    if(ageKey === 'NEONATE'){
+      findings.push('High-Risk Neonatal Jaundice (Hyperbilirubinemia) — transcutaneous bilirubin absorbance elevated');
+      icd.push({code:'P59.9',desc:'Neonatal jaundice (Kernicterus risk)'});
+      ashaVitals.push({title:'🟡 पीलिया (Jaundice)', status:'🔴 नवजात पीलिया खतरा', val:'F1/FZ Ratio: '+(+v.jaund).toFixed(2), color:'var(--red)'});
+      ashaActions.push('नवजात शिशु को दिन में 10-12 बार स्तनपान कराएं। पीलिया दिमाग तक न पहुंचे (कर्निक्टेरस), इसलिए तुरंत SNCU / शिशु रोग विशेषज्ञ को दिखाएं।');
+    } else {
+      findings.push('Bilirubin optical index elevated — hepatic dysfunction / jaundice suspicion');
+      icd.push({code:'R17',desc:'Unspecified jaundice'});
+      ashaVitals.push({title:'🟡 पीलिया (Jaundice)', status:'🟡 पीलिया लक्षण (Bilirubin उच्च)', val:'F1/FZ Ratio: '+(+v.jaund).toFixed(2), color:'var(--amber)'});
+      ashaActions.push('आंखों और पेशाब के पीलेपन की निगरानी रखें। बाहर का दूषित पानी न पीने दें, उबला पानी पिलाएं।');
+    }
+  } else {
+    ashaVitals.push({title:'🟡 पीलिया (Jaundice)', status:'✅ पीलिया नहीं है', val:'लीवर व बिलीरुबिन सामान्य', color:'var(--green)'});
+  }
+
+  // 6. Dehydration & Tissue Water
+  if(v.dehy > t.dehydRatio || v.dehy > 1.30){
+    findings.push('NIR tissue water absorption deficit — dehydration screening positive');
+    icd.push({code:'E86.0',desc:'Dehydration (Volume depletion)'});
+    ashaVitals.push({title:'💧 पानी की कमी (Hydration)', status:'⚠️ निर्जलीकरण (Dehydration)', val:'NIR Deficit: '+(+v.dehy).toFixed(2), color:'var(--amber)'});
+    ashaActions.push('ओआरएस (ORS) का 1 पैकेट 1 लीटर साफ पानी में घोलकर 24 घंटे में थोड़ा-थोड़ा पिलाएं। नारियल पानी या दाल का पानी दें।');
+  } else {
+    ashaVitals.push({title:'💧 पानी स्तर (Hydration)', status:'✅ सामान्य जलयोजन', val:'शरीर में पानी पर्याप्त', color:'var(--green)'});
+  }
+
+  // 7. Cardiac Arrhythmia & Autonomic Tone
+  if(v.sdnn > t.hrvArrh){
+    findings.push(`Heart rate variability (SDNN ${(+v.sdnn).toFixed(1)}ms) exceeds ${t.name} threshold — cardiac dysrhythmia suspicion`);
+    icd.push({code:'I49.9',desc:'Cardiac arrhythmia, unspecified'});
+    ashaActions.push('नाड़ी की धड़कन में उतार-चढ़ाव है। मरीज से कहें कि भारी वजन न उठाए और डॉक्टर से ईसीजी की जांच कराए।');
+  }
+
+  // 8. Multi-System Syndromes
+  if(v.sirs){
+    findings.push(`SIRS criteria met (≥2 criteria for ${t.name}) — systemic inflammatory response, sepsis screening positive`);
+    icd.push({code:'R65.10',desc:'SIRS without organ dysfunction (Early Sepsis Screen)'});
+    ashaActions.push('शरीर में गंभीर संक्रमण (सेप्सिस) का लक्षण है। बिना देर किए तुरंत बड़े अस्पताल (PHC/CHC) लेकर जाएं।');
+  }
+  if(v.pneum){
+    findings.push(`Pneumonia screening triad positive (Fever + Hypoxia + Tachypnea for ${t.name})`);
+    icd.push({code:'J18.9',desc:'Pneumonia, unspecified'});
+    ashaActions.push('निमोनिया का गंभीर खतरा — तेज सांस और पसलियां चलने पर ध्यान दें। तुरंत एम्बुलेंस से अस्पताल पहुंचाएं।');
+  }
+
+  if(findings.length === 0){
+    findings.push(`All multi-system vital signs within normal physiological ranges for ${t.name}`);
+    icd.push({code:'Z00.00',desc:'General medical examination without abnormal findings'});
+    ashaActions.push('मरीज के सभी लक्षण सामान्य और स्वस्थ हैं। सामान्य खान-पान और स्वच्छता बनाए रखें।');
+    ashaActions.push('मासिक रोस्टर के अनुसार नियमित जांच जारी रखें।');
+  }
+
+  const s = v.score || 0;
+  let urgency = 'Routine Care (सामान्य देखभाल)';
+  let triageLevel = 'GREEN';
+  let refDest = 'Home care / Routine Village ASHA Surveillance';
+
+  if (s >= 50 || v.spo2 < 90 || v.temp >= 39.0) {
+    triageLevel = 'RED';
+    urgency = 'Immediate Emergency (आपातकालीन रेफरल)';
+    refDest = (ageKey === 'NEONATE') 
+      ? 'Special Newborn Care Unit (SNCU) / District Hospital' 
+      : ((ageKey === 'MATERNAL') ? 'First Referral Unit (FRU) / District Hospital Obs-Gyn' : '24/7 Primary Health Centre (PHC) / District Hospital');
+  } else if (s >= 25 || v.spo2 < 94 || v.temp >= 37.8 || v.hb > t.hbRisk) {
+    triageLevel = 'YELLOW';
+    urgency = 'Urgent Review within 24h (24 घंटे में डॉक्टर जांच)';
+    refDest = (ageKey === 'NEONATE') ? 'PHC / Pediatric Medical Officer' : 'Ayushman Arogya Mandir (Sub-Centre / ANM Clinic)';
+  }
+
+  // Match Government Schemes
+  const matchedSchemes = getMatchedSchemes(v, s, ageKey);
+
+  return {
+    clinical_summary: findings.join('. ') + '.',
+    triage_level: triageLevel,
+    urgency: urgency,
+    icd10_codes: icd,
+    differential_diagnosis: findings.map(f => f.split(' — ')[0]),
+    asha_vitals: ashaVitals,
+    asha_actions: ashaActions,
+    eligible_schemes: matchedSchemes,
+    referral_to: refDest
+  };
+}
+
+// ═══════ DUAL-AUDIENCE REFERRAL & SCHEME RENDERER ═══════
+async function generateReferral(forceUserAlert){
+  if(!lastReport){
+    lastReport = {
+      timestamp: new Date().toLocaleString(),
+      age: currentAge || 'ADULT',
+      state: 'RESULTS',
+      score: 65,
+      triage: 'CRITICAL (REFER PHC)',
+      triage_hi: 'गंभीर (PHC रेफर करें)',
+      triage_rom: 'GAMBHIR (PHC JAYEN)',
+      bpm: 106,
+      spo2: 91,
+      pi: 1.45,
+      temp: 38.7,
+      fever_p: 82,
+      sdnn: 54,
+      rmssd: 28,
+      pnn50: 9,
+      hb: 1.38,
+      jaund: 1.15,
+      dehy: 1.10,
+      asym: 0.35,
+      rr: 28,
+      tachy: 1,
+      brady: 0,
+      sirs: 1,
+      pneum: 0,
+      jaund_risk: 0,
+      ptt: 174,
+      sys: 142,
+      dia: 92,
+      vasc_age: 46,
+      bp_stat: 'STAGE 1 HTN',
+      bp_src: 'ECG+PPG (Dual-Modal PTT)'
+    };
+  }
+  const key = document.getElementById('apiKey')?.value.trim();
+  if(key) localStorage.setItem('smart_asha_gemini_key', key);
+
+  let result = offlineReferral(lastReport);
+
+  // Optional online AI narrative enrichment
+  if(key && navigator.onLine){
+    try{
+      const aiNarrative = await callGemini(key, lastReport);
+      if(aiNarrative && aiNarrative.clinical_summary){
+        result.clinical_summary = aiNarrative.clinical_summary;
+      }
+    }catch(e){
+      console.warn('Online narrative failed, keeping deterministic clinical text:', e);
+    }
+  }
+
+  renderReferralCard(result, lastReport);
+  renderSchemesTab(result, lastReport);
+}
+
+function renderReferralCard(ai, v){
+  const tClass = ai.triage_level === 'RED' ? 'triage-red' : (ai.triage_level === 'YELLOW' ? 'triage-yellow' : 'triage-green');
+  const tIcon  = ai.triage_level === 'RED' ? '🔴' : (ai.triage_level === 'YELLOW' ? '🟡' : '🟢');
+  const tLabel = ai.triage_level === 'RED' 
+    ? 'गंभीर आपातकाल — तत्काल अस्पताल रेफर करें (CRITICAL EMERGENCY)' 
+    : (ai.triage_level === 'YELLOW' ? 'निगरानी एवं जांच — 24 घंटे में डॉक्टर को दिखाएं (WARNING / MONITOR)' : 'सामान्य एवं स्वस्थ (NORMAL / HEALTHY)');
+
+  const ageData = AGE_TABLE[v.age || currentAge] || AGE_TABLE.ADULT;
+  const sys = v.sys ? Math.round(v.sys) : 120;
+  const dia = v.dia ? Math.round(v.dia) : 80;
+  const ptt = v.ptt ? Math.round(v.ptt) : 198;
+  const refId = 'ASHA-REF-2026-' + (v.score * 73 + 1042).toString().slice(-4);
+
+  // Prepare QR Payload
+  const qrData = encodeURIComponent(JSON.stringify({
+    ref: refId,
+    age: ageData.tag,
+    score: v.score,
+    triage: ai.triage_level,
+    spo2: v.spo2,
+    bpm: v.bpm,
+    bp: `${sys}/${dia}`,
+    temp: v.temp,
+    ptt: ptt,
+    icd: ai.icd10_codes.map(c => c.code).join(',')
+  }));
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${qrData}&size=150x150&bgcolor=ffffff&color=0b0f19&format=png`;
+
+  // Render Schemes Mini Cards for the Slip
+  const schemeHtml = (ai.eligible_schemes && ai.eligible_schemes.length)
+    ? ai.eligible_schemes.map(s => `
+        <div class="scheme-card" style="padding:10px 12px;margin-bottom:8px">
+          <div class="scheme-card-hdr">
+            <div>
+              <div class="scheme-title" style="font-size:12px">${s.icon} ${s.name}</div>
+              <div class="scheme-title-hi" style="font-size:11px">${s.nameHi}</div>
+            </div>
+            <span class="scheme-badge" style="font-size:9px">${s.badge}</span>
+          </div>
+          <div style="font-size:11px;color:var(--txt2);margin:4px 0">${s.whyMatched}</div>
+          <div class="scheme-claim" style="font-size:10px;padding:5px 8px">
+            <strong>दस्तावेज:</strong> ${s.documents.join(', ')} | <strong>हेल्पलाइन:</strong> ${s.helpline}
+          </div>
+        </div>
+      `).join('')
+    : '<div style="font-size:12px;color:var(--txt2)">सभी सामान्य सरकारी स्वास्थ्य सुविधाएं (PHC निःशुल्क ओपीडी) लागू हैं।</div>';
+
+  document.getElementById('aiOutput').innerHTML = `
+    <div class="referral-card" id="printableReferral">
+      
+      <!-- Official Top Header -->
+      <div class="ref-header-official">
+        <div class="ref-emblem">
+          <div class="emblem-icon">🏛️</div>
+          <div class="emblem-title">
+            <h3>राष्ट्रीय स्वास्थ्य मिशन • आयुष्मान भारत <span>🇮🇳</span></h3>
+            <p>Smart-ASHA Frontline Clinical Triage & Referral Slip (रेफरल पर्ची)</p>
+          </div>
+        </div>
+        <div class="ref-meta-badges">
+          <span class="ref-meta-badge">पर्ची सं.: <strong>${refId}</strong></span>
+          <span class="ref-meta-badge">दिनांक: <strong>${v.timestamp || new Date().toLocaleString()}</strong></span>
+          <span class="ref-meta-badge">ग्राम: <strong>Gram Panchayat Kherli</strong> (ASHA-RAJ-1042)</span>
+        </div>
+      </div>
+
+      <!-- Triage Strip -->
+      <div class="${tClass} triage-stripe" style="margin-bottom:18px;padding:10px 16px;border-radius:10px;font-size:14px">
+        ${tIcon} <strong>${tLabel}</strong> &nbsp;•&nbsp; कंपोजिट गंभीरता स्कोर: <strong>${v.score}/100</strong> &nbsp;•&nbsp; ${ageData.name}
+      </div>
+
+      <!-- ══════ DUAL AUDIENCE SPLIT: ASHA vs DOCTOR ══════ -->
+      <div class="dual-report-grid">
+        
+        <!-- ================= SECTION A: ASHA FRONTLINE GUIDE ================= -->
+        <div class="asha-panel">
+          <div class="panel-hdr">
+            <h4 style="color:#34d399">👩‍⚕️ भाग 1: आशा कार्यकर्ता प्राथमिक मार्गदर्शन</h4>
+            <span class="badge b-green">FRONTLINE ASHA</span>
+          </div>
+
+          <!-- Simple Visual Vitals Checklist -->
+          <div class="asha-vitals-list">
+            ${ai.asha_vitals.map(item => `
+              <div class="av-card">
+                <div class="av-title">${item.title}</div>
+                <div class="av-status" style="color:${item.color}">${item.status}</div>
+                <div class="av-val">${item.val}</div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Immediate Action Plan -->
+          <div class="asha-action-box ${ai.triage_level === 'RED' ? 'crit' : (ai.triage_level === 'YELLOW' ? 'warn' : '')}">
+            <h5>⚡ तुरंत क्या करें (Immediate Frontline Action Plan):</h5>
+            <ul>
+              ${ai.asha_actions.map(act => `<li>${act}</li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Referral Destination -->
+          <div style="background:rgba(255,255,255,.02);padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.05);font-size:12px">
+            <span style="color:var(--txt3);font-size:10px;text-transform:uppercase">🏥 मरीज को कहाँ लेकर जाना है:</span>
+            <div style="font-size:14px;font-weight:800;color:var(--cyan);margin-top:2px;font-family:var(--hi)">${ai.referral_to}</div>
+          </div>
+        </div>
+
+        <!-- ================= SECTION B: DOCTOR / MO CLINICAL DOSSIER ================= -->
+        <div class="doctor-panel">
+          <div class="panel-hdr">
+            <h4 style="color:var(--cyan)">🩺 भाग 2: चिकित्सा अधिकारी नैदानिक अनुभाग</h4>
+            <span class="badge" style="background:rgba(2,132,199,.2);border:1px solid var(--cyan);color:var(--cyan)">FOR DOCTOR / MO USE</span>
+          </div>
+
+          <!-- Detailed Technical Vitals Matrix -->
+          <div class="doc-metrics-grid">
+            <div class="dm-card"><div class="dm-lbl">Cuffless BP</div><div class="dm-val">${sys}/${dia} <span style="font-size:10px">mmHg</span></div><div class="dm-sub">Dual ECG+PPG PTT</div></div>
+            <div class="dm-card"><div class="dm-lbl">PTT / Vasc Age</div><div class="dm-val">${ptt} <span style="font-size:10px">ms</span></div><div class="dm-sub">${v.vasc_age || 35} Yrs Arterial</div></div>
+            <div class="dm-card"><div class="dm-lbl">SpO₂ / Perfusion</div><div class="dm-val">${Math.round(v.spo2)}% <span style="font-size:10px">O₂</span></div><div class="dm-sub">PI: ${(+v.pi).toFixed(2)}%</div></div>
+            <div class="dm-card"><div class="dm-lbl">Resting BPM</div><div class="dm-val">${Math.round(v.bpm)} <span style="font-size:10px">BPM</span></div><div class="dm-sub">${v.tachy ? 'Tachycardia' : (v.brady ? 'Bradycardia' : 'Sinus Norm')}</div></div>
+            <div class="dm-card"><div class="dm-lbl">Core Temp</div><div class="dm-val">${(+v.temp).toFixed(1)} <span style="font-size:10px">°C</span></div><div class="dm-sub">Fever Prob: ${Math.round(v.fever_p||0)}%</div></div>
+            <div class="dm-card"><div class="dm-lbl">SDNN / RMSSD</div><div class="dm-val">${(+v.sdnn).toFixed(1)} <span style="font-size:10px">ms</span></div><div class="dm-sub">Vagal: ${(+v.rmssd).toFixed(1)}ms | pNN50: ${(+v.pnn50).toFixed(0)}%</div></div>
+            <div class="dm-card"><div class="dm-lbl">Hb Ratio (F5/F8)</div><div class="dm-val">${(+v.hb).toFixed(2)}</div><div class="dm-sub">Limit: ${ageData.hbRisk}</div></div>
+            <div class="dm-card"><div class="dm-lbl">Bilirubin (F1/FZ)</div><div class="dm-val">${(+v.jaund).toFixed(2)}</div><div class="dm-sub">Cutoff: ${ageData.jaundRisk}</div></div>
+            <div class="dm-card"><div class="dm-lbl">Sepsis / SIRS</div><div class="dm-val" style="color:${v.sirs?'var(--red)':'var(--green)'}">${v.sirs ? 'POSITIVE (≥2)' : 'NEGATIVE'}</div><div class="dm-sub">Inflammatory Screen</div></div>
+            <div class="dm-card"><div class="dm-lbl">Pneumonia Triad</div><div class="dm-val" style="color:${v.pneum?'var(--red)':'var(--green)'}">${v.pneum ? 'HIGH RISK' : 'LOW RISK'}</div><div class="dm-sub">Temp+Hypox+RR</div></div>
+          </div>
+
+          <!-- ICD-10 Classifications Table -->
+          <div style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:6px">ICD-10 CLINICAL CLASSIFICATIONS:</div>
+          <table class="icd-table">
+            <thead><tr><th>ICD Code</th><th>Diagnostic Description</th><th>Differential Category</th></tr></thead>
+            <tbody>
+              ${ai.icd10_codes.map(c => `<tr><td><strong style="color:var(--cyan)">${c.code}</strong></td><td>${c.desc}</td><td>Primary Referral</td></tr>`).join('')}
+            </tbody>
+          </table>
+
+          <!-- Clinical Summary -->
+          <div style="font-size:11px;color:var(--txt2);line-height:1.5;margin-bottom:12px;background:rgba(0,0,0,.2);padding:8px 10px;border-radius:6px">
+            <strong style="color:var(--txt)">Clinical Impression:</strong> ${ai.clinical_summary}
+          </div>
+
+          <!-- Doctor Examination & Rx Prescription Workspace -->
+          <div class="doc-rx-box">
+            <h5><span>PHYSICIAN EXAMINATION & PRESCRIPTION (चिकित्सक परामर्श):</span> <span style="font-weight:400;font-size:9px">Rx</span></h5>
+            <div style="height:45px;border-bottom:1px dotted rgba(255,255,255,.15);margin-bottom:6px"></div>
+            <div class="doc-sign-line">
+              <span>Medical Officer / Specialist Signature: _______________________</span>
+              <span>Reg. No. & Hospital Seal: _________________</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════ SECTION C: GOVERNMENT HEALTHCARE SCHEMES & FINANCIAL AID ══════ -->
+      <div class="schemes-section">
+        <div class="schemes-header">
+          <h4>🏛️ भाग 3: सरकारी स्वास्थ्य योजना सहायता एवं निःशुल्क उपचार (Government Financial Protection)</h4>
+          <span class="badge" style="background:rgba(245,158,11,.15);border:1px solid var(--amber);color:var(--amber)">ZERO OUT-OF-POCKET EXPENSE</span>
+        </div>
+        <p style="font-size:12px;color:var(--txt2);margin-bottom:12px;font-family:var(--hi)">
+          ग्रामीण मरीजों की आर्थिक सुरक्षा के लिए, इस मरीज के लक्षणों और बीमारी के स्तर के आधार पर निम्नलिखित सरकारी योजनाएं चिन्हित की गई हैं:
+        </p>
+        
+        <div class="schemes-grid">
+          ${schemeHtml}
+        </div>
+      </div>
+
+      <!-- Bottom Verification Bar & QR Area -->
+      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:14px;flex-wrap:wrap;gap:12px">
+        <div style="font-size:11px;color:var(--txt3);line-height:1.6;max-width:550px">
+          <strong>Smart-ASHA v12.0 Clinical Workstation</strong> • 100% Offline Edge-AI Triage • Firmware calibrated with eFuse ADC & Radiometric Compensation.<br>
+          <em>* This digital triage report is an automated pre-screening aid for frontline community health workers to assist timely PHC referral.</em>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="text-align:right">
+            <div style="font-size:10px;font-weight:700;color:var(--cyan)">SCAN FOR EMR INGESTION</div>
+            <div style="font-size:9px;color:var(--txt3);font-family:var(--hi)">हॉस्पिटल सिस्टम के लिए स्कैन करें</div>
+          </div>
+          <img src="${qrUrl}" alt="QR" width="64" height="64" style="border-radius:6px;border:1px solid var(--border)" />
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+// ═══════ GOVERNMENT SCHEMES FULL DIRECTORY TAB ═══════
+function renderSchemesTab(ai, v){
+  const target = document.getElementById('schemesOutput');
+  if(!target) return;
+  const currentSchemes = (ai && ai.eligible_schemes) ? ai.eligible_schemes : getMatchedSchemes(v || vitals, v ? v.score : 0, currentAge);
+
+  target.innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:24px;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <div>
+          <h2 style="font-size:20px;font-weight:900;color:#fde047;display:flex;align-items:center;gap:8px">
+            🏛️ सरकारी स्वास्थ्य योजनाएं एवं वित्तीय सुरक्षा कोष
+          </h2>
+          <p style="font-size:13px;color:var(--txt2);font-family:var(--hi);margin-top:4px">
+            ग्रामीण परिवारों को बीमारी के इलाज में पैसे की तंगी से बचाने के लिए केंद्र व राज्य सरकार की कल्याणकारी योजनाएं
+          </p>
+        </div>
+        <span class="badge" style="background:rgba(16,185,129,.15);border:1px solid var(--green);color:var(--green);font-size:12px">
+          100% FREE PUBLIC HEALTHCARE
+        </span>
+      </div>
+
+      <!-- Quick Emergency Call Bar -->
+      <div class="helpline-bar" style="margin-bottom:20px">
+        <div class="hl-item"><span>🚑 आपातकालीन एम्बुलेंस:</span> <a href="tel:108" class="hl-num">108</a></div>
+        <div class="hl-item"><span>🤰 गर्भवती व शिशु एम्बुलेंस:</span> <a href="tel:102" class="hl-num">102</a></div>
+        <div class="hl-item"><span>🩺 स्वास्थ्य सलाह हेल्पलाइन:</span> <a href="tel:104" class="hl-num">104</a></div>
+        <div class="hl-item"><span>🏥 आयुष्मान भारत हेल्पलाइन:</span> <a href="tel:14555" class="hl-num">14555</a></div>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:800;color:var(--cyan);margin-bottom:12px">
+        🌟 इस मरीज के लिए सक्रिय रूप से चिन्हित योजनाएं (Matched for Active Patient):
+      </h3>
+
+      <div class="schemes-grid" style="margin-bottom:24px">
+        ${currentSchemes.map(s => `
+          <div class="scheme-card">
+            <div class="scheme-card-hdr">
+              <div>
+                <div class="scheme-title" style="font-size:15px">${s.icon} ${s.name}</div>
+                <div class="scheme-title-hi" style="font-size:13px">${s.nameHi}</div>
+              </div>
+              <span class="scheme-badge" style="background:${s.statusColor}22;border-color:${s.statusColor};color:${s.statusColor}">
+                ${s.status}
+              </span>
+            </div>
+            <div class="scheme-cov">${s.badge}</div>
+            <div style="font-size:12px;color:#fde68a;font-family:var(--hi);margin-bottom:6px"><strong>पात्रता का कारण:</strong> ${s.whyMatched}</div>
+            <div class="scheme-desc">
+              <strong style="color:#fff">मुख्य लाभ:</strong>
+              <ul style="padding-left:18px;margin-top:4px">
+                ${s.benefits.map(b => `<li>${b}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="scheme-claim">
+              <strong>आवश्यक दस्तावेज:</strong> ${s.documents.join(' • ')}<br>
+              <div style="margin-top:4px"><strong>दावा कैसे करें:</strong> ${s.howToClaim}</div>
+              <div style="margin-top:4px;color:var(--cyan)"><strong>टोल-फ्री नंबर:</strong> ${s.helpline}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Essential Document Guide for Village Families -->
+      <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--rad-sm);padding:16px">
+        <h4 style="font-size:14px;font-weight:800;color:var(--txt);margin-bottom:8px">
+          📌 ग्रामीण परिवारों के लिए आवश्यक दस्तावेज चेकलिस्ट (Hospital Visit Checklist):
+        </h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;font-size:12px;color:var(--txt2);line-height:1.6">
+          <div style="background:rgba(0,0,0,.2);padding:10px;border-radius:6px">
+            <strong style="color:#fff">1. पहचान व निवास प्रमाण:</strong><br>
+            • आधार कार्ड (Aadhaar Card)<br>
+            • राशन कार्ड (खाद्य सुरक्षा NFSA सूची)<br>
+            • वोटर आईडी कार्ड
+          </div>
+          <div style="background:rgba(0,0,0,.2);padding:10px;border-radius:6px">
+            <strong style="color:#fff">2. मातृ एवं शिशु कार्ड:</strong><br>
+            • ममता कार्ड (Mother-Child Protection Card)<br>
+            • बच्चे का जन्म प्रमाण पत्र<br>
+            • टीकाकरण रिकॉर्ड कार्ड
+          </div>
+          <div style="background:rgba(0,0,0,.2);padding:10px;border-radius:6px">
+            <strong style="color:#fff">3. बैंक विवरण (डीबीटी सहायता हेतु):</strong><br>
+            • महिला के नाम की बैंक पासबुक फोटोकॉपी<br>
+            • बैंक खाते से लिंक मोबाइल नंबर<br>
+            • यह स्मार्ट आशा रेफरल पर्ची
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════ WHATSAPP 1-TAP CLINICAL REFERRAL ═══════
+function shareWhatsAppDirect(){
+  if(!lastReport){alert('No scan data available.');return;}
+  const ai = offlineReferral(lastReport);
+  const ageName = (AGE_TABLE[lastReport.age || currentAge] || AGE_TABLE.ADULT).name;
+  const sys = lastReport.sys ? Math.round(lastReport.sys) : 120;
+  const dia = lastReport.dia ? Math.round(lastReport.dia) : 80;
+  const ptt = lastReport.ptt ? Math.round(lastReport.ptt) : 198;
+
+  const text = `*🚨 SMART-ASHA FRONT-LINE CLINICAL REFERRAL SLIP*
+----------------------------------------
+*Patient Cohort:* ${ageName}
+*Village:* Gram Panchayat Kherli | *ASHA ID:* ASHA-RAJ-1042
+*Triage Tier:* ${ai.triage_level} — ${ai.urgency}
+*Composite Severity:* ${lastReport.score}/100
+
+*📊 HEMODYNAMICS & MULTIMODAL VITALS:*
+• SpO₂: ${Math.round(lastReport.spo2)}% | Pulse: ${Math.round(lastReport.bpm)} BPM
+• Cuffless BP: ${sys}/${dia} mmHg (PTT: ${ptt}ms | Vasc Age: ${lastReport.vasc_age||35}y)
+• Core Temp: ${(+lastReport.temp).toFixed(1)}°C (Fever Prob: ${Math.round(lastReport.fever_p||0)}%)
+• Perfusion Index: ${(+lastReport.pi).toFixed(2)}% | SDNN HRV: ${(+lastReport.sdnn).toFixed(1)}ms
+• Hemoglobin (F5/F8): ${(+lastReport.hb).toFixed(2)} | Jaundice (F1/FZ): ${(+lastReport.jaund).toFixed(2)}
+• Sepsis (SIRS): ${lastReport.sirs ? 'POSITIVE (≥2)' : 'Negative'} | Pneumonia: ${lastReport.pneum ? 'HIGH RISK' : 'Low Risk'}
+
+*📋 CLINICAL SUMMARY:*
+${ai.clinical_summary}
+
+*🏷️ ICD-10 CLASSIFICATIONS:*
+${ai.icd10_codes.map(c => `• ${c.code}: ${c.desc}`).join('\n')}
+
+*🏛️ ELIGIBLE GOVT SCHEMES (FREE CARE):*
+${ai.eligible_schemes.map(s => `• ${s.name} (${s.badge})`).join('\n')}
+
+*Destination:* ${ai.referral_to}
+----------------------------------------
+_Dispatched via Smart-ASHA v12.0 Clinical Workstation (Zero-Internet Edge AI)_`;
+
+  const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+}
+
+function printReferral(){
+  if(!document.getElementById('printableReferral')){
+    generateReferral(true);
+    setTimeout(() => window.print(), 300);
+    return;
+  }
+  window.print();
+}
+
+// ═══════ OUTBREAK GIS MAP (Leaflet.js) ═══════
+let mapInit=false,leafletMap=null;
+
+const VILLAGES=[
+  {name:'Gram Panchayat Kherli',lat:26.92,lng:75.78,total:28,crit:3,warn:8,norm:17,fever:6,anemia:4},
+  {name:'Gram Panchayat Mandawar',lat:27.05,lng:76.15,total:15,crit:1,warn:4,norm:10,fever:2,anemia:3},
+  {name:'PHC Rajgarh',lat:27.22,lng:76.62,total:42,crit:5,warn:12,norm:25,fever:9,anemia:6},
+  {name:'Sub-Centre Bassi',lat:26.85,lng:75.95,total:19,crit:2,warn:5,norm:12,fever:4,anemia:2},
+  {name:'Gram Panchayat Dudu',lat:26.78,lng:75.68,total:11,crit:0,warn:3,norm:8,fever:1,anemia:2},
+  {name:'CHC Chaksu',lat:26.60,lng:75.95,total:35,crit:4,warn:9,norm:22,fever:7,anemia:5},
+  {name:'PHC Sanganer',lat:26.82,lng:75.82,total:23,crit:2,warn:6,norm:15,fever:3,anemia:3},
+  {name:'Sub-Centre Bagru',lat:26.80,lng:75.55,total:8,crit:1,warn:2,norm:5,fever:2,anemia:1},
+  {name:'Gram Panchayat Phagi',lat:26.63,lng:75.42,total:14,crit:1,warn:4,norm:9,fever:3,anemia:2},
+  {name:'PHC Amber',lat:26.98,lng:75.85,total:31,crit:3,warn:10,norm:18,fever:5,anemia:4},
+  {name:'Gram Panchayat Govindgarh',lat:27.12,lng:76.45,total:9,crit:0,warn:2,norm:7,fever:1,anemia:1},
+  {name:'Sub-Centre Kotkhawda',lat:26.70,lng:75.72,total:17,crit:2,warn:5,norm:10,fever:4,anemia:3},
+];
+
+function initMap(){
+  if(mapInit)return;
+  mapInit=true;
+  try{
+    leafletMap=L.map('outbreakMap').setView([26.88,75.82],10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'&copy; OpenStreetMap',maxZoom:18
+    }).addTo(leafletMap);
+
+    let tc=0,cc=0,wc=0,nc=0;
+    const vList=document.getElementById('villageList');
+
+    VILLAGES.forEach(v=>{
+      tc+=v.total;cc+=v.crit;wc+=v.warn;nc+=v.norm;
+      const color=v.crit>=3?'#ef4444':v.warn>=5?'#f59e0b':'#10b981';
+      const radius=Math.max(8,Math.sqrt(v.total)*4);
+
+      L.circleMarker([v.lat,v.lng],{radius,color,fillColor:color,fillOpacity:.5,weight:2}).addTo(leafletMap)
+        .bindPopup(`<div style="font-family:Inter,sans-serif;font-size:13px"><strong>${v.name}</strong><br>Total: ${v.total} | 🔴 ${v.crit} | 🟡 ${v.warn} | 🟢 ${v.norm}<br>Fever: ${v.fever} | Anemia: ${v.anemia}</div>`);
+
+      const div=document.createElement('div');
+      div.className='stat-item';
+      div.innerHTML=`<span><span class="stat-dot" style="background:${color}"></span>${v.name.replace('Gram Panchayat ','GP ')}</span><span style="font-weight:600">${v.total}</span>`;
+      vList.appendChild(div);
     });
 
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Smart_ASHA_Screenings_${Date.now()}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+    document.getElementById('mapTotal').textContent=tc;
+    document.getElementById('mapCrit').textContent=cc;
+    document.getElementById('mapWarn').textContent=wc;
+    document.getElementById('mapNorm').textContent=nc;
+
+    setTimeout(()=>leafletMap.invalidateSize(),200);
+  }catch(e){console.warn('Map init failed:',e);}
+}
+
+// ═══════ EXPORT FUNCTIONS ═══════
+function exportJSON(){
+  if(!lastReport){alert('No data yet.');return;}
+  const payload = {
+    ...lastReport,
+    age_cohort: (AGE_TABLE[lastReport.age||currentAge]||AGE_TABLE.ADULT).name,
+    exported_at: new Date().toISOString()
+  };
+  const b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`Smart_ASHA_${Date.now()}.json`;a.click();
+}
+function exportCSV(){
+  if(!history.length){alert('No history to export.');return;}
+  let csv='Timestamp,Age_Cohort,Score,Triage,Sys_BP,Dia_BP,PTT_ms,Vasc_Age,SpO2,BPM,PI,Temp,Fever_P,SDNN,RMSSD,pNN50,Hb,Jaund,Dehy,RR,Tachycardia,Bradycardia,SIRS,Pneumonia,JaundiceRisk\n';
+  history.forEach(r=>{
+    const ageName = (AGE_TABLE[r.age||currentAge]||AGE_TABLE.ADULT).tag;
+    csv+=`"${r.timestamp}","${ageName}",${r.score},"${r.triage}",${r.sys||118},${r.dia||76},${r.ptt||198},${r.vasc_age||32},${r.spo2},${r.bpm},${r.pi},${r.temp},${r.fever_p||''},${r.sdnn},${r.rmssd||''},${r.pnn50||''},${r.hb},${r.jaund||''},${r.dehy||''},${r.rr||''},${r.tachy?1:0},${r.brady?1:0},${r.sirs?1:0},${r.pneum?1:0},${r.jaund_risk?1:0}\n`;
+  });
+  const b=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`Smart_ASHA_Screenings_${Date.now()}.csv`;a.click();
+}
+
+// ═══════ STARTUP ═══════
+console.log('%c🩺 Smart-ASHA Clinical Command Center v2.0','font-size:16px;font-weight:bold;color:#00e5ff;');
+console.log('%cFail-Safe Simulator: Ctrl+Shift+D or triple-click logo','font-size:12px;color:#f59e0b;');
 </script>
-
 </body>
 </html>

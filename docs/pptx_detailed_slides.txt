@@ -1,0 +1,525 @@
+=== SLIDE 1 ===
+  [Other 0: Google Shape;84;p13] type=PICTURE (13)
+  [Shape 1: Google Shape;85;p13] (2320528, 3182619, 7551000, 577200):
+    - Vishwakarma Application ID
+  [Other 3: Google Shape;87;p13] type=PICTURE (13)
+  [Other 4: Google Shape;88;p13] type=PICTURE (13)
+  [Other 5: Google Shape;89;p13] type=PICTURE (13)
+
+=== SLIDE 2 ===
+  [Other 0: Google Shape;94;p14] type=PICTURE (13)
+  [Shape 1: Google Shape;95;p14] (809625, 2112750, 5140500, 254100):
+    - Slide 1 & 2 Template
+  [Shape 2: Google Shape;96;p14] (809625, 2541375, 4896000, 461700):
+    - Project Overview: Title, Team ID, Track, and 1-line Core Innovation Summary.
+  [Shape 3: Google Shape;97;p14] (809625, 3112875, 4896000, 461700):
+    - Problem Statement: Clear, concise definition of the operational pain point and exact target beneficiary segment.
+  [Other 4: Google Shape;98;p14] type=PICTURE (13)
+  [Shape 5: Google Shape;99;p14] (571500, 476250, 11601600, 392400):
+    - Problem Context (1-2 Slides)
+  [Other 6: Google Shape;100;p14] type=PICTURE (13)
+  [Other 7: Google Shape;101;p14] type=PICTURE (13)
+  [Other 8: Google Shape;102;p14] type=PICTURE (13)
+
+=== SLIDE 3 ===
+  [Other 0: Google Shape;107;p15] type=PICTURE (13)
+  [Shape 1: Google Shape;108;p15] (6468200, 2340825, 5140500, 254100):
+    - Visual "After State" Requirement
+  [Shape 2: Google Shape;109;p15] (6468200, 2769450, 4896000, 461700):
+    - Future Solution Mapping: Include a clear flowchart, storyboard, or diagram illustrating how your solution will benefit the users.
+  [Shape 3: Google Shape;110;p15] (6468200, 3340950, 4896000, 461700):
+    - Quantified Efficiency: Benchmark time gain, material usage, labor cost, or safety post your  innovation.
+  [Other 4: Google Shape;111;p15] type=PICTURE (13)
+  [Shape 5: Google Shape;112;p15] (571500, 476250, 11601600, 392400):
+    - User Journey (1-2 Slides)
+  [Other 6: Google Shape;113;p15] type=PICTURE (13)
+  [Shape 7: Google Shape;114;p15] (821437, 2379197, 5140500, 254100):
+    - Visual "Before State" Requirement
+  [Shape 8: Google Shape;115;p15] (821437, 2807822, 4896000, 738900):
+    - Current Pain Point Mapping: Include a clear flowchart, storyboard, or diagram illustrating current issues faced by the users due to lack of the solution proposed by you.
+  [Shape 9: Google Shape;116;p15] (821437, 3591089, 4896000, 461700):
+    - Quantified Inefficiency: Benchmark time loss, material waste, labor cost, or safety hazards prior to innovation.
+  [Other 10: Google Shape;117;p15] type=PICTURE (13)
+  [Other 11: Google Shape;118;p15] type=PICTURE (13)
+  [Other 12: Google Shape;119;p15] type=PICTURE (13)
+  [Other 13: Google Shape;120;p15] type=PICTURE (13)
+
+=== SLIDE 4 ===
+  [Other 0: Google Shape;125;p16] type=PICTURE (13)
+  [Other 1: Google Shape;126;p16] type=PICTURE (13)
+  [Other 2: Google Shape;127;p16] type=PICTURE (13)
+  [Other 3: Google Shape;128;p16] type=PICTURE (13)
+  [Other 4: Google Shape;129;p16] type=PICTURE (13)
+  [Other 5: Google Shape;130;p16] type=PICTURE (13)
+  [Other 6: Google Shape;131;p16] type=PICTURE (13)
+  [Other 7: Google Shape;132;p16] type=PICTURE (13)
+  [Shape 8: Google Shape;133;p16] (533400, 438150, 11125200, 308520):
+    - Example: Problem Context & User Journey
+  [Other 9: Google Shape;134;p16] type=PICTURE (13)
+  [Shape 10: Google Shape;135;p16] (695325, 5838653, 9048900, 144300):
+    - Exemplar Submission Note: Team ID: VK-2026-AG-108 | Track: Smart Agriculture & Mechanization | Core Innovation: Compact autonomous active-tine row weeder.
+  [Shape 11: Google Shape;136;p16] (695325, 1080045, 2343150, 230385):
+    - ₹4,200/Ac
+  [Shape 12: Google Shape;137;p16] (695325, 1339006, 2343150, 142875):
+    - MANUAL WEEDING EXPENSE
+  [Shape 13: Google Shape;138;p16] (3514725, 1080045, 2343150, 230385):
+    - 62 Hrs/Ac
+  [Shape 14: Google Shape;139;p16] (3514725, 1339006, 2343150, 142875):
+    - MANUAL LABOR TIME
+  [Shape 15: Google Shape;140;p16] (6334125, 1080045, 2343150, 230385):
+    - 28% Loss
+  [Shape 16: Google Shape;141;p16] (6334125, 1339006, 2343150, 142875):
+    - YIELD LOSS VIA WEED STUNT
+  [Shape 17: Google Shape;142;p16] (9153525, 1080045, 2343150, 230385):
+    - 68 dB(A)
+  [Shape 18: Google Shape;143;p16] (9153525, 1339006, 2343150, 142875):
+    - SAFETY EXPOSURE LIMIT
+  [Shape 19: Google Shape;144;p16] (533400, 4215556, 5429250, 158799):
+    - Figure: Vidarbha smallholder inspecting severe weed infestation along 45cm cotton rows
+  [Other 20: Google Shape;145;p16] type=PICTURE (13)
+  [Other 21: Google Shape;146;p16] type=PICTURE (13)
+  [Shape 22: Google Shape;147;p16] (6698009, 1939081, 3215729, 190500):
+    - Target Beneficiary & Before-State User Flow
+  [Shape 23: Google Shape;148;p16] (6638925, 2243881, 4800600, 372665):
+    - Target User: Smallholder cotton farmers in Vidarbha, Maharashtra operating 1–4 acre farms with 45cm crop row spacing.
+  [Shape 24: Google Shape;149;p16] (6638925, 2702272, 4800600, 558998):
+    - Operational Bottleneck: Severe seasonal labor shortages during the 20-day weed-competition window force reliance on manual sickle scraping or drift-heavy herbicides.
+  [Shape 25: Google Shape;150;p16] (6638925, 3346995, 4800600, 558998):
+    - Before-State Flow: Weed infestation emerges (Day 1-5) → 72-hr delay finding scarce farm labor → Slow manual hoeing (0.15 ac/day) causing back strain → Late glyphosate spraying damages 14% cotton plants.
+  [Shape 26: Google Shape;151;p16] (6638925, 3991719, 4800600, 558998):
+    - Public Search Disclosure: Commercial weeding tractors require >30 HP and >1.2m row spacing, crushing crops. Hand-carried weeders cause severe musculoskeletal fatigue after 3 hrs.
+  [Shape 27: Google Shape;152;p16] (6467475, 2234356, 57150, 219075):
+    - ▪
+  [Shape 28: Google Shape;153;p16] (6467475, 2692747, 57150, 219075):
+    - ▪
+  [Shape 29: Google Shape;154;p16] (6467475, 3337470, 57150, 219075):
+    - ▪
+  [Shape 30: Google Shape;155;p16] (6467475, 3982194, 57150, 219075):
+    - ▪
+  [Other 31: Google Shape;156;p16] type=PICTURE (13)
+  [Other 32: Google Shape;157;p16] type=PICTURE (13)
+
+=== SLIDE 5 ===
+  [Other 0: Google Shape;162;p17] type=PICTURE (13)
+  [Other 1: Google Shape;163;p17] type=PICTURE (13)
+  [Other 2: Google Shape;164;p17] type=PICTURE (13)
+  [Shape 3: Google Shape;165;p17] (809550, 2357125, 3207000, 254100):
+    - System Block Diagram
+  [Shape 4: Google Shape;166;p17] (809550, 2785750, 3054300, 1015800):
+    - Map out integrated subsystems: Mechanical Structure, Actuation/Power, Electronic Controllers, and Firmware/Logic flow.
+  [Shape 5: Google Shape;167;p17] (4568799, 2357125, 3207000, 254100):
+    - Target Specifications
+  [Shape 6: Google Shape;168;p17] (4568799, 2785750, 3054300, 1015800):
+    - List key operational targets (e.g., Payload capacity: 25kg, Operating speed: 1.5m/s, Battery backup: 4 hrs, Power draw: 200W).
+  [Shape 7: Google Shape;169;p17] (8328049, 2357125, 3207000, 254100):
+    - Hardware Selection
+  [Shape 8: Google Shape;170;p17] (8328049, 2785750, 3054300, 738900):
+    - Specify exact microcontroller, motor driver, sensor types, and communication protocols chosen for the architecture.
+  [Other 9: Google Shape;171;p17] type=PICTURE (13)
+  [Other 10: Google Shape;172;p17] type=PICTURE (13)
+  [Other 11: Google Shape;173;p17] type=PICTURE (13)
+  [Shape 12: Google Shape;174;p17] (571500, 476250, 11601600, 392400):
+    - System Architecture & Specs (1-2 Slides)
+  [Other 13: Google Shape;175;p17] type=PICTURE (13)
+  [Other 14: Google Shape;176;p17] type=PICTURE (13)
+  [Other 15: Google Shape;177;p17] type=PICTURE (13)
+
+=== SLIDE 6 ===
+  [Other 0: Google Shape;182;p18] type=PICTURE (13)
+  [Other 1: Google Shape;183;p18] type=PICTURE (13)
+  [Other 2: Google Shape;184;p18] type=PICTURE (13)
+  [Other 3: Google Shape;185;p18] type=PICTURE (13)
+  [Shape 4: Google Shape;186;p18] (533400, 438150, 11125200, 308520):
+    - Example: System Architecture & Specs
+  [Other 5: Google Shape;187;p18] type=PICTURE (13)
+  [Shape 6: Google Shape;188;p18] (723900, 5406206, 9515400, 353400):
+    - Architecture Rationale: CAN-bus protocol was chosen over I2C/UART to eliminate high-frequency EMI noise generated by dual rotary tine motors under heavy torque loads.
+  [Shape 7: Google Shape;189;p18] (533400, 3432720, 5429250, 158799):
+    - Figure: TerraWeed Mk-II modular 4-wheel rover platform with articulated steering
+  [Table 8: Google Shape;190;p18] rows=7, cols=3
+    Row 0: Parameter | Target Spec | Selected Hardware / Protocol
+    Row 1: Linear Speed | 0.8 m/s (2.88 km/h) | 4x 24V 150W Planetary BLDC Hub Motors
+    Row 2: Weeding Width | 420 mm envelope | Counter-rotating carbide tine disc assembly
+    Row 3: Continuous Runtime | 4.5 Hours | 24V 20Ah LiFePO4 pack (8S 32700 cells)
+    Row 4: Core Controller | 50Hz control loop | STM32F405RGT6 (CAN-bus isolated transceiver)
+    Row 5: Vision & Row Tracking | <35ms latency | Raspberry Pi Zero 2W + Sony IMX219 (IP65 lens)
+    Row 6: Dry Weight | 24.5 kg | 6061-T6 Extruded Aluminum space-frame
+  [Other 9: Google Shape;191;p18] type=PICTURE (13)
+  [Other 10: Google Shape;192;p18] type=PICTURE (13)
+  [Shape 11: Google Shape;193;p18] (6698009, 1156245, 3507134, 190500):
+    - Engineering Target Specifications & Subsystems
+  [Other 30: Google Shape;212;p18] type=PICTURE (13)
+  [Other 31: Google Shape;213;p18] type=PICTURE (13)
+
+=== SLIDE 7 ===
+  [Other 0: Google Shape;218;p19] type=PICTURE (13)
+  [Other 1: Google Shape;219;p19] type=PICTURE (13)
+  [Shape 2: Google Shape;220;p19] (914400, 1402378, 5029200, 461700):
+    - 3D CAD Renders: Provide isometric and exploded assembly views showing all internal mechanical linkages.
+  [Shape 3: Google Shape;221;p19] (914400, 2011978, 5029200, 461700):
+    - Material Selection: Detail structural choices (e.g., Aluminum 6061 vs. Carbon Fiber vs. PETG) based on stress & weight.
+  [Shape 4: Google Shape;222;p19] (914400, 2621578, 5029200, 461700):
+    - FEA / Stress Analysis: Highlight critical stress nodes and load-bearing calculations to prove hardware integrity.
+  [Other 5: Google Shape;223;p19] type=PICTURE (13)
+  [Other 6: Google Shape;224;p19] type=PICTURE (13)
+  [Other 7: Google Shape;225;p19] type=PICTURE (13)
+  [Shape 8: Google Shape;226;p19] (571500, 476250, 11601600, 392400):
+    - CAD Design & Mechanical Specs (1-2 Slides)
+  [Other 9: Google Shape;227;p19] type=PICTURE (13)
+  [Other 10: Google Shape;228;p19] type=PICTURE (13)
+  [Other 11: Google Shape;229;p19] type=PICTURE (13)
+
+=== SLIDE 8 ===
+  [Other 0: Google Shape;234;p20] type=PICTURE (13)
+  [Other 1: Google Shape;235;p20] type=PICTURE (13)
+  [Other 2: Google Shape;236;p20] type=PICTURE (13)
+  [Other 3: Google Shape;237;p20] type=PICTURE (13)
+  [Shape 4: Google Shape;238;p20] (533400, 438150, 11125200, 308520):
+    - Example: CAD Design & Mechanical Specs
+  [Other 5: Google Shape;239;p20] type=PICTURE (13)
+  [Shape 6: Google Shape;240;p20] (723900, 5646976, 8620200, 353400):
+    - Design Iteration: Tiller mount plate thickness increased from 3.0mm to 4.5mm based on FEA fatigue analysis, eliminating stress hot spots under cyclic torque.
+  [Shape 7: Google Shape;241;p20] (533400, 3432720, 5429250, 158799):
+    - Figure: SolidWorks exploded assembly of active rotary weeding module & 4-bar linkage
+  [Other 8: Google Shape;242;p20] type=PICTURE (13)
+  [Other 9: Google Shape;243;p20] type=PICTURE (13)
+  [Shape 10: Google Shape;244;p20] (6698009, 1156245, 3088034, 190500):
+    - Mechanical Validation & FEA Stress Report
+  [Shape 11: Google Shape;245;p20] (6638925, 1461045, 4800600, 372665):
+    - Chassis Members: 30x30x2mm Aluminum 6061-T6 box extrusion; total frame mass 6.2 kg; yield strength 276 MPa.
+  [Shape 12: Google Shape;246;p20] (6638925, 1919436, 4800600, 372665):
+    - Rotary Tiller Blades: Hardened EN45 Spring Steel with oil-quenched temper (48 HRC) to withstand quartz abrasion and stone impacts.
+  [Shape 13: Google Shape;247;p20] (6638925, 2377826, 4800600, 372665):
+    - FEA Loading Simulation: 350 N dynamic shock load applied vertically to suspension pivot bracket (simulating a 50mm ditch drop at 1.0 m/s).
+  [Shape 14: Google Shape;248;p20] (6638925, 2836217, 4800600, 372665):
+    - Stress & Safety Factor: Peak Von Mises stress of 114.2 MPa concentrated at pivot fillet; minimum Factor of Safety (FoS) = 2.41.
+  [Shape 15: Google Shape;249;p20] (6638925, 3294608, 4800600, 372665):
+    - Max Deflection: 0.42 mm along cantilevered drive axis, well within deep-groove ball bearing angular misalignment tolerances.
+  [Shape 16: Google Shape;250;p20] (6467475, 1451520, 57150, 219075):
+    - ▪
+  [Shape 17: Google Shape;251;p20] (6467475, 1909911, 57150, 219075):
+    - ▪
+  [Shape 18: Google Shape;252;p20] (6467475, 2368301, 57150, 219075):
+    - ▪
+  [Shape 19: Google Shape;253;p20] (6467475, 2826692, 57150, 219075):
+    - ▪
+  [Shape 20: Google Shape;254;p20] (6467475, 3285083, 57150, 219075):
+    - ▪
+  [Other 21: Google Shape;255;p20] type=PICTURE (13)
+  [Other 22: Google Shape;256;p20] type=PICTURE (13)
+
+=== SLIDE 9 ===
+  [Other 0: Google Shape;261;p21] type=PICTURE (13)
+  [Other 1: Google Shape;262;p21] type=PICTURE (13)
+  [Shape 2: Google Shape;263;p21] (6591300, 1451262, 5029200, 461700):
+    - Circuit Schematics: Provide clear pinout connection diagrams, power distribution networks, and voltage regulation.
+  [Shape 3: Google Shape;264;p21] (6591300, 2060862, 5029200, 461700):
+    - Itemized BOM Table: List all components, exact part numbers, quantities, unit costs, and total build expense.
+  [Shape 4: Google Shape;265;p21] (6591300, 2670462, 5029200, 461700):
+    - Procurement Sourcing: Flag local vs. imported components with verified vendor lead times to prevent build delays.
+  [Other 5: Google Shape;266;p21] type=PICTURE (13)
+  [Other 6: Google Shape;267;p21] type=PICTURE (13)
+  [Other 7: Google Shape;268;p21] type=PICTURE (13)
+  [Shape 8: Google Shape;269;p21] (571500, 476250, 11601600, 392400):
+    - Electronics Schematics & BOM (1-2 Slides)
+  [Other 9: Google Shape;270;p21] type=PICTURE (13)
+  [Other 10: Google Shape;271;p21] type=PICTURE (13)
+  [Other 11: Google Shape;272;p21] type=PICTURE (13)
+
+=== SLIDE 10 ===
+  [Other 0: Google Shape;277;p22] type=PICTURE (13)
+  [Other 1: Google Shape;278;p22] type=PICTURE (13)
+  [Other 2: Google Shape;279;p22] type=PICTURE (13)
+  [Other 3: Google Shape;280;p22] type=PICTURE (13)
+  [Shape 4: Google Shape;281;p22] (533400, 438150, 11125200, 308520):
+    - Example: Electronics Schematics & BOM
+  [Other 5: Google Shape;282;p22] type=PICTURE (13)
+  [Shape 6: Google Shape;283;p22] (723900, 5844884, 7258200, 353400):
+    - Procurement Status: All core components sourced domestically within India with a maximum shipping lead time of 7 business days.
+  [Shape 7: Google Shape;284;p22] (533400, 3432720, 5429250, 158799):
+    - Figure: Custom carrier board schematic with optocoupled BLDC drivers and buck stages
+  [Table 8: Google Shape;285;p22] rows=8, cols=5
+    Row 0: Component | Part / Specification | Qty | Lead Time | Cost (INR)
+    Row 1: MCU Mainboard | STM32F405RGT6 Arm M4 | 1 | Local (3 days) | ₹1,450
+    Row 2: BLDC Hub Motors | 24V 150W Planetary (1:20) | 4 | Domestic (7 days) | ₹14,200
+    Row 3: Smart BMS Unit | Daly 8S 24V 40A UART | 1 | Local (2 days) | ₹2,100
+    Row 4: LiFePO4 Cells | 3.2V 20Ah 32700 Cylindrical | 8 | Domestic (5 days) | ₹6,800
+    Row 5: Ultrasonic Sensor | JSN-SR04T Waterproof (IP67) | 3 | Local (2 days) | ₹1,150
+    Row 6: Custom Carrier PCB | FR4 2-Layer 1.6mm (LionCircuits) | 5 | Domestic (6 days) | ₹1,800
+    Row 7: Total Electronics & Drive Train BOM | ₹27,500 |  |  | 
+  [Other 9: Google Shape;286;p22] type=PICTURE (13)
+  [Other 10: Google Shape;287;p22] type=PICTURE (13)
+  [Shape 11: Google Shape;288;p22] (6659909, 1156245, 3051869, 190500):
+    - Itemized Prototype Bill of Materials (BOM)
+  [Other 47: Google Shape;324;p22] type=PICTURE (13)
+  [Other 48: Google Shape;325;p22] type=PICTURE (13)
+
+=== SLIDE 11 ===
+  [Other 0: Google Shape;330;p23] type=PICTURE (13)
+  [Other 1: Google Shape;331;p23] type=PICTURE (13)
+  [Other 2: Google Shape;332;p23] type=PICTURE (13)
+  [Shape 3: Google Shape;333;p23] (533400, 457200, 11125200, 392400):
+    - Your Maker Journey (1-2 Slides)
+  [Other 4: Google Shape;334;p23] type=PICTURE (13)
+  [Shape 5: Google Shape;335;p23] (771425, 2110882, 3079800, 184800):
+    - Proof of personal fabrication:
+  [Shape 6: Google Shape;336;p23] (4572365, 2230457, 3079800, 184800):
+    - Screenshots of original design assets:
+  [Shape 7: Google Shape;337;p23] (8340526, 2104852, 3079800, 452400):
+    - Provide an accessible Google Drive / GitHub repo link:
+  [Other 8: Google Shape;338;p23] type=PICTURE (13)
+  [Shape 9: Google Shape;339;p23] (982995, 1599734, 2889300, 254100):
+    - Authenticity Verification
+  [Shape 10: Google Shape;340;p23] (962025, 2421528, 2889300, 987900):
+    - Include high-resolution lab photos of team members actively modeling, soldering, and assembling.
+  [Shape 11: Google Shape;341;p23] (962025, 3518124, 2889300, 720300):
+    - Team members must wear institutional ID badges in the frame.
+  [Shape 12: Google Shape;342;p23] (962025, 4347110, 2889300, 452400):
+    - If a faculty mentor is attached, include a joint lab review photo.
+  [Other 13: Google Shape;343;p23] type=PICTURE (13)
+  [Shape 14: Google Shape;344;p23] (4786600, 1599734, 2889300, 507900):
+    - Work-In-Progress Software Evidence
+  [Shape 15: Google Shape;345;p23] (4762865, 2512065, 2889300, 720300):
+    - CAD software UI showing active parametric feature tree with unsuppressed sketches.
+  [Shape 16: Google Shape;346;p23] (4762865, 3312911, 2889300, 452400):
+    - EDA layout software (KiCad / Altium) with DRC rule-check logs.
+  [Shape 17: Google Shape;347;p23] (4762865, 3845838, 2889300, 452400):
+    - FEA convergence plots and mesh statistics.
+  [Other 18: Google Shape;348;p23] type=PICTURE (13)
+  [Shape 19: Google Shape;349;p23] (8628295, 1599734, 2663700, 254100):
+    - Raw Repository Linkage
+  [Shape 20: Google Shape;350;p23] (8531126, 2604311, 2889300, 452400):
+    - Must include raw native files (.STEP, .SLDPRT, .kicad_sch, .m).
+  [Shape 21: Google Shape;351;p23] (8531126, 3153913, 2889300, 720300):
+    - File creation timestamps will be audited to confirm progress during Stage 2.
+  [Shape 22: Google Shape;352;p23] (8531126, 3971424, 2889300, 452400):
+    - No embedded videos; provide external links only.
+  [Other 26: Google Shape;356;p23] type=PICTURE (13)
+  [Other 27: Google Shape;357;p23] type=PICTURE (13)
+
+=== SLIDE 12 ===
+  [Other 0: Google Shape;362;p24] type=PICTURE (13)
+  [Other 1: Google Shape;363;p24] type=PICTURE (13)
+  [Other 2: Google Shape;364;p24] type=PICTURE (13)
+  [Other 3: Google Shape;365;p24] type=PICTURE (13)
+  [Shape 4: Google Shape;366;p24] (533400, 438150, 11125200, 311700):
+    - Example: Maker Journey
+  [Other 5: Google Shape;367;p24] type=PICTURE (13)
+  [Shape 6: Google Shape;368;p24] (723900, 5761004, 7953300, 353400):
+    - Institutional Sign-Off: Work audited and certified by Faculty Guide Prof. S. K. Kulkarni, Dept. of Mechatronics, COEP Technological University Pune.
+  [Shape 7: Google Shape;369;p24] (533400, 3432720, 5429250, 158799):
+    - Figure: Team members conducting motor dyno & telemetry testing at COEP Pune Maker Lab
+  [Other 8: Google Shape;370;p24] type=PICTURE (13)
+  [Other 9: Google Shape;371;p24] type=PICTURE (13)
+  [Shape 10: Google Shape;372;p24] (6717059, 1156245, 2916584, 190500):
+    - Stage 1 to Stage 2 Engineering Iterations
+  [Shape 11: Google Shape;373;p24] (6638925, 1461045, 4800600, 558998):
+    - Iterative Pivot: Replaced passive cultivator shank from Stage 1 with dual active counter-rotating discs after torque calculations indicated 40% soil clogging in clayey black cotton soil.
+  [Shape 12: Google Shape;374;p24] (6638925, 2105769, 4800600, 372665):
+    - CAD Milestone: 47 discrete parametric parts modeled in SolidWorks 2024; completed kinematic multi-body simulation of 4-bar steering on Aug 24, 2026.
+  [Shape 13: Google Shape;375;p24] (6638925, 2564159, 4800600, 558998):
+    - Electrical Testing: Validated current surge on 24V bus during tiller stall (peaked at 18.2A for 120ms; managed safely by flyback diodes and smart BMS cutoff).
+  [Shape 14: Google Shape;376;p24] (6638925, 3208883, 4800600, 745331):
+    - Verified Drive Repository: drive.google.com/drive/folders/terraweed-stage2-audit (Contains timestamped .SLDASM, BOM.xlsx, KiCad v8 schematics, and raw FEA stress logs).
+  [Shape 15: Google Shape;377;p24] (6467475, 1451520, 57150, 219075):
+    - ▪
+  [Shape 16: Google Shape;378;p24] (6467475, 2096244, 57150, 219075):
+    - ▪
+  [Shape 17: Google Shape;379;p24] (6467475, 2554634, 57150, 219075):
+    - ▪
+  [Shape 18: Google Shape;380;p24] (6467475, 3199358, 57150, 219075):
+    - ▪
+  [Other 19: Google Shape;381;p24] type=PICTURE (13)
+  [Other 20: Google Shape;382;p24] type=PICTURE (13)
+
+=== SLIDE 13 ===
+  [Other 0: Google Shape;387;p25] type=PICTURE (13)
+  [Shape 1: Google Shape;388;p25] (801338, 2194200, 5140500, 254100):
+    - Safety & Hazard Mitigation
+  [Shape 2: Google Shape;389;p25] (801338, 2622825, 4896000, 461700):
+    - Physical Fail-safes: Emergency cut-off switches, thermal overload protection, and mechanical enclosures.
+  [Shape 3: Google Shape;390;p25] (801338, 3194325, 4896000, 461700):
+    - FMEA Matrix: Identify potential failure modes (e.g., sensor drift, power drop) and embedded software protections.
+  [Other 4: Google Shape;391;p25] type=PICTURE (13)
+  [Shape 5: Google Shape;392;p25] (571500, 476250, 11601600, 392400):
+    - Safety & Hazard Mitigation (1 Slide)
+  [Other 6: Google Shape;393;p25] type=PICTURE (13)
+  [Shape 7: Google Shape;394;p25] (6818517, 2194200, 4447200, 254100):
+    - Standards Compliance
+  [Shape 8: Google Shape;395;p25] (6818517, 2622825, 4235400, 461700):
+    - List relevant industry/safety guidelines (e.g., ISO, IEEE, IP65 ingress protection) considered in the design.
+  [Other 9: Google Shape;396;p25] type=PICTURE (13)
+  [Other 10: Google Shape;397;p25] type=PICTURE (13)
+  [Other 11: Google Shape;398;p25] type=PICTURE (13)
+  [Other 12: Google Shape;399;p25] type=PICTURE (13)
+
+=== SLIDE 14 ===
+  [Other 0: Google Shape;404;p26] type=PICTURE (13)
+  [Shape 1: Google Shape;405;p26] (996870, 2145350, 5140500, 254100):
+    - 4-Month Fabrication Plan
+  [Shape 2: Google Shape;406;p26] (996870, 2573975, 4896000, 461700):
+    - Fabrication Timeline: Milestones for machining, PCB etching/assembly, code integration, and bench testing.
+  [Shape 3: Google Shape;407;p26] (996870, 3145475, 4896000, 461700):
+    - Stage 3 Target: Clear commitment of prototype readiness for functional field testing in Stage 3.
+  [Other 4: Google Shape;408;p26] type=PICTURE (13)
+  [Shape 5: Google Shape;409;p26] (571500, 476250, 11601600, 392400):
+    - Roadmap (1 Slide)
+  [Other 6: Google Shape;410;p26] type=PICTURE (13)
+  [Other 7: Google Shape;411;p26] type=PICTURE (13)
+  [Other 8: Google Shape;412;p26] type=PICTURE (13)
+
+=== SLIDE 15 ===
+  [Other 0: Google Shape;417;p27] type=PICTURE (13)
+  [Other 1: Google Shape;418;p27] type=PICTURE (13)
+  [Other 2: Google Shape;419;p27] type=PICTURE (13)
+  [Other 3: Google Shape;420;p27] type=PICTURE (13)
+  [Shape 4: Google Shape;421;p27] (533400, 438150, 11125200, 308520):
+    - Example: Safety by Design & Roadmap
+  [Other 5: Google Shape;422;p27] type=PICTURE (13)
+  [Table 6: Google Shape;423;p27] rows=4, cols=3
+    Row 0: Failure Mode | Potential Hazard | Embedded Fail-Safe / Mitigation Response
+    Row 1: Tiller Stone Jam | BLDC motor stall, thermal runaway, gear shear | Hall-sensor current spike detection cuts PWM in <15ms; triggers 0.5s auto-reverse cycle.
+    Row 2: Loss of RF Heartbeat | Runaway robotic vehicle in crop field | Software watchdog timer executes emergency dynamic braking if ping timeout > 350ms.
+    Row 3: LiFePO4 Over-Temp | Thermal degradation, fire risk | Dual NTC thermistors on battery pack disconnect main BMS power contactor above 52°C.
+  [Other 7: Google Shape;424;p27] type=PICTURE (13)
+  [Shape 8: Google Shape;425;p27] (1002059, 1156245, 3518594, 190500):
+    - Design FMEA (Failure Mode and Effects Analysis)
+  [Other 18: Google Shape;435;p27] type=PICTURE (13)
+  [Shape 19: Google Shape;436;p27] (1002059, 3213645, 2318444, 190500):
+    - Fabrication Phase (Months 1 - 2)
+  [Shape 20: Google Shape;437;p27] (942975, 3518445, 4800600, 372665):
+    - Oct 2026: Waterjet cutting 6061 chassis gussets; PCB fabrication at LionCircuits; component order arrival.
+  [Shape 21: Google Shape;438;p27] (942975, 3976836, 4800600, 372665):
+    - Nov 2026: Frame weldment, motor harness routing, benchtop dyno torque testing.
+  [Other 22: Google Shape;439;p27] type=PICTURE (13)
+  [Shape 23: Google Shape;440;p27] (6678959, 3213645, 2884289, 190500):
+    - Integration & Field Demo (Months 3 - 4)
+  [Shape 24: Google Shape;441;p27] (6638925, 3518445, 4800600, 372665):
+    - Dec 2026: Closed-loop PID tuning, optical row-tracking calibration on artificial soil furrow.
+  [Shape 25: Google Shape;442;p27] (6638925, 3976836, 4800600, 372665):
+    - Jan 2027: 50-hour field trial on Wardha cotton plot; final tuning for Stage 3 live jury demo.
+  [Shape 26: Google Shape;443;p27] (771525, 3508920, 57150, 219075):
+    - ▪
+  [Shape 27: Google Shape;444;p27] (771525, 3967311, 57150, 219075):
+    - ▪
+  [Shape 28: Google Shape;445;p27] (6467475, 3508920, 57150, 219075):
+    - ▪
+  [Shape 29: Google Shape;446;p27] (6467475, 3967311, 57150, 219075):
+    - ▪
+  [Other 30: Google Shape;447;p27] type=PICTURE (13)
+  [Other 31: Google Shape;448;p27] type=PICTURE (13)
+
+=== SLIDE 16 ===
+  [Other 0: Google Shape;453;p28] type=PICTURE (13)
+  [Shape 1: Google Shape;454;p28] (1184300, 2096475, 3207000, 254100):
+    - Engineering Bottlenecks
+  [Shape 2: Google Shape;455;p28] (1184300, 2525100, 3054300, 1015800):
+    - Detail major design constraints encountered during simulation (e.g., torque vs. weight trade-offs, heat dissipation).
+  [Other 3: Google Shape;456;p28] type=PICTURE (13)
+  [Shape 4: Google Shape;457;p28] (571500, 476250, 11601600, 392400):
+    - Technical Challenges & Risks (1 Slide)
+  [Other 5: Google Shape;458;p28] type=PICTURE (13)
+  [Other 6: Google Shape;459;p28] type=PICTURE (13)
+  [Other 7: Google Shape;460;p28] type=PICTURE (13)
+
+=== SLIDE 17 ===
+  [Other 0: Google Shape;465;p29] type=PICTURE (13)
+  [Shape 1: Google Shape;466;p29] (1099158, 2177925, 3207000, 254100):
+    - Risk Mitigation
+  [Shape 2: Google Shape;467;p29] (1099158, 2606550, 3054300, 738900):
+    - Explain backup technical solutions (e.g., modular gear reduction, alternative sensor fallback logic).
+  [Other 3: Google Shape;468;p29] type=PICTURE (13)
+  [Shape 4: Google Shape;469;p29] (571500, 476250, 11601600, 392400):
+    - Potential Solutions & Risk Mitigation (1 Slide)
+  [Other 5: Google Shape;470;p29] type=PICTURE (13)
+  [Other 6: Google Shape;471;p29] type=PICTURE (13)
+  [Other 7: Google Shape;472;p29] type=PICTURE (13)
+
+=== SLIDE 18 ===
+  [Other 0: Google Shape;477;p30] type=PICTURE (13)
+  [Other 1: Google Shape;478;p30] type=PICTURE (13)
+  [Other 2: Google Shape;479;p30] type=PICTURE (13)
+  [Other 3: Google Shape;480;p30] type=PICTURE (13)
+  [Other 4: Google Shape;481;p30] type=PICTURE (13)
+  [Shape 5: Google Shape;482;p30] (533400, 438150, 11125200, 308520):
+    - Example: Technical Challenges & Risks
+  [Other 6: Google Shape;483;p30] type=PICTURE (13)
+  [Shape 7: Google Shape;484;p30] (723900, 5761004, 7715400, 353400):
+    - Empirical Verification: Benchtop clay test rig showed a 94% reduction in mechanical rotational drag after installing the PTFE scraper combs.
+  [Shape 8: Google Shape;485;p30] (752475, 1461045, 3130450, 517921):
+    - Observed Risk: High-moisture (>25%) black cotton soil adheres to rotary cultivator teeth, causing rotational binding within 12 minutes of continuous furrow tilling.
+  [Shape 9: Google Shape;486;p30] (752475, 2055167, 3130450, 517921):
+    - Mitigation: Installed stationary low-friction PTFE scraper blades offset 1.5mm from the tine arc to dynamically peel away clay buildup on every rotation.
+  [Shape 10: Google Shape;487;p30] (4530625, 1461045, 3130599, 517921):
+    - Observed Risk: Hub motor temperatures reached 68°C in simulation during sustained noon operations at 38°C ambient Maharashtra field heat.
+  [Shape 11: Google Shape;488;p30] (4530625, 2055167, 3130599, 517921):
+    - Mitigation: Retrofitted extruded radial aluminum heatsinks directly coupled via 3.0 W/mK silicone thermal pads, stabilizing motor casing temps below 47°C.
+  [Shape 12: Google Shape;489;p30] (8308925, 1461045, 3130450, 345281):
+    - ISO 4254-1 Compliance: 2mm sheet steel blade shrouds eliminate projectile pebble hazards.
+  [Shape 13: Google Shape;490;p30] (8308925, 1882526, 3130450, 517921):
+    - IP65 Ingress Sealing: Gasket-sealed ASA electronics bay with IP68 PG7 cable glands tested against direct pressurized spray.
+  [Shape 14: Google Shape;491;p30] (8308925, 2476648, 3130450, 345281):
+    - IEC 62133: BMS equipped with cell-level thermal sensors and overcharge isolation.
+  [Other 15: Google Shape;492;p30] type=PICTURE (13)
+  [Shape 16: Google Shape;493;p30] (1040159, 1156245, 2131814, 190500):
+    - Bottleneck: Wet Soil Clogging
+  [Other 17: Google Shape;494;p30] type=PICTURE (13)
+  [Shape 18: Google Shape;495;p30] (4799260, 1156245, 2219325, 190500):
+    - Bottleneck: Thermal Throttling
+  [Other 19: Google Shape;496;p30] type=PICTURE (13)
+  [Shape 20: Google Shape;497;p30] (8558510, 1156245, 2127944, 190500):
+    - Standards & Enclosure Specs
+  [Other 21: Google Shape;498;p30] type=PICTURE (13)
+  [Other 22: Google Shape;499;p30] type=PICTURE (13)
+
+=== SLIDE 19 ===
+  [Other 3: Google Shape;507;p31] type=PICTURE (13)
+  [Shape 4: Google Shape;508;p31] (1666875, 1682743, 9953700, 150000):
+    - https://damassets.autodesk.net/content/dam/autodesk/www/images/3d-f-2.jpg
+  [Shape 5: Google Shape;509;p31] (1666875, 1916106, 9953700, 184800):
+    - Source: www.autodesk.com
+  [Other 6: Google Shape;510;p31] type=PICTURE (13)
+  [Shape 7: Google Shape;511;p31] (1666875, 2447125, 9953700, 375000):
+    - https://static.vecteezy.com/system/resources/previews/073/726/958/non_2x/schematic-motherboard-design-with-electronic-components-and-circuitry-outline-depicting-computer-hardware-technology-and-engineering-vector.jpg
+  [Shape 8: Google Shape;512;p31] (1666875, 2866225, 9953700, 184800):
+    - Source: janetmedicalclinic.com
+  [Shape 9: Google Shape;513;p31] (571500, 476250, 11601600, 669600):
+    - References & Sources
+    - (Mention the References and Sources used in your PPT)
+  [Other 10: Google Shape;514;p31] type=PICTURE (13)
+  [Other 11: Google Shape;515;p31] type=PICTURE (13)
+  [Other 12: Google Shape;516;p31] type=PICTURE (13)
+
+=== SLIDE 20 ===
+  [Other 0: Google Shape;521;p32] type=PICTURE (13)
+  [Shape 1: Google Shape;522;p32] (533400, 438150, 11658600, 308520):
+    - Image Sources
+  [Other 14: Google Shape;535;p32] type=PICTURE (13)
+  [Shape 15: Google Shape;536;p32] (1628775, 1099095, 10029825, 358973):
+    - https://assets.farmjournal.com/dims4/default/a754738/2147483647/strip/true/crop/1640x924+0+0/resize/1440x811!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fa6%2F33%2Fa69c7199437191c11311d3b6b42f%2Fcotton-before-harvest-as-382887942.jpg
+  [Shape 16: Google Shape;537;p32] (1628775, 1505694, 10029825, 220860):
+    - Source: www.agweb.com
+  [Other 17: Google Shape;538;p32] type=PICTURE (13)
+  [Shape 18: Google Shape;539;p32] (1628775, 2035968, 10029825, 179486):
+    - https://static.manitobacooperator.ca/wp-content/uploads/2021/12/08154933/IMGP6708_Rover_R-Tech.jpeg
+  [Shape 19: Google Shape;540;p32] (1628775, 2263080, 10029825, 220860):
+    - Source: www.manitobacooperator.ca
+  [Other 20: Google Shape;541;p32] type=PICTURE (13)
+  [Shape 21: Google Shape;542;p32] (1628775, 2807493, 10029825, 179486):
+    - https://cdn.cadcrowd.com/3d-models/e2/4e/e24ed1e8-571b-42b1-a15d-abf63ff0856c/gallery/3bdc439b-02cc-448e-afd2-b4615ad703f4/medium.jpg
+  [Shape 22: Google Shape;543;p32] (1628775, 3034605, 10029825, 220860):
+    - Source: www.cadcrowd.com
+  [Other 23: Google Shape;544;p32] type=PICTURE (13)
+  [Shape 24: Google Shape;545;p32] (1628775, 3579018, 10029825, 179486):
+    - https://www.protoexpress.com/wp-content/uploads/2021/12/image2-6.png
+  [Shape 25: Google Shape;546;p32] (1628775, 3806130, 10029825, 220860):
+    - Source: www.protoexpress.com
+  [Other 26: Google Shape;547;p32] type=PICTURE (13)
+  [Shape 27: Google Shape;548;p32] (1628775, 4350543, 10029825, 179486):
+    - https://docs.gato.txst.edu/775149/w/2000/bBHGqEbMKzTl/_DSC4275%201.jpg
+  [Shape 28: Google Shape;549;p32] (1628775, 4577655, 10029825, 220860):
+    - Source: www.engineering.txst.edu
+  [Other 29: Google Shape;550;p32] type=PICTURE (13)
+  [Other 30: Google Shape;551;p32] type=PICTURE (13)
+  [Other 31: Google Shape;552;p32] type=PICTURE (13)
+

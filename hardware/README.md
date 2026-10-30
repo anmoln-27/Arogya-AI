@@ -53,3 +53,35 @@ All I²C devices share a single bus:
 3. MQ135 requires a **5V supply** — use a level shifter for the analog output
 4. Mount the MLX90640 facing outward with unobstructed field of view
 5. Keep the MAX30102 accessible for fingertip placement
+
+---
+
+## 🎨 Industrial Design & CAD Enclosure Specifications
+
+The custom enclosure was modeled in 3D CAD and optimized for rugged field conditions encountered by Accredited Social Health Activists (ASHAs) across rural India.
+
+![Figure 6: Hardware Prototype Architecture](../figures/Figure_6_Hardware_Prototype_Architecture.png)
+*Figure 6: Complete CAD and physical prototype architecture showing: (a) 3D Isometric CAD Rendering with callout leader lines; (b) 6-Axis Orthographic Engineering Projections; and (c) Fabricated Physical Hardware Prototype Kit.*
+
+### Mechanical Specifications
+
+| Parameter | Specification | Engineering Justification |
+|:---|:---|:---|
+| **Form Factor** | Handheld / Portable Field Console | Sized for single-handed grip during rural patient home visits |
+| **External Dimensions** | 210 mm × 125 mm × 45 mm | Accommodates sensor isolation chambers, battery pack, and display |
+| **Enclosure Material** | Medical-grade ASA / Polycarbonate-ABS (PC-ABS) | High impact strength (Izod 580 J/m), UV resistance, bleach-wipe disinfectable |
+| **Total Weight** | < 450 g (All sensors + 2000 mAh Li-Po) | Ergonomically balanced to reduce fatigue across 15–20 daily visits |
+| **Environmental Ingress** | IP54 Compliant (Perimeter silicone O-ring) | Dust ingress protection for unpaved rural roads; water splash resistance |
+| **Drop Survival** | 1.2-meter drop onto concrete (MIL-STD-810H) | Internal corner gussets and shock-mounted PCB prevent solder fracture |
+| **Thermal Isolation** | 2.0 mm Silicone Barrier + Ventilation Channels | Shields MLX90640 Far-IR thermopile from ESP32-S3 heat dissipation (45–55°C) |
+
+### 6-Axis Orthographic Engineering Views
+
+* **3D Isometric View (`figures/cad_prototype_extracted/image1.png`):** Handheld profile showing recessed optical cluster and operator deck.
+* **Front View (`figures/cad_prototype_extracted/image2.png`):** Dual optical windows (MLX90640 thermopile & AS7343 multi-spectral), MQ-135 breath intake.
+* **Top View (`figures/cad_prototype_extracted/image3.png`):** 1.3" 128×64 OLED screen, tactile "Deep Scan" membrane button.
+* **Left View (`figures/cad_prototype_extracted/image4.png`):** Safety-isolated Lead-I ECG electrode jacks (RA, LA, RL), finger clip sensor socket, GSR port.
+* **Right View (`figures/cad_prototype_extracted/image5.png`):** USB-C charging/firmware port, micro-HDMI port, RJ45 Ethernet debug port, 5V DC auxiliary jack.
+* **Rear View (`figures/cad_prototype_extracted/image6.png`):** Acoustic speaker grille for "Voice of ASHA" bilingual guidance audio, captive battery access hatch.
+* **Bottom View (`figures/cad_prototype_extracted/image7.png`):** Non-slip silicone anti-vibration footings, regulatory compliance recess.
+

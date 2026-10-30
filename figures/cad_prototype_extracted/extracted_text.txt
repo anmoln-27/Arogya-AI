@@ -1,0 +1,78 @@
+P0: 
+P1: 
+P2: IDEA DISCLOSURE FORM (IDF)
+P3: 
+P4: This IDF is intended to help Applicants provide information for Design search/Design Registration. Needless to say, the response to this IDF will be treated as Confidential Information and not disclosed to people other than those involved in evaluation of its subject-matter.
+P5: Note: Please provide as much information as possible
+P6: 
+P7: Name, address, and nationality/legal status of the Applicant. 
+P8: 
+P9: Name, address, and nationality of the designer/inventor (required in case of filing in Foreign Countries).
+P10: ……………………………………………………………………..
+P11: ……………………………………….
+P12: ………………………………………
+P13: 
+P14: Title of the article “Arogya AI: Portable Multi-Modal Edge-AI Diagnostic Device for Rural Healthcare "     
+P15: 
+P16: Use of article 
+P17: This article targets the needs of point-of-care health triaging and initial diagnosis in rural and resource-limited settings. Its purpose is to be utilized by front-line health care professionals (ASHA workers) to:
+P18: •	Gather various physiological and biochemical measurements
+P19: •	Facilitate health screening immediately after acquiring the data without the use of laboratories or internet connectivity
+P20: •	Perform multi-modal health screening incorporating cardiopulmonary, thermal, spectral, and environmental sensing
+P21: •	Facilitate objective decision-making at the point of care
+P22: •	Do AI-based triage in the absence of internet connection using TinyML algorithms
+P23: •	Apply the Deep Scan method for acquiring noise-free data
+P24: •	Demonstrate real-time data acquired by displaying them on an OLED display and Red/Green LEDs
+P25: •	Conduct tests for common diseases such as fever, hypoxia, arrhythmia, respiratory problems, and anaemia.
+P26: 
+P27: Brief Description of the design of the article:
+P28: Purpose/use of the article:
+P29: The suggested article involves a miniature diagnostic tool which contains several different types of sensors that are assembled in one compact enclosure, providing a full-scale health check in outdoor conditions. These include:
+P30: Cardiopulmonary sensors (ECG, SpO₂/PPG, respiration)
+P31: Fever sensor using thermal imaging
+P32: Hemoglobin sensor based on spectral sensing
+P33: Gas sensor and GSR sensor
+P34: 
+P35: These sensing systems have been incorporated into a single enclosure and are able to provide on-device inference powered by ESP32-S3 and machine learning models (TinyML). The proposed system provides for the following features:
+P36: Single-user manipulation outside the clinical setting
+P37: Organized access to sensors owing to their positioning
+P38: Output in real-time using OLED and LEDs
+P39: Offline functionality ensuring stability of the system operation in rural settings
+P40: A 60-second “Deep Scan” sequence ensures optimal sensor contact.
+P41: Novel aspect of the article sought for design protection (please provide a novelty statement of the article) 
+P42: The uniqueness of the invention is found in the integrated configuration and diagnostics system architecture:
+P43: 
+P44: Configuration of a one-unit, multimodal diagnostic system based on the structural integration of multiple types of sensors (cardiac, respiratory, thermal, spectral, and environmental sensors) into a portable form factor, which is different from a traditional approach to a multi-device configuration.
+P45: Internal system architecture, integrating I²C, SPI, and analog sensor interfaces via the embedded system, making possible spatial and functional integration of the system into the small housing enclosure.
+P46: Unique design of user interface configuration, consisting of a small OLED display and a triage indicator in the form of a two-color LED light (Red/Green) to enable operation in a zero-literacy environment.
+P47: Integrated physical design according to the workflow-driven rule of interactions between user and device (Idle > Deep scan > Results) ensuring additional stability in measurements and reduction of errors.
+P48: Autonomous diagnostic embedded system, combining all the necessary parts of it (sensor interface, processor, display) inside the housing without using computing capabilities of other devices or the cloud.
+P49: Physical device configuration and design including geometrical design, sensor arrangement and interface optimization for functioning in tough conditions
+P50: 
+P51: Drawings/photographs of the article. Drawings depicting various views of the article covering at least perspective view, front view, rear view, top view, bottom view, left and right-side view. Application can be filed with line drawings, computer aided drawings or with photographs. Further, please note that under the Indian practice, discrete/discontinuous/broken/shaded lines are generally not allowed in the drawings. 
+P52: 
+P53: 
+P54: Figure 1: Perspective View
+P55: 
+P56: Figure 2: Front View
+P57: 
+P58: Figure 3: Top View
+P59:                                         
+P60: Figure 4: Left View                                      Figure 5: Right-Side View 
+P61: 
+P62: 
+P63: Figure 6: Rear View
+P64: 
+P65: 
+P66: Figure 7: Bottom View
+P67: 
+P68: 
+P69: 
+
+--- Table 0 (6 rows, 5 cols) ---
+R0: ['S. No', 'Name in Full', 'Nationality', 'Country of Residence', 'Address of the Applicant']
+R1: ['1', 'Vivekananda Institute of Professional Studies- Technical Campus', 'Indian', 'India', 'Vivekananda Institute of Professional Studies - Technical Campus, Delhi-110034, India']
+R2: ['2', 'Dr. Divya Agarwal', 'Indian', 'India', 'Assistant Professor, School of Engineering & Technology, Vivekananda Institute of Professional Studies - Technical Campus, Delhi-110034, India']
+R3: ['3', 'Anmol Nandwani', 'Indian', 'India', 'Student, School of Engineering & Technology, Vivekananda Institute of Professional Studies - Technical Campus, Delhi-110034, India']
+R4: ['4', 'Gauri Gupta', 'Indian', 'India', 'Student, School of Engineering & Technology, Vivekananda Institute of Professional Studies - Technical Campus, Delhi-110034, India']
+R5: ['5', 'Vansh Sharma', 'Indian', 'India', 'Student, School of Engineering & Technology, Vivekananda Institute of Professional Studies - Technical Campus, Delhi-110034, India']

@@ -28,6 +28,7 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 MAX30105 pulse; 
 Adafruit_MLX90640 mlx;
 Adafruit_AS7343 as7343;
+bool mlxOnline = false, asOnline = false, pulseOnline = false;
 
 // --- MUTEX & SHARED DATA ---
 SemaphoreHandle_t i2cMutex;
@@ -104,6 +105,7 @@ void aiTask(void *pvParameters) {
 // SETUP
 // ==========================================
 void setup() {
+  disableLoopWDT();
   Serial.begin(115200);
   i2cMutex = xSemaphoreCreateMutex();
   
@@ -111,13 +113,14 @@ void setup() {
   Wire.setClock(50000);
 
   tcaSelect(7); u8g2.begin();
-  tcaSelect(3); mlx.begin(MLX90640_I2CADDR_DEFAULT, &Wire);
+  tcaSelect(3); mlxOnline = mlx.begin(MLX90640_I2CADDR_DEFAULT, &Wire);
   
   tcaSelect(4); 
   if(as7343.begin()) {
       as7343.setGain(AS7343_GAIN_128X);
       as7343.setATIME(100);  
       as7343.setASTEP(999);  
+      asOnline = true;
   }
 
   Wire1.begin(16, 17);
@@ -125,6 +128,7 @@ void setup() {
     pulse.setup();
     pulse.setPulseAmplitudeRed(0x3F); 
     pulse.setPulseAmplitudeIR(0x3F);
+    pulseOnline = true;
   }
 
   pinMode(ecgPin, INPUT);
@@ -164,7 +168,7 @@ void loop() {
         xSemaphoreGive(i2cMutex);
       }
       
-      if (ir > 40000) { 
+      if (ir > 14000) { 
         currentState = SCANNING; 
         scanStartTime = millis();
         feverCount = 0; totalAiRuns = 0; 
@@ -195,25 +199,29 @@ void loop() {
         lastMux = millis();
         
         // Quick Live SpO2 update
-        float r = (float)pulse.getRed() / (float)ir;
-        if(ir > 20000) { 
+        if(ir > 8000 && pulseOnline) { 
+            float r = (float)pulse.getRed() / (float)ir;
             currentSpO2 = constrain(110-(25*r), 85, 99);
             spo2Sum += currentSpO2; spo2Samples++; 
         }
 
         if (xSemaphoreTake(i2cMutex, pdMS_TO_TICKS(500))) {
           
-          tcaSelect(3); 
-          if(mlx.getFrame(thermalFrame) == 0){
-             float mt = -99;
-             for(int i=0; i<768; i++) if(thermalFrame[i] > mt) mt = thermalFrame[i];
-             currentTemp = mt + boxOffset;
+          if (mlxOnline) {
+            tcaSelect(3); 
+            if(mlx.getFrame(thermalFrame) == 0){
+               float mt = -99;
+               for(int i=0; i<768; i++) if(thermalFrame[i] > mt) mt = thermalFrame[i];
+               currentTemp = mt + boxOffset;
+            }
           }
           
-          tcaSelect(4); 
-          if (as7343.readAllChannels(specReadings)) {
-              f5Sum += specReadings[5]; 
-              specSamples++;
+          if (asOnline) {
+            tcaSelect(4); 
+            if (as7343.readAllChannels(specReadings)) {
+                f5Sum += specReadings[5]; 
+                specSamples++;
+            }
           }
           
           // --- LIVE SCANNING UI ---
@@ -299,4 +307,5 @@ void loop() {
       if (ir < 15000) currentState = IDLE; 
       break;
   }
+  delay(10);
 }

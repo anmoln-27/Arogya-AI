@@ -64,6 +64,8 @@
 | **MQ Gas Sensor (MQ-135)** | VCC | 5.0V / VBUS | 5V Rail | Internal heater coil requires 5V |
 | | GND | GND | Common Ground | Common system ground |
 | | AOUT | GPIO 6 | Analog (`ADC1_CH5`) | Calibrated via `analogReadMilliVolts(6)` |
+| **Green Status LED** | Anode (+) | GPIO 40 (via 220Ω-330Ω) | Digital Out | Lights UP after 60s scan ONLY if SAFE / NO RISK (Score < 25) |
+| (Safe / Healthy Indicator) | Cathode (-) | GND | System Ground | Common ground (stays OFF if risk/unsafe is detected) |
 | **GSR Skin Conductance** | — | — | *Omitted* | *Legacy prototype only; not used in `final_eval_v2`* |
 | **Quectel EC200U-CN** | TX | GPIO (UART TX) | Internal UART | On-board connection to ESP32-S3 (7Semi board) |
 | (On-board 4G LTE Modem) | RX | GPIO (UART RX) | Internal UART | On-board connection to ESP32-S3 (7Semi board) |
